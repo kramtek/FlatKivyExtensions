@@ -6,6 +6,8 @@ from kivy.uix.boxlayout import BoxLayout
 from flat_kivy.flatapp import FlatApp
 from flat_kivy.uix.flattextinput import FlatTextInput
 
+from flat_kivy_extensions.uix.customiconbutton import CustomIconButton
+
 Builder.load_string('''
 #:import NavigationDrawer kivy_garden.navigationdrawer.NavigationDrawer
 <RootWidget>:
@@ -76,7 +78,7 @@ Builder.load_string('''
             pos: self.pos
             size: self.size
 
-    FlatIconButton:
+    CustomIconButton:
         id: _menu_button
         icon: 'fa-bars'
         size_hint_x: None
@@ -215,6 +217,8 @@ Builder.load_string('''
             theme: ('green', 'main')
 ''')
 
+
+Builder.load_file('flat_kivy_extensions/ui_elements.kv')
 
 class HeaderLayout(BoxLayout):
     pass
