@@ -80,6 +80,7 @@ Builder.load_string('''
 
     CustomIconButton:
         id: _menu_button
+        theme: ('app', 'header')
         icon: 'fa-bars'
         size_hint_x: None
         width: root.header_height
@@ -262,6 +263,7 @@ class ExtendedFlatApp(FlatApp):
                 }
             }
 
+
         accent = {
             'FlatButton': {
                 'color_tuple': ('LightGreen', '500'),
@@ -307,7 +309,20 @@ class ExtendedFlatApp(FlatApp):
                 },
             }
 
+        header = {
+            'CustomIconButton': {
+                'color_tuple': ('Brown', '500'),
+                'font_color_tuple': ('Gray', '1000'),
+                'style': 'Button',
+                'icon_color_tuple': ('Gray', '1000'),
+                },
+                }
+
         self.theme_manager.add_theme('green', 'main', main)
         self.theme_manager.add_theme('green', 'accent', accent)
+        self.theme_manager.add_theme('app', 'header', header)
+
+        from flat_kivy_extensions.uix.customiconbutton import CustomIconButton
+        self.theme_manager.types_to_theme['CustomIconButton'] = CustomIconButton
 
 
