@@ -245,6 +245,12 @@ class RootWidget(Widget):
 
 
 class ExtendedFlatApp(FlatApp):
+    def __init__(self, app_config_entries, title, about, *largs, **kwargs):
+        super(ExtendedFlatApp, self).__init__(*largs, **kwargs)
+        self.title = title
+        self.app_config_entries = app_config_entries
+        self.about = about
+
     def build(self):
         self.root = RootWidget()
         self._navigationdrawer = self.root.ids.navigationdrawer
@@ -254,27 +260,35 @@ class ExtendedFlatApp(FlatApp):
         self._menu_button = self._header.ids._menu_button
         self._menu_button.bind(on_press=lambda j: self._navigationdrawer.toggle_state())
 
-        self._screenmanager.add_widget(SomeScreen())
+        for entry in self.app_config_entries:
+            if type(entry) == type(''):
+                label = FlatLabel(text=entry)
+                label.theme = ('green', 'main')
+                label.size_hint_y = None
+                label.height = '40dp'
+                self._side_panel.add_widget(label)
 
-        label = FlatLabel(text='Navigation Label')
-        label.theme = ('green', 'main')
-        label.size_hint_y = None
-        label.height = '40dp'
-        self._side_panel.add_widget(label)
-
-        btn = FlatIconButtonLeft(text='Navigation Button',
+            if type(entry) == type(tuple()):
+                btnText = entry[0]
+                btn = FlatIconButtonLeft(text=btnText,
                                 size_hint_y=None, height='40dp',
                                 icon='fa-chevron-right',
                                 padding='3dp',
                                 font_color_tuple=('Gray', '100'),
                                 )
-        btn.ids.icon.font_size = '15dp'
-        btn.ids.icon.color_tuple = ('Brown', '100')
-        btn.ids.label.font_size = '15dp'
-        btn.ids.label.halign = 'left'
-        # Question: why does it not work to specify color in the kwargs above
-        btn.color = (.15, .15, .15)
-        self._side_panel.add_widget(btn)
+                btn.ids.icon.font_size = '15dp'
+                btn.ids.icon.color_tuple = ('Brown', '100')
+                btn.ids.label.font_size = '15dp'
+                btn.ids.label.halign = 'left'
+                # Question: why does it not work to specify color in the kwargs above
+                btn.color = (.15, .15, .15)
+                self._side_panel.add_widget(btn)
+
+                btn.config = entry
+                btn.screen = None
+                btn.bind(on_release=self._switch_to_screen)
+
+                self._create_screen(btn)
 
         self._side_panel.add_widget(Widget())
 
@@ -362,5 +376,16 @@ class ExtendedFlatApp(FlatApp):
 
         from flat_kivy_extensions.uix.customiconbutton import CustomIconButton
         self.theme_manager.types_to_theme['CustomIconButton'] = CustomIconButton
+
+    def _create_screen(self, button):
+        if button.screen is None:
+            button.screen = button.config[1](*button.config[2], **button.config[3])
+            self._screenmanager.add_widget(button.screen)
+
+    def _switch_to_screen(self, instance):
+        if instance.screen is None:
+            self._create_screen(instance)
+        self._screenmanager.current = instance.screen.name
+        self._navigationdrawer.toggle_state()
 
 
