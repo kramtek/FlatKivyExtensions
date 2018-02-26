@@ -9,36 +9,82 @@ from flat_kivy.uix.flattextinput import FlatTextInput
 Builder.load_string('''
 #:import NavigationDrawer kivy_garden.navigationdrawer.NavigationDrawer
 <RootWidget>:
+    title: 'Some App Title'
+    background_color: 1.0, 1.0, 1.0
+    header_height: dp(40)
+    header_color: 0.1, 0.1, 0.2
+    side_panel_color: 0.1, 0.1, 0.1
 
-    NavigationDrawer:
-        id: navigationdrawer
-        height: root.height
-        width: root.width
-        side_panel_width: min(dp(250), 0.6*self.width)
-        anim_type:  'slide_above_simple'
 
-        BoxLayout:
-            id: side_panel
-            orientation: 'vertical'
+    BoxLayout:
+        id: main_layout
+        orientation: 'vertical'
+        size_hint: (None, None)
+        size: root.size
+        canvas.before:
+            Color:
+                rgba: root.background_color
+            Rectangle:
+                pos: self.pos
+                size: self.size
 
-            Label:
-                text: 'Navigation Label'
+        HeaderLayout:
+            id: header
+            size_hint_y: None
+            height: root.header_height
+            title: root.title
+            color: root.header_color
 
-            Button:
-                text: 'Navigation Button'
 
-        BoxLayout:
-            id: screencontent
-            orientation: 'vertical'
 
-            FlatButton:
-                text: 'Toggle Nav Drawer'
-                theme: ('green', 'accent')
-                size_hint_y: None
-                height: dp(50)
-                on_release: app.root.ids.navigationdrawer.toggle_state()
+        NavigationDrawer:
+            id: navigationdrawer
+            height: root.height
+            width: root.width
+            side_panel_width: min(dp(250), 0.6*self.width)
+            anim_type:  'slide_above_simple'
 
-            OriginalFlatKivyDemoLayout:
+            BoxLayout:
+                id: side_panel
+                orientation: 'vertical'
+
+                Label:
+                    text: 'Navigation Label'
+
+                Button:
+                    text: 'Navigation Button'
+
+            BoxLayout:
+                id: screencontent
+                orientation: 'vertical'
+
+                FlatButton:
+                    text: 'Toggle Nav Drawer'
+                    theme: ('green', 'accent')
+                    size_hint_y: None
+                    height: dp(50)
+                    on_release: app.root.ids.navigationdrawer.toggle_state()
+
+                OriginalFlatKivyDemoLayout:
+
+<-HeaderLayout>:
+    header_height: '40dp'
+    title: 'Header'
+    color: .1, .9, .1
+    canvas.before:
+        Color:
+            rgb: root.color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    FlatLabel:
+        id: title_label
+        text: root.title
+        color_tuple: ('Gray', '000')
+        style: 'Subhead'
+
+
 
 
 <-OriginalFlatKivyDemoLayout>:
@@ -165,8 +211,13 @@ Builder.load_string('''
 ''')
 
 
+class HeaderLayout(BoxLayout):
+    pass
+
+
 class OriginalFlatKivyDemoLayout(BoxLayout):
     pass
+
 
 class RootWidget(Widget):
     pass
