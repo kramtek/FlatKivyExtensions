@@ -5,6 +5,8 @@ from kivy.uix.boxlayout import BoxLayout
 
 from flat_kivy.flatapp import FlatApp
 from flat_kivy.uix.flattextinput import FlatTextInput
+from flat_kivy.uix.flaticonbutton import FlatIconButtonLeft
+from flat_kivy.uix.flatlabel import FlatLabel
 
 from flat_kivy_extensions.uix.customiconbutton import CustomIconButton
 
@@ -48,11 +50,7 @@ Builder.load_string('''
                 id: side_panel
                 orientation: 'vertical'
 
-                Label:
-                    text: 'Navigation Label'
-
-                Button:
-                    text: 'Navigation Button'
+                # this will be populated dynamically when app starts
 
             BoxLayout:
                 id: screencontent
@@ -237,9 +235,33 @@ class ExtendedFlatApp(FlatApp):
     def build(self):
         self.root = RootWidget()
         self._navigationdrawer = self.root.ids.navigationdrawer
+        self._side_panel = self.root.ids.side_panel
         self._header = self.root.ids.header
         self._menu_button = self._header.ids._menu_button
         self._menu_button.bind(on_press=lambda j: self._navigationdrawer.toggle_state())
+
+        label = FlatLabel(text='Navigation Label')
+        label.theme = ('green', 'main')
+        label.size_hint_y = None
+        label.height = '40dp'
+        self._side_panel.add_widget(label)
+
+        btn = FlatIconButtonLeft(text='Navigation Button',
+                                size_hint_y=None, height='40dp',
+                                icon='fa-chevron-right',
+                                padding='3dp',
+                                font_color_tuple=('Gray', '100'),
+                                )
+        btn.ids.icon.font_size = '15dp'
+        btn.ids.icon.color_tuple = ('Brown', '100')
+        btn.ids.label.font_size = '15dp'
+        btn.ids.label.halign = 'left'
+        # Question: why does it not work to specify color in the kwargs above
+        btn.color = (.15, .15, .15)
+        self._side_panel.add_widget(btn)
+
+        self._side_panel.add_widget(Widget())
+
         return self.root
 
     def setup_themes(self):
