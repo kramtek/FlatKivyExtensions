@@ -35,8 +35,6 @@ Builder.load_string('''
             title: root.title
             color: root.header_color
 
-
-
         NavigationDrawer:
             id: navigationdrawer
             height: root.height
@@ -77,6 +75,13 @@ Builder.load_string('''
         Rectangle:
             pos: self.pos
             size: self.size
+
+    FlatIconButton:
+        id: _menu_button
+        icon: 'fa-bars'
+        size_hint_x: None
+        width: root.header_height
+        icon_font_size: dp(30)
 
     FlatLabel:
         id: title_label
@@ -225,7 +230,12 @@ class RootWidget(Widget):
 
 class ExtendedFlatApp(FlatApp):
     def build(self):
-        return RootWidget()
+        self.root = RootWidget()
+        self._navigationdrawer = self.root.ids.navigationdrawer
+        self._header = self.root.ids.header
+        self._menu_button = self._header.ids._menu_button
+        self._menu_button.bind(on_press=lambda j: self._navigationdrawer.toggle_state())
+        return self.root
 
     def setup_themes(self):
         main = {
