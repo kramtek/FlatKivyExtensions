@@ -4,10 +4,13 @@ sys.path.append('flat_kivy_extensions/submodules')
 
 from flat_kivy_extensions.flatappextension import ExtendedFlatApp
 
-from flat_kivy_extensions.flatappextension import SomeScreen
+from screens import FlatKivyDemoScreen, KivyScreen1, KivyScreen2
 
 app_config_entries = ['MainLabel',
-                      ('Some Screen', SomeScreen, [], {}),
+                      ('FlatKivyDemo Screen', FlatKivyDemoScreen, [], {}),
+                      'Sub Heading',
+                      ('Kivy Screen 1', KivyScreen1, [], {}),
+                      ('Kivy Screen 2', KivyScreen2, [], {}),
                      ]
 title = 'My App Title'
 about = 'Something to describe the purpose of the application.'
