@@ -2,6 +2,7 @@
 from kivy.uix.widget import Widget
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.screenmanager import Screen, FadeTransition, NoTransition
 
 from flat_kivy.flatapp import FlatApp
 from flat_kivy.uix.flattextinput import FlatTextInput
@@ -12,6 +13,7 @@ from flat_kivy_extensions.uix.customiconbutton import CustomIconButton
 
 Builder.load_string('''
 #:import NavigationDrawer kivy_garden.navigationdrawer.NavigationDrawer
+#:import NoTransition kivy.uix.screenmanager.NoTransition
 <RootWidget>:
     title: 'Some App Title'
     background_color: 1.0, 1.0, 1.0
@@ -56,14 +58,17 @@ Builder.load_string('''
                 id: screencontent
                 orientation: 'vertical'
 
-                FlatButton:
-                    text: 'Toggle Nav Drawer'
-                    theme: ('green', 'accent')
-                    size_hint_y: None
-                    height: dp(50)
-                    on_release: app.root.ids.navigationdrawer.toggle_state()
-
-                OriginalFlatKivyDemoLayout:
+                ScreenManager:
+                    id: screenmanager
+                    transition: NoTransition()
+                    #transition: FadeTransition()
+                    #transition: FadeTransition()
+                    canvas.before:
+                        Color:
+                            rgb: root.background_color
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
 
 <-HeaderLayout>:
     header_height: '40dp'
@@ -91,6 +96,11 @@ Builder.load_string('''
         style: 'Subhead'
 
 
+<-SomeScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        OriginalFlatKivyDemoLayout:
 
 
 <-OriginalFlatKivyDemoLayout>:
@@ -223,6 +233,9 @@ class HeaderLayout(BoxLayout):
     pass
 
 
+class SomeScreen(Screen):
+    pass
+
 class OriginalFlatKivyDemoLayout(BoxLayout):
     pass
 
@@ -237,8 +250,11 @@ class ExtendedFlatApp(FlatApp):
         self._navigationdrawer = self.root.ids.navigationdrawer
         self._side_panel = self.root.ids.side_panel
         self._header = self.root.ids.header
+        self._screenmanager = self.root.ids.screenmanager
         self._menu_button = self._header.ids._menu_button
         self._menu_button.bind(on_press=lambda j: self._navigationdrawer.toggle_state())
+
+        self._screenmanager.add_widget(SomeScreen())
 
         label = FlatLabel(text='Navigation Label')
         label.theme = ('green', 'main')
