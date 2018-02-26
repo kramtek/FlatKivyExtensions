@@ -241,7 +241,6 @@ class ExtendedFlatApp(FlatApp):
         self.theme_manager.add_theme('green', 'accent', accent)
         self.theme_manager.add_theme('app', 'header', header)
 
-        from flat_kivy_extensions.uix.customiconbutton import CustomIconButton
         self.theme_manager.types_to_theme['CustomIconButton'] = CustomIconButton
 
     def _create_screen(self, button):
