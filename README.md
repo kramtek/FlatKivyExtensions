@@ -3,26 +3,26 @@
 
 Goal: rapid utility application development
 
-    - Minimal UI development effort
+- Minimal UI development effort
 
-    - Avoid dependency on buildozer or ios toolchain to test applications on Android or iOS respectively.
+- Avoid dependency on buildozer or ios toolchain to test applications on Android or iOS respectively.
 
-        - Application can be updated just by copying raw python code 
+    - Application can be updated just by copying raw python code 
 
-            - Application can be updated without required devepment environments or specific hardware
+        - Application can be updated without required devepment environments or specific hardware
 
-        - However: 
+     - However: 
         
-            - Code used for testing does not go through cythonization process
+         - Code used for testing does not go through cythonization process
 
-            - iOS version would not pass application validation process
+         - iOS version would not pass application validation process
 
 
 Components:
 
-    - Application abstraction based on Flat Kivy
+- Application abstraction based on Flat Kivy
 
-    - Launcher applications for Android and iOS
+- Launcher applications for Android and iOS
 
         - Similar to Kivy launcher app for android
 
