@@ -15,6 +15,7 @@ from flat_kivy_extensions.uix.customiconbutton import CustomIconButton
 Builder.load_string('''
 #:import NavigationDrawer kivy_garden.navigationdrawer.NavigationDrawer
 #:import NoTransition kivy.uix.screenmanager.NoTransition
+#:import FadeTransition kivy.uix.screenmanager.FadeTransition
 <RootWidget>:
     title: 'Some App Title'
     background_color: 1.0, 1.0, 1.0
@@ -59,13 +60,20 @@ Builder.load_string('''
             BoxLayout:
                 orientation: 'vertical'
 
+                canvas.before:
+                    Color:
+                        rgb: root.background_color
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                            
                 ScreenManager:
                     id: screenmanager
                     transition: NoTransition()
                     # Question: When selecting FadeTransition the switching
                     #           annimation seems to go black when switching,
                     #           how can this be avoided?
-                    #transition: FadeTransition()
+                    transition: FadeTransition()
                     canvas.before:
                         Color:
                             rgb: root.background_color
