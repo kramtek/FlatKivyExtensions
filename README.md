@@ -30,11 +30,21 @@ Components:
         
             - buildozer for android in ubuntu VM 
             
+                - Patches: Modify PythonActivity.java and PythonService.java to configure application paths at runtime
+                
                 - Android Sudio project can (will) be found at.... <android studio project>
             
             - kivy-ios toolchain build and app generation with toolchain.py create ...
             
+                - Patches: Modify main.py to configure application paths at runtime
+                
                 - Xcode project can (will) be found at ... <xcode project>
 
     - Developer specifies application path and python path extensions via a launcher_config.txt file
+    
+        - Path specifications need to be relative to writable memory
+        
+            - On Android relative to /sdcard/  (or /storage/emulated/0/)
+            
+            - On iOS relative to launcher application's Document folder.  iOS launcher built with filesharing enabled
 
