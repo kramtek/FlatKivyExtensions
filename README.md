@@ -1,22 +1,7 @@
 # FlatKivyExtensions
 
 
-Goal: rapid utility application development
-
-- Minimal UI development effort
-
-- Avoid dependency on buildozer or ios toolchain to test applications on Android or iOS respectively.
-
-    - Application can be updated just by copying raw python code 
-
-        - Application can be updated without required devepment environments or specific hardware
-
-     - However: 
-        
-         - Code used for testing does not go through cythonization process
-
-         - iOS version would not pass application validation process
-
+Goal: facilitate rapid utility application development with reduced UI implementation effort
 
 Components:
 
@@ -32,7 +17,26 @@ Components:
         - Application 'about' information
         - List used to configure navigation panel 
 
-- Launcher applications for Android and iOS built with kivy_1.10
+
+# This should all go into a separate repo - here for now to collect thoughts
+
+Goal: provide configurable kivy launcher app for Android and iOS
+
+- Avoid dependency on buildozer or ios toolchain to test applications on Android or iOS respectively.
+
+    - Application can be updated just by copying raw python code and specifying launcher configuration 
+
+        - Application can be updated without required devepment environments or specific hardware
+
+     - However: 
+        
+         - Code used for testing does not go through cythonization process
+
+         - iOS version would not pass application validation process
+
+Components:
+
+- Launcher application projects for Android and iOS built with kivy_1.10
 
     - Similar to Kivy launcher app for android:
     
@@ -52,6 +56,8 @@ Components:
 
     - Developer specifies application path and python path extensions via a launcher_config.txt file
     
+        - Same launcher_config.txt applied to both Android and iOS launchers
+        
         - Path specifications need to be relative to writable memory
         
             - On Android relative to /sdcard/  (or /storage/emulated/0/)
