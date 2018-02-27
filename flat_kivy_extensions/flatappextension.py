@@ -18,12 +18,10 @@ Builder.load_string('''
     title: 'Some App Title'
     background_color: 1.0, 1.0, 1.0
     header_height: dp(40)
-    header_color: 0.1, 0.1, 0.2
+    header_color: 0.1, 0.3, 0.2
     side_panel_color: 0.1, 0.1, 0.1
 
-
     BoxLayout:
-        id: main_layout
         orientation: 'vertical'
         size_hint: (None, None)
         size: root.size
@@ -40,6 +38,7 @@ Builder.load_string('''
             height: root.header_height
             title: root.title
             color: root.header_color
+            header_color: root.header_color
 
         NavigationDrawer:
             id: navigationdrawer
@@ -52,16 +51,14 @@ Builder.load_string('''
                 id: side_panel
                 orientation: 'vertical'
 
-                # this will be populated dynamically when app starts
+                # this will be populated dynamically when the root application is built
 
             BoxLayout:
-                id: screencontent
                 orientation: 'vertical'
 
                 ScreenManager:
                     id: screenmanager
                     transition: NoTransition()
-                    #transition: FadeTransition()
                     #transition: FadeTransition()
                     canvas.before:
                         Color:
@@ -72,8 +69,11 @@ Builder.load_string('''
 
 <-HeaderLayout>:
     header_height: '40dp'
+    header_color: 0.2, 0.1, 0.2
+    menu_button_width: '50dp'
     title: 'Header'
     color: .1, .9, .1
+    
     canvas.before:
         Color:
             rgb: root.color
@@ -86,17 +86,12 @@ Builder.load_string('''
         theme: ('app', 'header')
         icon: 'fa-bars'
         size_hint_x: None
-        width: root.header_height
-        icon_font_size: dp(30)
-
+        width: root.menu_button_width
+        color: root.header_color
+        
     FlatLabel:
-        id: title_label
         text: root.title
-        color_tuple: ('Gray', '000')
-        style: 'Subhead'
-
-
-
+        theme: ('app', 'header')
 
 ''')
 
@@ -117,6 +112,7 @@ class ExtendedFlatApp(FlatApp):
         self.title = title
         self.app_config_entries = app_config_entries
         self.about = about
+        self.lazy_loading = False
 
     def build(self):
         self.root = RootWidget()
@@ -127,35 +123,43 @@ class ExtendedFlatApp(FlatApp):
         self._menu_button = self._header.ids._menu_button
         self._menu_button.bind(on_press=lambda j: self._navigationdrawer.toggle_state())
 
+        first_screen = None
         for entry in self.app_config_entries:
             if type(entry) == type(''):
                 label = FlatLabel(text=entry)
-                label.theme = ('green', 'main')
-                label.size_hint_y = None
-                label.height = '40dp'
+                label.theme = ('app', 'navigationdrawer')
                 self._side_panel.add_widget(label)
 
             if type(entry) == type(tuple()):
                 btnText = entry[0]
                 btn = FlatIconButtonLeft(text=btnText,
-                                size_hint_y=None, height='40dp',
-                                icon='fa-chevron-right',
-                                padding='3dp',
-                                font_color_tuple=('Gray', '100'),
                                 )
+                btn.theme = ('app', 'navigationdrawer')
+
+                # btn.size_hint_y = None
+                # btn.height = '40dp'
+                # btn.font_color_tuple = ('Blue', '200')
+                # btn.icon = 'fa-chevron-right'
+
                 btn.ids.icon.font_size = '15dp'
                 btn.ids.icon.color_tuple = ('Brown', '100')
-                btn.ids.label.font_size = '15dp'
+                # btn.ids.label.font_size = '15dp'
                 btn.ids.label.halign = 'left'
                 # Question: why does it not work to specify color in the kwargs above
                 btn.color = (.15, .15, .15)
+
+
                 self._side_panel.add_widget(btn)
 
                 btn.config = entry
                 btn.screen = None
                 btn.bind(on_release=self._switch_to_screen)
 
-                self._create_screen(btn)
+                if first_screen is None:
+                    first_screen = self._create_screen(btn)
+
+                if not self.lazy_loading:
+                    self._create_screen(btn)
 
         self._side_panel.add_widget(Widget())
 
@@ -230,24 +234,56 @@ class ExtendedFlatApp(FlatApp):
 
         header = {
             'CustomIconButton': {
-                'color_tuple': ('Brown', '500'),
-                'font_color_tuple': ('Gray', '1000'),
+                'color_tuple': ('Brown', '900'),
+                'font_color_tuple': ('Gray', '100'),
                 'style': 'Button',
-                'icon_color_tuple': ('Gray', '1000'),
+                'icon_color_tuple': ('Gray', '100'),
+                'icon_font_size' : '25dp',
                 },
-                }
+            'FlatLabel': {
+                'color_tuple' : ('Red', '200'),
+                'style' : 'Subhead',
+                },
+            }
+
+        navigationdrawer = {
+            'FlatLabel': {
+                'size_hint_y' : None,
+                'height' : '40dp',
+                'font_size' : '20dp',
+                'color_tuple' : ('Green', '300'),
+            },
+            'FlatIconButtonLeft': {
+                'color_tuple': ('Brown', '800'),
+                'font_color_tuple': ('Blue', '300'),
+                'font_size': '15dp',
+                # 'style': 'Button',
+                'size_hint_y' : None,
+                'height' : '25dp',
+                'icon' : 'fa-chevron-right',
+                'icon_color_tuple': ('Red', '200'),
+                'padding' : '3dp',
+            },
+        }
 
         self.theme_manager.add_theme('green', 'main', main)
         self.theme_manager.add_theme('green', 'accent', accent)
         self.theme_manager.add_theme('app', 'header', header)
+        self.theme_manager.add_theme('app', 'navigationdrawer', navigationdrawer)
 
         self.theme_manager.types_to_theme['CustomIconButton'] = CustomIconButton
+        self.theme_manager.types_to_theme['FlatIconButtonLeft'] = FlatIconButtonLeft
 
     def _create_screen(self, button):
         if button.screen is None:
+            print('Creating instance: screen = ' +
+                  str(button.config[1].__name__ +
+                      "(*" + str(button.config[2]) +
+                      ", **" + str(button.config[3]) + ')'))
             button.screen = button.config[1](*button.config[2], **button.config[3])
             button.screen.name = button.config[0]
             self._screenmanager.add_widget(button.screen)
+            return button.screen
 
     def _switch_to_screen(self, instance):
         if instance.screen is None:
