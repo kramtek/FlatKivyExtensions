@@ -11,7 +11,11 @@ Goal: rapid utility application development
 
             - Application can be updated without required devepment environments or specific hardware
 
-        - However: Code used for testing does not go through cythonization process
+        - However: 
+        
+            - Code used for testing does not go through cythonization process
+
+            - iOS version would not pass application validation process
 
 
 Components:
