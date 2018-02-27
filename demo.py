@@ -16,10 +16,12 @@ about = 'Something to describe the purpose of the application.'
 
 from screens import FlatKivyDemoScreen, KivyScreen1, KivyScreen2
 
-#    Specifying what screens should be included and how to navigate
-#    to them is done through a configuration list used to layout the
-#    navigation drawer side panel. Each item in the list is used to
-#    configure either a:
+#    An application configuration list is used to specify what screens
+#    should be included and how to navigate to them.
+#
+#    This configuration list defines the widgets that are included in
+#    the navigation side-panel and each item in the list is used to configure
+#    either a:
 #
 #     - Label used for navigation panel separator headers
 #
@@ -29,16 +31,17 @@ from screens import FlatKivyDemoScreen, KivyScreen1, KivyScreen2
 
 # Each item in the app_config_entries list must be one of the following types:
 #
-#  str():  Label text that should be placed in navigation slide out panel
+#  str():  Text used in a Label that is added to th navigation slide-out panel
 #
-#  dict(): Label configuration properties that can be used to construct
-#          the navigation label for customization
+#  dict(): Dict of configuration properties that is used to construct
+#          a Label that is added to the navigation slide out-panel
 #
 #  tuple(): [0] string defining the text property of the navigation button,
 #           [1] class name of screen to construct and link button to
 #           [2] *largs that are passed to screen constructor
 #           [3] **kwargs that are passed to screen constructor
 #
+
 app_config_entries = ['Main Label',
                       ('FlatKivyDemo Screen', FlatKivyDemoScreen, [], {}),
                       'SubHeading Label',
