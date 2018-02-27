@@ -20,11 +20,21 @@ Goal: rapid utility application development
 
 Components:
 
-- Application abstraction based on Flat Kivy
+- Application abstraction based on Flat Kivy assuming kivy_1.10
 
-- Launcher applications for Android and iOS
+- Launcher applications for Android and iOS built with kivy_1.10
 
-        - Similar to Kivy launcher app for android
+    - Similar to Kivy launcher app for android:
+    
+        - Launcher source generated from one-time build process with trivial kivy example:
+        
+            - buildozer for android in ubuntu VM 
+            
+                - Android Sudio project can (will) be found at.... <android studio project>
+            
+            - kivy-ios toolchain build and app generation with toolchain.py create ...
+            
+                - Xcode project can (will) be found at ... <xcode project>
 
-        - Developer specifies application path and python path extensions via a launcher_config.txt file
+    - Developer specifies application path and python path extensions via a launcher_config.txt file
 
