@@ -8,6 +8,7 @@ from flat_kivy.flatapp import FlatApp
 from flat_kivy.uix.flattextinput import FlatTextInput
 from flat_kivy.uix.flaticonbutton import FlatIconButtonLeft
 from flat_kivy.uix.flatlabel import FlatLabel
+from flat_kivy.font_definitions import style_manager
 
 from flat_kivy_extensions.uix.customiconbutton import CustomIconButton
 
@@ -50,6 +51,8 @@ Builder.load_string('''
             BoxLayout:
                 id: side_panel
                 orientation: 'vertical'
+                padding: '3dp'
+                spacing: '3dp'
 
                 # this will be populated dynamically when the root application is built
 
@@ -73,7 +76,7 @@ Builder.load_string('''
     menu_button_width: '50dp'
     title: 'Header'
     color: .1, .9, .1
-    
+
     canvas.before:
         Color:
             rgb: root.color
@@ -88,7 +91,7 @@ Builder.load_string('''
         size_hint_x: None
         width: root.menu_button_width
         color: root.header_color
-        
+
     FlatLabel:
         text: root.title
         theme: ('app', 'header')
@@ -136,18 +139,8 @@ class ExtendedFlatApp(FlatApp):
                                 )
                 btn.theme = ('app', 'navigationdrawer')
 
-                # btn.size_hint_y = None
-                # btn.height = '40dp'
-                # btn.font_color_tuple = ('Blue', '200')
-                # btn.icon = 'fa-chevron-right'
-
                 btn.ids.icon.font_size = '15dp'
-                btn.ids.icon.color_tuple = ('Brown', '100')
-                # btn.ids.label.font_size = '15dp'
                 btn.ids.label.halign = 'left'
-                # Question: why does it not work to specify color in the kwargs above
-                btn.color = (.15, .15, .15)
-
 
                 self._side_panel.add_widget(btn)
 
@@ -164,6 +157,46 @@ class ExtendedFlatApp(FlatApp):
         self._side_panel.add_widget(Widget())
 
         return self.root
+
+    def setup_font_ramps(self):
+        super(ExtendedFlatApp, self).setup_font_ramps()
+        font_styles = {
+            'HeaderTitle': {
+                'font': 'Roboto-Bold.ttf',
+                #'font': 'proximanova-bold-webfont.ttf',
+                'sizings': {'mobile': (25, 'sp'), 'desktop': (20, 'sp')},
+                'alpha': .87,
+                'wrap': False,
+                },
+            'NavigationButton': {
+                'font': 'Roboto-Bold.ttf',
+                # 'font': 'proximanova-bold-webfont.ttf',
+                'sizings': {'mobile': (16, 'sp'), 'desktop': (14, 'sp')},
+                'alpha': .87,
+                'wrap': False,
+            },
+            'NavigationLabelMainHeading': {
+                'font': 'Roboto-Bold.ttf',
+                # 'font': 'proximanova-bold-webfont.ttf',
+                'sizings': {'mobile': (20, 'sp'), 'desktop': (17, 'sp')},
+                'alpha': .87,
+                'wrap': False,
+            },
+            'NavigationLabelSubHeading': {
+                'font': 'Roboto-Bold.ttf',
+                # 'font': 'proximanova-bold-webfont.ttf',
+                'sizings': {'mobile': (18, 'sp'), 'desktop': (15, 'sp')},
+                'alpha': .87,
+                'wrap': False,
+            },
+            }
+
+        for each in font_styles:
+            style = font_styles[each]
+            sizings = style['sizings']
+            style_manager.add_style(style['font'], each, sizings['mobile'],
+                sizings['desktop'], style['alpha'])
+
 
     def setup_themes(self):
         main = {
@@ -241,28 +274,28 @@ class ExtendedFlatApp(FlatApp):
                 'icon_font_size' : '25dp',
                 },
             'FlatLabel': {
-                'color_tuple' : ('Red', '200'),
-                'style' : 'Subhead',
+                'color_tuple' : ('Orange', '500'),
+                'style' : 'HeaderTitle',
                 },
             }
 
         navigationdrawer = {
             'FlatLabel': {
                 'size_hint_y' : None,
-                'height' : '40dp',
-                'font_size' : '20dp',
+                'height' : '35dp',
+                # 'font_size' : '20dp',
                 'color_tuple' : ('Green', '300'),
+                'style' : 'NavigationLabelMainHeading',
             },
             'FlatIconButtonLeft': {
                 'color_tuple': ('Brown', '800'),
                 'font_color_tuple': ('Blue', '300'),
-                'font_size': '15dp',
-                # 'style': 'Button',
                 'size_hint_y' : None,
-                'height' : '25dp',
+                'height' : '35dp',
                 'icon' : 'fa-chevron-right',
-                'icon_color_tuple': ('Red', '200'),
+                'icon_color_tuple': ('Red', '500'),
                 'padding' : '3dp',
+                'style': 'NavigationButton',
             },
         }
 
