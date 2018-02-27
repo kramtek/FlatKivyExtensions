@@ -26,7 +26,7 @@ Goal: provide configurable kivy launcher app for Android and iOS
 
     - Application can be updated just by copying raw python code and specifying launcher configuration 
 
-        - Application can be updated without required devepment environments or specific hardware
+        - Does not require any mobile devepment environments or specific hardware
 
      - However: 
         
@@ -40,17 +40,22 @@ Components:
 
     - Similar to Kivy launcher app for android:
     
-        - Launcher source generated from one-time build process with trivial kivy example:
+        - Launcher source generated from one-time build process with trivial kivy example.  Steps applied:
         
-            - buildozer for android in ubuntu VM 
+            - Android: Run buildozer in ubuntu VM with 'simpleApp' as the target application
             
-                - Patches: Modify PythonActivity.java and PythonService.java to configure application paths at runtime
+                - Patches: 
+                    - Modify PythonActivity.java and PythonService.java to configure runtime application paths from /sdcard/launcher_config.txt
                 
                 - Android Sudio project can (will) be found at.... <android studio project>
             
-            - kivy-ios toolchain build and app generation with toolchain.py create ...
+            - iOS: use kivy-ios toolchain to build the environment, then use 'toolchain.py create ...' applied to the 'simpleApp' target applictation folder
             
-                - Patches: Modify main.py to configure application paths at runtime
+                - Patches: 
+                    - Modify main.py to configure runtime application paths from launcher_config.txt copied to applications shared documents folder
+                    - Remove scripts run in Build Phaeses for synchronizing and cyntonizing python application code 
+                    - Make all paths to required 'dist' directory relative (hand edited the project.pbxproj)
+                    - Add a directory to applications resources that is copied to the application documents folder when the app starts (if it is not already there)
                 
                 - Xcode project can (will) be found at ... <xcode project>
 
