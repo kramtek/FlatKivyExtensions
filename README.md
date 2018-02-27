@@ -22,6 +22,16 @@ Components:
 
 - Application abstraction based on Flat Kivy assuming kivy_1.10
 
+    - Application consists of NavigationDrawer, header and ScreenManager
+    
+       - For each screen assigned to the ScreenManager there is an associated button used to navigate to that screen
+    
+    - Application components configured by specifying:
+    
+        - Application title
+        - Application 'about' information
+        - List used to configure navigation panel 
+
 - Launcher applications for Android and iOS built with kivy_1.10
 
     - Similar to Kivy launcher app for android:
