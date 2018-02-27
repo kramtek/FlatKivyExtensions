@@ -3,9 +3,9 @@
 
 Goal: facilitate rapid utility application development with reduced UI implementation effort
 
-Components:
+Components: requires using kivy 1.10
 
-- Application abstraction based on Flat Kivy assuming kivy_1.10
+- Application abstraction based on FlatKivy with the NavigationDrawer from kivy garden ( https://github.com/Kovak/FlatKivy and https://github.com/kivy-garden/garden.navigationdrawer respectively)
 
     - Application consists of NavigationDrawer, header and ScreenManager
     
