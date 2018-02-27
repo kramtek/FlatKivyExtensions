@@ -62,6 +62,9 @@ Builder.load_string('''
                 ScreenManager:
                     id: screenmanager
                     transition: NoTransition()
+                    # Question: When selecting FadeTransition the switching
+                    #           annimation seems to go black when switching,
+                    #           how can this be avoided?
                     #transition: FadeTransition()
                     canvas.before:
                         Color:
@@ -69,6 +72,7 @@ Builder.load_string('''
                         Rectangle:
                             pos: self.pos
                             size: self.size
+
 
 <-HeaderLayout>:
     header_height: '40dp'
@@ -104,7 +108,6 @@ Builder.load_file('flat_kivy_extensions/ui_elements.kv')
 class HeaderLayout(BoxLayout):
     pass
 
-
 class RootWidget(Widget):
     pass
 
@@ -116,9 +119,13 @@ class ExtendedFlatApp(FlatApp):
         self.app_config_entries = app_config_entries
         self.about = about
         self.lazy_loading = False
+        self._first_screen = None
+        self._first_navigation_label = None
 
     def build(self):
         self.root = RootWidget()
+        # Question: Is this the best place to get references to
+        #           widgets with ids in the root widget?
         self._navigationdrawer = self.root.ids.navigationdrawer
         self._side_panel = self.root.ids.side_panel
         self._header = self.root.ids.header
@@ -126,77 +133,20 @@ class ExtendedFlatApp(FlatApp):
         self._menu_button = self._header.ids._menu_button
         self._menu_button.bind(on_press=lambda j: self._navigationdrawer.toggle_state())
 
-        first_screen = None
+
+        entry_constructors = {type(str()) : self._create_navigation_label_from_string,
+                              type(dict()) : self._create_navigation_label_from_dict,
+                              type(tuple()) : self._create_navigation_button,
+                              }
+
         for entry in self.app_config_entries:
-            if type(entry) == type(''):
-                label = FlatLabel(text=entry)
-                label.theme = ('app', 'navigationdrawer')
-                self._side_panel.add_widget(label)
+            entry_constructors[type(entry)](entry)
 
-            if type(entry) == type(tuple()):
-                btnText = entry[0]
-                btn = FlatIconButtonLeft(text=btnText,
-                                )
-                btn.theme = ('app', 'navigationdrawer')
-
-                btn.ids.icon.font_size = '15dp'
-                btn.ids.label.halign = 'left'
-
-                self._side_panel.add_widget(btn)
-
-                btn.config = entry
-                btn.screen = None
-                btn.bind(on_release=self._switch_to_screen)
-
-                if first_screen is None:
-                    first_screen = self._create_screen(btn)
-
-                if not self.lazy_loading:
-                    self._create_screen(btn)
-
+        # Question: Is there a better way to align all of the widgets
+        #           in the navigation side-panel to the top?
         self._side_panel.add_widget(Widget())
 
         return self.root
-
-    def setup_font_ramps(self):
-        super(ExtendedFlatApp, self).setup_font_ramps()
-        font_styles = {
-            'HeaderTitle': {
-                'font': 'Roboto-Bold.ttf',
-                #'font': 'proximanova-bold-webfont.ttf',
-                'sizings': {'mobile': (25, 'sp'), 'desktop': (20, 'sp')},
-                'alpha': .87,
-                'wrap': False,
-                },
-            'NavigationButton': {
-                'font': 'Roboto-Bold.ttf',
-                # 'font': 'proximanova-bold-webfont.ttf',
-                'sizings': {'mobile': (16, 'sp'), 'desktop': (14, 'sp')},
-                'alpha': .87,
-                'wrap': False,
-            },
-            'NavigationLabelMainHeading': {
-                'font': 'Roboto-Bold.ttf',
-                # 'font': 'proximanova-bold-webfont.ttf',
-                'sizings': {'mobile': (20, 'sp'), 'desktop': (17, 'sp')},
-                'alpha': .87,
-                'wrap': False,
-            },
-            'NavigationLabelSubHeading': {
-                'font': 'Roboto-Bold.ttf',
-                # 'font': 'proximanova-bold-webfont.ttf',
-                'sizings': {'mobile': (18, 'sp'), 'desktop': (15, 'sp')},
-                'alpha': .87,
-                'wrap': False,
-            },
-            }
-
-        for each in font_styles:
-            style = font_styles[each]
-            sizings = style['sizings']
-            style_manager.add_style(style['font'], each, sizings['mobile'],
-                sizings['desktop'], style['alpha'])
-
 
     def setup_themes(self):
         main = {
@@ -306,6 +256,90 @@ class ExtendedFlatApp(FlatApp):
 
         self.theme_manager.types_to_theme['CustomIconButton'] = CustomIconButton
         self.theme_manager.types_to_theme['FlatIconButtonLeft'] = FlatIconButtonLeft
+
+    def setup_font_ramps(self):
+        super(ExtendedFlatApp, self).setup_font_ramps()
+        font_styles = {
+            'HeaderTitle': {
+                'font': 'Roboto-Bold.ttf',
+                # Question: what is the best way to include additional fonts?
+                #'font': 'proximanova-bold-webfont.ttf',
+                'sizings': {'mobile': (25, 'sp'), 'desktop': (20, 'sp')},
+                'alpha': .87,
+                'wrap': False,
+                },
+            'NavigationButton': {
+                'font': 'Roboto-Bold.ttf',
+                # 'font': 'proximanova-bold-webfont.ttf',
+                'sizings': {'mobile': (16, 'sp'), 'desktop': (14, 'sp')},
+                'alpha': .87,
+                'wrap': False,
+            },
+            'NavigationLabelMainHeading': {
+                'font': 'Roboto-Bold.ttf',
+                # 'font': 'proximanova-bold-webfont.ttf',
+                'sizings': {'mobile': (20, 'sp'), 'desktop': (17, 'sp')},
+                'alpha': .87,
+                'wrap': False,
+            },
+            'NavigationLabelSubHeading': {
+                'font': 'Roboto-Bold.ttf',
+                # 'font': 'proximanova-bold-webfont.ttf',
+                'sizings': {'mobile': (18, 'sp'), 'desktop': (15, 'sp')},
+                'alpha': .87,
+                'wrap': False,
+            },
+            }
+
+        for each in font_styles:
+            style = font_styles[each]
+            sizings = style['sizings']
+            style_manager.add_style(style['font'], each, sizings['mobile'],
+                sizings['desktop'], style['alpha'])
+
+    def _create_navigation_label_from_string(self, entry):
+        entry = {'text' : entry, 'theme' : ('app', 'navigationdrawer')}
+        if self._first_navigation_label is None:
+            self._first_navigation_label = self._create_navigation_label_from_dict(entry)
+            return
+        entry['style'] = 'NavigationLabelSubHeading'
+        self._create_navigation_label_from_dict(entry)
+
+    def _create_navigation_label_from_dict(self, entry):
+        label = FlatLabel(text=entry.get('text', 'None'))
+        if 'theme' in entry.keys():
+            setattr(label, 'theme', entry['theme'])
+            del(entry['theme'])
+        else:
+            setattr(label, 'theme', ('app', 'navigationdrawer'))
+        for (key,value) in entry.items():
+            setattr(label, key, value)
+        self._side_panel.add_widget(label)
+        return label
+
+    def _create_navigation_button(self, entry):
+        btnText = entry[0]
+        btn = FlatIconButtonLeft(text=btnText)
+        btn.theme = ('app', 'navigationdrawer')
+
+        # Question: best way to set these? should something be
+        #           customized, e.g. NavigationIconButton(FlatIconButtonLeft),
+        #           such that the properties are forwarded or
+        #           is it okay to do it here like this?
+        btn.ids.icon.font_size = '15dp'
+        btn.ids.label.halign = 'left'
+
+        self._side_panel.add_widget(btn)
+
+        btn.config = entry
+        btn.screen = None
+        btn.bind(on_release=self._switch_to_screen)
+
+        if self._first_screen is None:
+            self._first_screen = self._create_screen(btn)
+
+        if not self.lazy_loading:
+            self._create_screen(btn)
 
     def _create_screen(self, button):
         if button.screen is None:
