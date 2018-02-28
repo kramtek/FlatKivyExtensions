@@ -49,9 +49,10 @@ Builder.load_string('''
             side_panel_width: min(dp(250), 0.6*self.width)
             anim_type:  'slide_above_simple'
 
-            BoxLayout:
+            StackLayout:
+                orientation: 'tb-lr'
                 id: side_panel
-                orientation: 'vertical'
+                #orientation: 'vertical'
                 padding: '3dp'
                 spacing: '3dp'
 
@@ -66,7 +67,7 @@ Builder.load_string('''
                     Rectangle:
                         pos: self.pos
                         size: self.size
-                            
+
                 ScreenManager:
                     id: screenmanager
                     transition: NoTransition()
@@ -149,10 +150,6 @@ class ExtendedFlatApp(FlatApp):
 
         for entry in self.app_config_entries:
             entry_constructors[type(entry)](entry)
-
-        # Question: Is there a better way to align all of the widgets
-        #           in the navigation side-panel to the top?
-        self._side_panel.add_widget(Widget())
 
         return self.root
 
