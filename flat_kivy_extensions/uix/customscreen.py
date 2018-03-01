@@ -83,6 +83,7 @@ class CustomScreen(Screen):
         super(CustomScreen, self).add_widget(self._main_layout)
 
     def on_size(self, instance, value):
+        # Experiment with reorganizing children based on screen orientation
         if value[0] > value[1]:
             self._content_layout.cols = 2
         else:
