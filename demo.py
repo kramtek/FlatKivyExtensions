@@ -15,7 +15,7 @@ about = 'Something to describe the purpose of the application.'
 #    in the navigation panel for switching
 
 from screens import FlatKivyDemoScreen, KivyScreen1, KivyScreen2
-from screens2 import CustomScreen1
+from screens2 import CustomScreen1, CustomScreen2
 #    An application configuration list is used to specify what screens
 #    should be included and how to navigate to them.
 #
@@ -44,6 +44,7 @@ from screens2 import CustomScreen1
 
 app_config_entries = ['Main Label',
                       ('Custom Screen 1', CustomScreen1, [], {}),
+                      ('Custom Screen 2', CustomScreen2, [], {}),
 
                       ('FlatKivyDemo Screen', FlatKivyDemoScreen, [], {}),
                       'SubHeading Label',
