@@ -43,7 +43,7 @@ from screens2 import CustomScreen1
 #
 
 app_config_entries = ['Main Label',
-                      ('Custom Screen 2', CustomScreen1, [], {}),
+                      ('Custom Screen 1', CustomScreen1, [], {}),
 
                       ('FlatKivyDemo Screen', FlatKivyDemoScreen, [], {}),
                       'SubHeading Label',
