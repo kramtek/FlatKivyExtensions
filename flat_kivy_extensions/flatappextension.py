@@ -254,10 +254,27 @@ class ExtendedFlatApp(FlatApp):
             },
         }
 
+        screen = {
+            'FlatLabel': {
+                'color_tuple' : ('Brown', '800'),
+                'style' : 'HeaderTitle',
+                'size_hint_y' : None,
+                'height' : '40dp',
+             },
+            #'FlatButton': {
+            #    'color' : (0.95, 0.95, 0.95, 0.0),
+            #    'font_color_tuple' : ('Brown', '500'),
+            #    'style' : 'HeaderTitle',
+            #    'size_hint_y' : None,
+            #    'height' : '40dp',
+            # },
+        }
+
         self.theme_manager.add_theme('green', 'main', main)
         self.theme_manager.add_theme('green', 'accent', accent)
         self.theme_manager.add_theme('app', 'header', header)
         self.theme_manager.add_theme('app', 'navigationdrawer', navigationdrawer)
+        self.theme_manager.add_theme('app', 'screen', screen)
 
         self.theme_manager.types_to_theme['CustomIconButton'] = CustomIconButton
         self.theme_manager.types_to_theme['FlatIconButtonLeft'] = FlatIconButtonLeft
