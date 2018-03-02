@@ -1,24 +1,51 @@
 
 
 from kivy.lang import Builder
+from kivy.uix.label import Label
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.stacklayout import StackLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.metrics import dp
+from kivy.graphics import Color, Rectangle
 
 from flat_kivy_extensions.uix.customscreen import CustomScreen
 
 from flat_kivy_extensions.uix.customlayouts import StyledLayout, GroupedLayout
 from flat_kivy_extensions.uix.dropshadow import DropShadow
+from flat_kivy_extensions.uix.custombutton import CustomButton
 
 Builder.load_string('''
-<-CustomScreen1>:
-    title: 'A Custom Screen'
+<-KivyWidgetScreen>:
+    title: 'Basic Custom Screen'
     theme: ('app', 'screen')
 
     Label:
-        text: 'Widgets in custom screen in StackLayout'
+        text: 'CustomScreen = \\n HeaderLabel + GridLayout'
+        size_hint: None, None
+        size: dp(200), dp(50)
+        color: (0,0,0,1)
+
+    Label:
+        text: 'add_widget() for screen is forwarded \\n to the content (grid) layout'
+        size_hint: None, None
+        size: dp(200), dp(50)
+        color: (0,0,0,1)
+
+    Label:
+        text: 'Number of columns in the grid layout depends\\n on the screen orientation'
+        size_hint: None, None
+        size: dp(200), dp(50)
+        color: (0,0,0,1)
+
+    Label:
+        text: 'Portrait: cols: 1\\nLandscape: cols=2'
+        size_hint: None, None
+        size: dp(200), dp(50)
+        color: (0,0,0,1)
+
+    Label:
+        text: 'Examples of stock Widgets \\nin custom screen in StackLayout'
         size_hint: None, None
         size: dp(200), dp(50)
         color: (0,0,0,1)
@@ -28,13 +55,16 @@ Builder.load_string('''
         size_hint: None, None
         size: '130dp', '60dp'
 
-    Label:
-        text: 'Label'
+    Slider:
         size_hint: None, None
-        size: dp(200), dp(50)
-        color: (0,0,0,1)
+        size: '200dp', '50dp'
+        orientation: 'horizontal'
 
-<-CustomScreen2>:
+    Switch:
+        size_hint_y: None
+        height: '50dp'
+
+<-CustomButtonDemoScreen>:
     title: 'CS #2'
     theme: ('app', 'screen')
 
@@ -61,13 +91,14 @@ Builder.load_string('''
         radius: '4dp'
         color_tuple: ('Green', '800')
 
-<-CustomScreen3>:
+<-CustomLayoutsScreen>:
     title: 'Another Custom Screen'
     theme: ('app', 'screen')
 
-<-CustomScreen4>:
-    title: 'Custom #3'
+<-DropShadowScreen>:
+    title: 'Drop Shadows'
     theme: ('app', 'screen')
+    spacing: '1dp'
 
     # Button:
     #     text: 'button'
@@ -102,15 +133,15 @@ Builder.load_string('''
 ''')
 
 
-class CustomScreen1(CustomScreen):
+class KivyWidgetScreen(CustomScreen):
     pass
 
-class CustomScreen2(CustomScreen):
+class CustomButtonDemoScreen(CustomScreen):
     pass
 
-class CustomScreen3(CustomScreen):
+class CustomLayoutsScreen(CustomScreen):
     def __init__(self, *largs, **kwargs):
-        super(CustomScreen3, self).__init__(*largs, **kwargs)
+        super(CustomLayoutsScreen, self).__init__(*largs, **kwargs)
 
         gl = GroupedLayout()
         gl.title = 'Grouped Layout'
@@ -135,58 +166,108 @@ class CustomScreen3(CustomScreen):
         self.add_widget(gl)
 
 
-class CustomScreen4(CustomScreen):
+class DropShadowScreen(CustomScreen):
     def __init__(self, *largs, **kwargs):
-        super(CustomScreen4, self).__init__(*largs, **kwargs)
+        super(DropShadowScreen, self).__init__(*largs, **kwargs)
 
-        btn = Button(text='test', size_hint=(None,None), size=(dp(100), dp(50)))
-        self.ds1 = DropShadow(btn)
-        self.ds1.blur_rad = 4
-        self.ds1.offset = 4
-        self.ds1.radius = 0
-        self.ds1.shadow_color = (0.1, 0.5, 0.1, 0.8)
-        self.add_widget(self.ds1)
 
-        btn = Button(text='test', size_hint_y=None, height=dp(50))
-        self.add_widget(btn)
-        btn.bind(on_release=self._btn_released)
-        btn.bind(on_press=self._btn_pressed)
+        label = Label(text='Label with default shadow',
+                     size_hint=(None,None), size=(dp(200), dp(40)), color=(0,0,0,1),
+                    )
+        with label.canvas.before:
+            Color(.85,.85, .7, 1)
+            label.rect = Rectangle(size=label.size, pos=label.pos)
 
-        self.myWidget = StyledLayout()
-        self.myWidget.size = (dp(250), dp(200))
+        label.bind(size=self._update_rect, pos=self._update_rect)
 
-        btn = Button(text='test2', size_hint_y=None, height=dp(50))
-        self.myWidget.add_widget(btn)
-        btn = Button(text='test3', size_hint_y=None, height=dp(50), size_hint_x=None, width=dp(150))
-        self.myWidget.add_widget(btn)
-        btn = Button(text='test4', size_hint_y=None, height=dp(100))
-        self.myWidget.add_widget(btn)
+        ds = DropShadow(label)
+        ds.blur_rad = 4
+        ds.offset = 4
+        self.add_widget(ds)
 
-        self.ds2 = DropShadow(self.myWidget)
+
+        btn = Button(text='Button with colored shadow', size_hint=(None,None), size=(dp(250), dp(50)))
+        ds = DropShadow(btn)
+        ds.blur_rad = 3
+        ds.shadow_color = (0.1, 0.5, 0.1, 0.8)
+        self.add_widget(ds)
+        btn.bind(on_release=lambda instance: setattr(ds, 'offset', 5))
+        btn.bind(on_press=lambda instance: setattr(ds, 'offset', 2))
+
+
+        btn = CustomButton(text='CustomButton with matching\nshadow radius', size_hint=(None,None), size=(dp(250), dp(50)))
+        btn.theme = ('app', 'default')
+        btn.radius = dp(20)
+        ds2 = DropShadow(btn)
+        ds2.radius = 20
+        ds2.offset = 10
+        ds2.blur_rad = 10
+        ds2.shadow_color = (0.5, 0.1, 0.5, 0.5)
+        self.add_widget(ds2)
+        btn.bind(on_release=lambda instance: setattr(ds2, 'offset', 10))
+        btn.bind(on_press=lambda instance: setattr(ds2, 'offset', 3))
+
+
+        label = Label(text='StyledLayout with default shadow',
+                     size_hint_y=None, height=dp(30), color=(0,0,0,1),
+                    )
+        self.add_widget(label)
+
+        self.layout = StyledLayout()
+        self.layout.size = (dp(250), dp(200))
+        self.layout.radius = 5
+
+        label = Label(text='Press the buttons to change \nsimulated height',
+                     size_hint_y=None, height=dp(50), color=(0,0,0,1),
+                    )
+        self.layout.add_widget(label)
+
+        btn = Button(text='High', size_hint_y=None, height=dp(50))
+        self.layout.add_widget(btn)
+        btn.bind(on_release=self._layout_btn_released)
+        btn.bind(on_press=self._btn_high_pressed)
+
+        btn = Button(text='Med', size_hint_y=None, height=dp(50))
+        self.layout.add_widget(btn)
+        btn.bind(on_release=self._layout_btn_released)
+        btn.bind(on_press=self._btn_med_pressed)
+
+        btn = Button(text='Low', size_hint_y=None, height=dp(50))
+        self.layout.add_widget(btn)
+        btn.bind(on_release=self._layout_btn_released)
+        btn.bind(on_press=self._btn_low_pressed)
+
+        self.ds2 = DropShadow(self.layout)
         self.ds2.blur_rad = 8
-        self.ds2.offset = 12
-        self.ds2.radius = 10
+        self.ds2.offset = 16
+        self.ds2.radius = self.layout.radius
 
         self.add_widget(self.ds2)
 
         # TODO: fix the issue w/ the shadow widget height not getting
         #       corrected when the widget height changes
-        # self.myWidget.height = dp(200)
+        # self.layout.height = dp(200)
 
-    def _btn_pressed(self, instance):
-        # Question: can the offset and blur_rad properties
-        #           be combined such that they are updated
-        #           at the same time rather than sequentially
+
+    def _update_rect(self, instance, value):
+        instance.rect.pos = instance.pos
+        instance.rect.size = instance.size
+
+
+    def _btn_high_pressed(self, instance):
+        self.ds2.offset = 9
+        self.ds2.blur_rad = 6
+
+    def _btn_med_pressed(self, instance):
         self.ds2.offset = 6
         self.ds2.blur_rad = 4
 
-        self.ds1.offset = 1
+    def _btn_low_pressed(self, instance):
+        self.ds2.offset = 3
+        self.ds2.blur_rad = 2
 
-    def _btn_released(self, instance):
-        self.ds2.blur_rad = 8
-        self.ds2.offset = 12
-
-        self.ds1.offset = 4
-
+    def _layout_btn_released(self, instance):
+        self.ds2.offset = 16
+        self.ds2.blur_rad = 12
 
 

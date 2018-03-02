@@ -15,7 +15,7 @@ about = 'Something to describe the purpose of the application.'
 #    in the navigation panel for switching
 
 from screens import FlatKivyDemoScreen, KivyScreen1, KivyScreen2
-from screens2 import CustomScreen1, CustomScreen2, CustomScreen3, CustomScreen4
+from screens2 import KivyWidgetScreen, CustomButtonDemoScreen, CustomLayoutsScreen, DropShadowScreen
 #    An application configuration list is used to specify what screens
 #    should be included and how to navigate to them.
 #
@@ -42,16 +42,20 @@ from screens2 import CustomScreen1, CustomScreen2, CustomScreen3, CustomScreen4
 #           [3] **kwargs that are passed to screen constructor
 #
 
-app_config_entries = ['Main Label',
-                      ('Custom Widgets', CustomScreen2, [], {}),
-                      ('Custom Screen Example', CustomScreen1, [], {}),
-                      ('Grouped Layouts', CustomScreen3, [], {}),
-                      ('Drop Shadowed Widgets', CustomScreen4, [], {}),
-
-                      ('FlatKivyDemo Screen', FlatKivyDemoScreen, [], {}),
-                      'SubHeading Label',
+app_config_entries = ['Demo Options',
+                      ('Drop Shadowed Widgets', DropShadowScreen, [], {}),
+                      'Standard screens in app',
                       ('Kivy Screen 1', KivyScreen1, [], {}),
                       ('Kivy Screen 2', KivyScreen2, [], {}),
+
+                      ('FlatKivyDemo Screen', FlatKivyDemoScreen, [], {}),
+
+                      'Custom screens',
+                      ('Custom Screen Example', KivyWidgetScreen, [], {}),
+                      ('Custom Buttons', CustomButtonDemoScreen, [], {}),
+
+                      ('Grouped Layouts', CustomLayoutsScreen , [], {}),
+
                       {'text':'Custom Heading Label',
                        'style':'NavigationLabelSubHeading',
                        'color_tuple' : ('Yellow', '500')},
@@ -59,4 +63,5 @@ app_config_entries = ['Main Label',
                      ]
 
 if __name__ == '__main__':
-    ExtendedFlatApp(app_config_entries, title, about).run()
+    app = ExtendedFlatApp(app_config_entries, title, about)
+    app.run()
