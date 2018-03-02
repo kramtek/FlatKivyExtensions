@@ -1,4 +1,27 @@
 
+<-CustomButtonBase>:
+    color: app.get_color(self.color_tuple)
+    ripple_color: app.get_color(self.ripple_color_tuple)
+    canvas.before:
+        Color:
+            rgba: self.color_down[0:3] + [self.alpha] if self.state == 'down' or root.disabled else self.color[0:3] + [self.alpha]
+        RoundedRectangle:
+            size: (self.width - self.border_size[1] - self.border_size[3], self.height - self.border_size[0] - self.border_size[2])
+            pos: (self.x + self.border_size[3], self.y + self.border_size[2])
+            radius: [(self.radius, self.radius), (self.radius, self.radius), (self.radius, self.radius), (self.radius, self.radius)]
+
+    FlatLabel:
+        size_hint: (1.0, 1.0)
+        color_tuple: root.font_color_tuple
+        text: root.text
+        style: root.style
+        text_size: root.size
+        font_ramp_tuple: root.font_ramp_tuple
+        valign: 'middle'
+        halign: 'center'
+        font_size: root.font_size
+
+
 <-CustomIconButton>:
     color: app.get_color(self.color_tuple) 
     ripple_color: app.get_color(self.ripple_color_tuple)
