@@ -16,43 +16,86 @@ Builder.load_string('''
 <-CustomScreen1>:
     title: 'A Custom Screen'
     theme: ('app', 'screen')
-    
+
+    Label:
+        text: 'Widgets in custom screen in StackLayout'
+        size_hint: None, None
+        size: dp(200), dp(50)
+        color: (0,0,0,1)
+
     Button:
         text: 'button'
         size_hint: None, None
-        size: '130dp', '30dp'
-    
+        size: '130dp', '60dp'
+
+    Label:
+        text: 'Label'
+        size_hint: None, None
+        size: dp(200), dp(50)
+        color: (0,0,0,1)
+
 <-CustomScreen2>:
-    title: 'Custom #2'
+    title: 'CS #2'
+    theme: ('app', 'screen')
+
+    CustomButton:
+        text: 'Custom Button #1'
+        theme: ('app', 'default')
+        size_hint: None, None
+        size: dp(200), dp(60)
+
+    CustomButton:
+        text: 'Custom Button #2 (no theme)'
+        #theme: ('app', 'default')
+        size_hint: None, None
+        size: dp(110), dp(150)
+        radius: '25dp'
+        font_color_tuple: ('Blue', '100')
+        font_size: '20dp'
+
+    CustomButton:
+        text: 'Custom Button #3'
+        theme: ('app', 'default')
+        size_hint: None, None
+        size: dp(200), dp(40)
+        radius: '4dp'
+        color_tuple: ('Green', '800')
+
+<-CustomScreen3>:
+    title: 'Another Custom Screen'
+    theme: ('app', 'screen')
+
+<-CustomScreen4>:
+    title: 'Custom #3'
     theme: ('app', 'screen')
 
     # Button:
     #     text: 'button'
     #     size_hint_y: None
     #     height: '50dp'
-    # 
+    #
     # DropShadow:
     #     blur_rad: 2
-    #     
+    #
     #     StyledLayout:
     #         size: dp(150), dp(70)
-    # 
+    #
     # DropShadow:
     #     blur_rad: 4
-    #     
+    #
     #     StyledLayout:
     #         size: dp(150), dp(70)
-    # 
+    #
     # DropShadow:
     #     blur_rad: 8
     #     offset_scaling: 0.5
-    # 
+    #
     #     StyledLayout:
     #         size: dp(150), dp(70)
-    #         
+    #
     # DropShadow:
     #     blur_rad: 8
-    # 
+    #
     #     StyledLayout:
     #         size: dp(150), dp(70)
 
@@ -60,26 +103,41 @@ Builder.load_string('''
 
 
 class CustomScreen1(CustomScreen):
+    pass
+
+class CustomScreen2(CustomScreen):
+    pass
+
+class CustomScreen3(CustomScreen):
     def __init__(self, *largs, **kwargs):
-        super(CustomScreen1, self).__init__(*largs, **kwargs)
+        super(CustomScreen3, self).__init__(*largs, **kwargs)
 
         gl = GroupedLayout()
         gl.title = 'Grouped Layout'
-        gl.theme = ('app', 'screen')
+        gl.theme = ('app', 'grouped_layout')
         # gl.width = dp(200)
 
         btn = Button(text='test?', size_hint=(None,None), size=(dp(120), dp(50)))
         gl.add_widget(btn)
 
         btn = Button(text='testB', size_hint_y=None, height=dp(50))
+        btn.size_hint_x = None
+        btn.width = dp(200)
+        btn.background_color = (.1, .4, .2, 1.0)
+        gl.add_widget(btn)
+
+        btn = Button(text='testC', size_hint_y=None, height=dp(50))
+        btn.size_hint_x = None
+        btn.width = dp(200)
+        btn.background_color = (.1, .4, .2, 1.0)
         gl.add_widget(btn)
 
         self.add_widget(gl)
 
 
-class CustomScreen2(CustomScreen):
+class CustomScreen4(CustomScreen):
     def __init__(self, *largs, **kwargs):
-        super(CustomScreen2, self).__init__(*largs, **kwargs)
+        super(CustomScreen4, self).__init__(*largs, **kwargs)
 
         btn = Button(text='test', size_hint=(None,None), size=(dp(100), dp(50)))
         self.ds1 = DropShadow(btn)
