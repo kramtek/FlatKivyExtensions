@@ -261,26 +261,57 @@ class ExtendedFlatApp(FlatApp):
                 'size_hint_y' : None,
                 'height' : '40dp',
              },
-            #'FlatButton': {
-            #    'color' : (0.95, 0.95, 0.95, 0.0),
-            #    'font_color_tuple' : ('Brown', '500'),
-            #    'style' : 'HeaderTitle',
-            #    'size_hint_y' : None,
-            #    'height' : '40dp',
-            # },
         }
+
+        grouped_layout = {
+            'FlatLabel': {
+                'color_tuple': ('Orange', '800'),
+                'style': 'GroupedLayoutTitle',
+                'size_hint_y': None,
+                'height': '35dp',
+            },
+        }
+
+        default = {
+            'CustomButton': {
+                'color_tuple': ('Brown', '500'),
+                'font_color_tuple': ('Gray', '100'),
+                'style': 'CustomButton1',
+                'radius' : '10dp',
+                },
+        }
+
+        themes = {
+                'app' : {'header' : header,
+                         'navigationdrawer' : navigationdrawer,
+                         'screen' : screen,
+                         'grouped_layout' : grouped_layout,
+                         'default' : default,
+                        }
+                }
 
         self.theme_manager.add_theme('green', 'main', main)
         self.theme_manager.add_theme('green', 'accent', accent)
-        self.theme_manager.add_theme('app', 'header', header)
-        self.theme_manager.add_theme('app', 'navigationdrawer', navigationdrawer)
-        self.theme_manager.add_theme('app', 'screen', screen)
 
+        #self.theme_manager.add_theme('app', 'header', header)
+        #self.theme_manager.add_theme('app', 'navigationdrawer', navigationdrawer)
+        #self.theme_manager.add_theme('app', 'screen', screen)
+        #self.theme_manager.add_theme('app', 'grouped_layout', grouped_layout)
+        #self.theme_manager.add_theme('app', 'default', default)
+
+        for (theme, value) in themes.items():
+            for (variant, theme_dict) in value.items():
+                self.theme_manager.add_theme(theme, variant, theme_dict)
+
+
+        from flat_kivy_extensions.uix.custombutton import CustomButton
+        self.theme_manager.types_to_theme['CustomButton'] = CustomButton
         self.theme_manager.types_to_theme['CustomIconButton'] = CustomIconButton
         self.theme_manager.types_to_theme['FlatIconButtonLeft'] = FlatIconButtonLeft
 
     def setup_font_ramps(self):
         super(ExtendedFlatApp, self).setup_font_ramps()
+
         font_styles = {
             'HeaderTitle': {
                 'font': 'Roboto-Bold.ttf',
@@ -308,6 +339,20 @@ class ExtendedFlatApp(FlatApp):
                 'font': 'Roboto-Bold.ttf',
                 # 'font': 'proximanova-bold-webfont.ttf',
                 'sizings': {'mobile': (18, 'sp'), 'desktop': (15, 'sp')},
+                'alpha': .87,
+                'wrap': False,
+            },
+            'GroupedLayoutTitle': {
+                'font': 'Roboto-Bold.ttf',
+                # 'font': 'proximanova-bold-webfont.ttf',
+                'sizings': {'mobile': (22, 'sp'), 'desktop': (17, 'sp')},
+                'alpha': .87,
+                'wrap': False,
+            },
+            'CustomButton1': {
+                'font': 'Roboto-Bold.ttf',
+                # 'font': 'proximanova-bold-webfont.ttf',
+                'sizings': {'mobile': (17, 'sp'), 'desktop': (17, 'sp')},
                 'alpha': .87,
                 'wrap': False,
             },
