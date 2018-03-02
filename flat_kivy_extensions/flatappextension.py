@@ -171,7 +171,14 @@ class ExtendedFlatApp(FlatApp):
             'FlatSlider': {
                 'bar_fill_color_tuple': ('LightGreen', '500'),
                 'handle_accent_color_tuple': ('LightGreen', '200'),
-                }
+                },
+            'CustomSlider': {
+                'color_tuple' : ('Brown', '500'),
+                'outline_color_tuple' : ('Brown', '700'),
+                'slider_color_tuple' : ('Blue', '500'),
+                'slider_outline_color_tuple' : ('Blue', '700'),
+                'ripple_color_tuple' : ('Brown', '200'),
+                },
             }
 
         accent = {
@@ -308,16 +315,18 @@ class ExtendedFlatApp(FlatApp):
 
         self.add_themes(themes)
 
+        from flat_kivy_extensions.uix.custombutton import CustomButton
+        from flat_kivy_extensions.uix.customslider import CustomSlider
+        self.theme_manager.types_to_theme['CustomSlider'] = CustomSlider
+        self.theme_manager.types_to_theme['CustomButton'] = CustomButton
+        self.theme_manager.types_to_theme['CustomIconButton'] = CustomIconButton
+        self.theme_manager.types_to_theme['FlatIconButtonLeft'] = FlatIconButtonLeft
+
     def add_themes(self, themes):
         for (theme, value) in themes.items():
             for (variant, theme_dict) in value.items():
                 self.theme_manager.add_theme(theme, variant, theme_dict)
 
-
-        from flat_kivy_extensions.uix.custombutton import CustomButton
-        self.theme_manager.types_to_theme['CustomButton'] = CustomButton
-        self.theme_manager.types_to_theme['CustomIconButton'] = CustomIconButton
-        self.theme_manager.types_to_theme['FlatIconButtonLeft'] = FlatIconButtonLeft
 
     def setup_font_ramps(self):
         super(ExtendedFlatApp, self).setup_font_ramps()

@@ -91,6 +91,13 @@ Builder.load_string('''
         radius: '4dp'
         color_tuple: ('Green', '800')
 
+    CustomSlider:
+        orientation: 'horizontal'
+        min: 10
+        max: 110
+        theme: ('green', 'main')
+
+
 <-CustomLayoutsScreen>:
     title: 'Another Custom Screen'
     theme: ('app', 'screen')

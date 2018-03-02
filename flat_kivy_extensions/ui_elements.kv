@@ -62,3 +62,34 @@
             font_size: root.font_size
 
 
+<-CustomSlider>:
+    ripple_color: app.get_color(self.ripple_color_tuple)
+    canvas:
+        Color:
+            rgba: app.get_color(self.color_tuple)
+        # draw the slider background
+        Rectangle:
+            pos: (self.x + self.padding, self.center_y - sp(self.v1)) if self.orientation == 'horizontal' else (self.center_x - sp(self.v1), self.y + self.padding)
+            size: (self.width - self.padding * 2, sp(self.v2)) if self.orientation == 'horizontal' else (sp(self.v2), self.height - self.padding * 2)
+        Color:
+            rgba: app.get_color(self.outline_color_tuple)
+        # draw the line around the slider background
+        Line:
+            rounded_rectangle: [self.x + self.padding, self.center_y - sp(self.v1), self.width - self.padding * 2, sp(self.v2), sp(4)] if self.orientation == 'horizontal' else [self.center_x - sp(self.v1), self.y + self.padding, sp(self.v2), self.height - self.padding * 2, sp(4)]
+            width: sp(2)
+        Color:
+            rgba: app.get_color(self.slider_color_tuple)
+        # draw the main slider handle
+        Ellipse:
+            pos: (self.value_pos[0] - sp(self.v2_), self.center_y - sp(self.v3)) if self.orientation == 'horizontal' else (self.center_x - sp(self.v2_), self.value_pos[1] - sp(self.v2))
+            size: (sp(self.v4), sp(self.v4))
+        Color:
+            rgba: app.get_color(self.slider_outline_color_tuple)
+        # draw the line around the slider handle
+        Line:
+            ellipse: [self.value_pos[0] - sp(self.v2_), self.center_y - sp(self.v3), sp(self.v4), sp(self.v4)] if self.orientation == 'horizontal' else [self.center_x - sp(self.v3), self.value_pos[1] - sp(self.v2_), sp(self.v4), sp(self.v4)]
+            width: sp(2)
+
+
+
+
