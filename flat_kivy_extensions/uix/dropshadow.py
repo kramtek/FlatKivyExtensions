@@ -15,9 +15,9 @@ Builder.load_string('''
     offset: 5
     background_color: (1.0, 1.0, 1.0, 1.0)
     shadow_color: (0.1, 0.1, 0.1, 0.6)
-    
+
     radius: 0
-    
+
     size_hint: None, None
     size: dp(10), dp(15)
     widget_size: dp(10), dp(10)
@@ -28,7 +28,7 @@ Builder.load_string('''
     anchor_y: 'top'
 
     BoxLayout:
-        orientation: 'vertical' 
+        orientation: 'vertical'
         size_hint: None, None
         size: root.container_size
 
@@ -38,7 +38,7 @@ Builder.load_string('''
             Rectangle:
                 size: self.size
                 pos: self.pos
-                
+
         EffectWidget:
 
             blur_rad: root.blur_rad
@@ -54,13 +54,13 @@ Builder.load_string('''
                 Rectangle:
                     size: self.size
                     pos: self.pos
-                
+
             BoxLayout:
                 size_hint: None, None
                 size: root.widget_size
                 offset_x: root.offset
                 offset_y: root.overhead-root.offset
-                
+
                 canvas.before:
                     Color:
                         rgba: root.shadow_color
@@ -85,7 +85,7 @@ class DropShadow(AnchorLayout):
 
     def _resize(self, instance, value):
         self.size = (instance.width, instance.height+dp(15))
-        overhead = 20
+        overhead = 22
         self.container_size = (instance.width + dp(overhead), instance.height + dp(overhead))
         self.overhead = overhead
         self.widget_size = instance.size
