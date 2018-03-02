@@ -84,7 +84,7 @@ class DropShadow(AnchorLayout):
         self.add_widget(self.widget)
 
     def _resize(self, instance, value):
-        self.size = (instance.width, instance.height+dp(25))
+        self.size = (instance.width, instance.height+dp(15))
         overhead = 20
         self.container_size = (instance.width + dp(overhead), instance.height + dp(overhead))
         self.overhead = overhead
