@@ -174,7 +174,6 @@ class ExtendedFlatApp(FlatApp):
                 }
             }
 
-
         accent = {
             'FlatButton': {
                 'color_tuple': ('LightGreen', '500'),
@@ -219,6 +218,13 @@ class ExtendedFlatApp(FlatApp):
                 'outline_size': '10dp',
                 },
             }
+
+        themes = {
+                'green' : {'main' : main,
+                           'accent' : accent,
+                           }
+                 }
+        self.add_themes(themes)
 
         header = {
             'CustomIconButton': {
@@ -278,8 +284,9 @@ class ExtendedFlatApp(FlatApp):
                 'font_color_tuple': ('Gray', '100'),
                 'style': 'CustomButton1',
                 'radius' : '10dp',
-                },
+            },
         }
+
 
         themes = {
                 'app' : {'header' : header,
@@ -290,8 +297,8 @@ class ExtendedFlatApp(FlatApp):
                         }
                 }
 
-        self.theme_manager.add_theme('green', 'main', main)
-        self.theme_manager.add_theme('green', 'accent', accent)
+        #self.theme_manager.add_theme('green', 'main', main)
+        #self.theme_manager.add_theme('green', 'accent', accent)
 
         #self.theme_manager.add_theme('app', 'header', header)
         #self.theme_manager.add_theme('app', 'navigationdrawer', navigationdrawer)
@@ -299,6 +306,9 @@ class ExtendedFlatApp(FlatApp):
         #self.theme_manager.add_theme('app', 'grouped_layout', grouped_layout)
         #self.theme_manager.add_theme('app', 'default', default)
 
+        self.add_themes(themes)
+
+    def add_themes(self, themes):
         for (theme, value) in themes.items():
             for (variant, theme_dict) in value.items():
                 self.theme_manager.add_theme(theme, variant, theme_dict)
@@ -358,6 +368,9 @@ class ExtendedFlatApp(FlatApp):
             },
             }
 
+        self.add_font_styles(font_styles)
+
+    def add_font_styles(self, font_styles):
         for each in font_styles:
             style = font_styles[each]
             sizings = style['sizings']
