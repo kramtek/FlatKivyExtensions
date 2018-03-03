@@ -6,12 +6,13 @@ from kivy.uix.stacklayout import StackLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.metrics import dp
+from kivy.properties import NumericProperty
 
 Builder.load_string('''
 #: import ew kivy.uix.effectwidget
 
 <-DropShadow>:
-    blur_rad: 8.0
+    blur_radius: 8.0
     offset: 5
     background_color: (1.0, 1.0, 1.0, 1.0)
     shadow_color: (0.1, 0.1, 0.1, 0.6)
@@ -22,7 +23,7 @@ Builder.load_string('''
     size: dp(10), dp(15)
     widget_size: dp(10), dp(10)
     container_size: dp(15), dp(15)
-    overhead: dp(15)
+    #overhead: dp(2)
 
     anchor_x: 'left'
     anchor_y: 'top'
@@ -41,9 +42,9 @@ Builder.load_string('''
 
         EffectWidget:
 
-            blur_rad: root.blur_rad
+            blur_radius: root.blur_radius
 
-            effects: ew.VerticalBlurEffect(size=dp(self.blur_rad)), ew.HorizontalBlurEffect(size=dp(self.blur_rad))
+            effects: ew.VerticalBlurEffect(size=dp(self.blur_radius)), ew.HorizontalBlurEffect(size=dp(self.blur_radius))
             background_color: root.background_color
             size_hint: None, None
             size: root.container_size
@@ -74,6 +75,9 @@ Builder.load_string('''
 
 
 class DropShadow(AnchorLayout):
+    overhead = NumericProperty(22)
+    height_offset = NumericProperty(2)
+
     def __init__(self, widget, *largs, **kwargs):
         self.widget = widget
         super(DropShadow, self).__init__(*largs, **kwargs)
@@ -84,10 +88,10 @@ class DropShadow(AnchorLayout):
         self.add_widget(self.widget)
 
     def _resize(self, instance, value):
-        self.size = (instance.width, instance.height+dp(15))
-        overhead = 22
+        overhead = self.overhead
+        self.size = (instance.width, instance.height+dp(self.height_offset))
         self.container_size = (instance.width + dp(overhead), instance.height + dp(overhead))
-        self.overhead = overhead
+        #self.overhead = overhead
         self.widget_size = instance.size
 
 

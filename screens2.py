@@ -113,26 +113,26 @@ Builder.load_string('''
     #     height: '50dp'
     #
     # DropShadow:
-    #     blur_rad: 2
+    #     blur_radius: 2
     #
     #     StyledLayout:
     #         size: dp(150), dp(70)
     #
     # DropShadow:
-    #     blur_rad: 4
+    #     blur_radius: 4
     #
     #     StyledLayout:
     #         size: dp(150), dp(70)
     #
     # DropShadow:
-    #     blur_rad: 8
+    #     blur_radius: 8
     #     offset_scaling: 0.5
     #
     #     StyledLayout:
     #         size: dp(150), dp(70)
     #
     # DropShadow:
-    #     blur_rad: 8
+    #     blur_radius: 8
     #
     #     StyledLayout:
     #         size: dp(150), dp(70)
@@ -177,7 +177,6 @@ class DropShadowScreen(CustomScreen):
     def __init__(self, *largs, **kwargs):
         super(DropShadowScreen, self).__init__(*largs, **kwargs)
 
-
         label = Label(text='Label with default shadow',
                      size_hint=(None,None), size=(dp(200), dp(40)), color=(0,0,0,1),
                     )
@@ -187,15 +186,15 @@ class DropShadowScreen(CustomScreen):
 
         label.bind(size=self._update_rect, pos=self._update_rect)
 
-        ds = DropShadow(label)
-        ds.blur_rad = 4
+        ds = DropShadow(label, height_offset=5)
+        ds.blur_radius = 4
         ds.offset = 4
         self.add_widget(ds)
 
 
         btn = Button(text='Button with colored shadow', size_hint=(None,None), size=(dp(250), dp(50)))
-        ds = DropShadow(btn)
-        ds.blur_rad = 3
+        ds = DropShadow(btn, height_offset=15)
+        ds.blur_radius = 3
         ds.shadow_color = (0.1, 0.5, 0.1, 0.8)
         self.add_widget(ds)
         btn.bind(on_release=lambda instance: setattr(ds, 'offset', 5))
@@ -208,7 +207,7 @@ class DropShadowScreen(CustomScreen):
         ds2 = DropShadow(btn)
         ds2.radius = 20
         ds2.offset = 10
-        ds2.blur_rad = 10
+        ds2.blur_radius = 10
         ds2.shadow_color = (0.5, 0.1, 0.5, 0.5)
         self.add_widget(ds2)
         btn.bind(on_release=lambda instance: setattr(ds2, 'offset', 10))
@@ -245,7 +244,7 @@ class DropShadowScreen(CustomScreen):
         btn.bind(on_press=self._btn_low_pressed)
 
         self.ds2 = DropShadow(self.layout)
-        self.ds2.blur_rad = 8
+        self.ds2.blur_radius = 8
         self.ds2.offset = 16
         self.ds2.radius = self.layout.radius
 
@@ -263,18 +262,18 @@ class DropShadowScreen(CustomScreen):
 
     def _btn_high_pressed(self, instance):
         self.ds2.offset = 9
-        self.ds2.blur_rad = 6
+        self.ds2.blur_radius = 6
 
     def _btn_med_pressed(self, instance):
         self.ds2.offset = 6
-        self.ds2.blur_rad = 4
+        self.ds2.blur_radius = 4
 
     def _btn_low_pressed(self, instance):
         self.ds2.offset = 3
-        self.ds2.blur_rad = 2
+        self.ds2.blur_radius = 2
 
     def _layout_btn_released(self, instance):
         self.ds2.offset = 16
-        self.ds2.blur_rad = 12
+        self.ds2.blur_radius = 12
 
 
