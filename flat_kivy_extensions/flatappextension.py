@@ -83,6 +83,7 @@ Builder.load_string('''
 
                 ScreenManager:
                     id: screenmanager
+                    padding: '10dp'
                     transition: NoTransition()
                     # Question: When selecting FadeTransition the switching
                     #           annimation seems to go black when switching,
@@ -185,12 +186,15 @@ class ExtendedFlatApp(FlatApp):
                 'bar_fill_color_tuple': ('LightGreen', '500'),
                 'handle_accent_color_tuple': ('LightGreen', '200'),
                 },
+            'CustomSliderTouchRippleBehavior' : {
+            },
+
             'CustomSlider': {
-                'color_tuple' : ('Brown', '500'),
+                'color_tuple' : ('Brown', '600'),
                 'outline_color_tuple' : ('Brown', '700'),
-                'slider_color_tuple' : ('Blue', '500'),
-                'slider_outline_color_tuple' : ('Blue', '700'),
-                'ripple_color_tuple' : ('Brown', '200'),
+                'slider_color_tuple' : ('Blue', '200'),
+                'slider_outline_color_tuple' : ('Green', '700'),
+                'ripple_color_tuple' : ('Brown', '400'),
                 },
             }
 
@@ -329,8 +333,9 @@ class ExtendedFlatApp(FlatApp):
         self.add_themes(themes)
 
         from flat_kivy_extensions.uix.custombutton import CustomButton
-        from flat_kivy_extensions.uix.customslider import CustomSlider
+        from flat_kivy_extensions.uix.customslider import CustomSlider, CustomSliderTouchRippleBehavior
         self.theme_manager.types_to_theme['CustomSlider'] = CustomSlider
+        self.theme_manager.types_to_theme['CustomSliderTouchRippleBehavior'] = CustomSliderTouchRippleBehavior
         self.theme_manager.types_to_theme['CustomButton'] = CustomButton
         self.theme_manager.types_to_theme['CustomIconButton'] = CustomIconButton
         self.theme_manager.types_to_theme['FlatIconButtonLeft'] = FlatIconButtonLeft
