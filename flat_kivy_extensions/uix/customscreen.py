@@ -1,6 +1,7 @@
 
 from kivy.metrics import dp
 from kivy.lang import Builder
+from kivy.core.window import Window
 
 from kivy.properties import StringProperty, ListProperty
 from kivy.uix.screenmanager import Screen
@@ -9,6 +10,8 @@ from kivy.uix.gridlayout import GridLayout
 
 from flat_kivy.uix.flatlabel import FlatLabel
 from flat_kivy.uix.flatbutton import FlatButton
+
+from flat_kivy_extensions.uix.dropshadow import DropShadow
 
 #_ContentLayout = BoxLayout
 # _ContentLayout = GridLayout
@@ -31,6 +34,22 @@ Builder.load_string('''
     #         pos: self.pos
 
 <_MainLayout>:
+    border_color: (.1, .1, .3, 1.0)
+    border_line_width: 0.5
+    radius: 2
+    canvas.before:
+        Color:
+            rgba: (0.95, 0.95, 0.95, 1.0)
+        Rectangle:
+            size: self.size
+            pos: self.pos
+        Color:
+            rgba: self.border_color
+        Line
+            rounded_rectangle: [self.x, self.y, self.width, self.height, dp(self.radius)]
+            width: dp(self.border_line_width)
+
+<_OuterLayout>:
     canvas.before:
         Color:
             rgba: (0.95, 0.95, 0.95, 1.0)
@@ -52,6 +71,9 @@ class _ContentLayout(GridLayout):
     pass
 
 class _MainLayout(BoxLayout):
+    pass
+
+class _OuterLayout(BoxLayout):
     pass
 
 class CustomScreen(Screen):
@@ -80,7 +102,25 @@ class CustomScreen(Screen):
 
         super(CustomScreen, self).__init__(*largs, **kwargs)
 
-        super(CustomScreen, self).add_widget(self._main_layout)
+        #super(CustomScreen, self).add_widget(self._main_layout)
+
+        padding = 5
+        height_offset = 4
+        header_height = 40
+        blur_radius = 4
+        shadow_offset = 6
+        shadow_color = (0.3, 0.1, 0.1, 0.5)
+
+        outer_container = _OuterLayout(padding=dp(padding))
+        self._main_layout.size_hint = (None, None)
+        self._main_layout.height = Window.height - dp(header_height) - dp(2*padding) - dp(height_offset)
+        self._main_layout.width = Window.width - dp(2*padding+height_offset)
+        ds = DropShadow(self._main_layout, height_offset=height_offset)
+        ds.blur_radius = blur_radius
+        ds.offset = shadow_offset
+        ds.shadow_color = shadow_color
+        outer_container.add_widget(ds)
+        super(CustomScreen, self).add_widget(outer_container)
 
     def on_size(self, instance, value):
         # Experiment with reorganizing children based on screen orientation
