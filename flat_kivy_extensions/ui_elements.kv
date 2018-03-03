@@ -69,26 +69,26 @@
             rgba: app.get_color(self.color_tuple)
         # draw the slider background
         Rectangle:
-            pos: (self.x + self.padding, self.center_y - sp(self.v1)) if self.orientation == 'horizontal' else (self.center_x - sp(self.v1), self.y + self.padding)
-            size: (self.width - self.padding * 2, sp(self.v2)) if self.orientation == 'horizontal' else (sp(self.v2), self.height - self.padding * 2)
+            pos: (self.x + self.padding, self.center_y - sp(self.slider_bar_width/2)) if self.orientation == 'horizontal' else (self.center_x - sp(self.slider_bar_width/2), self.y + self.padding)
+            size: (self.width - self.padding * 2, sp(self.slider_bar_width)) if self.orientation == 'horizontal' else (sp(self.slider_bar_width), self.height - self.padding * 2)
         Color:
             rgba: app.get_color(self.outline_color_tuple)
         # draw the line around the slider background
         Line:
-            rounded_rectangle: [self.x + self.padding, self.center_y - sp(self.v1), self.width - self.padding * 2, sp(self.v2), sp(4)] if self.orientation == 'horizontal' else [self.center_x - sp(self.v1), self.y + self.padding, sp(self.v2), self.height - self.padding * 2, sp(4)]
-            width: sp(2)
+            rounded_rectangle: [self.x + self.padding, self.center_y - sp(self.slider_bar_width/2), self.width - self.padding * 2, sp(self.slider_bar_width), sp(2)] if self.orientation == 'horizontal' else [self.center_x - sp(self.slider_bar_width/2), self.y + self.padding, sp(self.slider_bar_width), self.height - self.padding * 2, sp(2)]
+            width: sp(0.5)
         Color:
             rgba: app.get_color(self.slider_color_tuple)
         # draw the main slider handle
         Ellipse:
-            pos: (self.value_pos[0] - sp(self.v2_), self.center_y - sp(self.v3)) if self.orientation == 'horizontal' else (self.center_x - sp(self.v2_), self.value_pos[1] - sp(self.v2))
-            size: (sp(self.v4), sp(self.v4))
+            pos: (self.value_pos[0] - sp(self.slider_handle_radius), self.center_y - sp(self.slider_handle_radius)) if self.orientation == 'horizontal' else (self.center_x - sp(self.slider_handle_radius), self.value_pos[1] - sp(self.slider_bar_width))
+            size: (sp(self.slider_handle_radius*2), sp(self.slider_handle_radius*2))
         Color:
             rgba: app.get_color(self.slider_outline_color_tuple)
         # draw the line around the slider handle
         Line:
-            ellipse: [self.value_pos[0] - sp(self.v2_), self.center_y - sp(self.v3), sp(self.v4), sp(self.v4)] if self.orientation == 'horizontal' else [self.center_x - sp(self.v3), self.value_pos[1] - sp(self.v2_), sp(self.v4), sp(self.v4)]
-            width: sp(2)
+            ellipse: [self.value_pos[0] - sp(self.slider_handle_radius), self.center_y - sp(self.slider_handle_radius), sp(self.slider_handle_radius*2), sp(self.slider_handle_radius*2)] if self.orientation == 'horizontal' else [self.center_x - sp(self.slider_handle_radius), self.value_pos[1] - sp(self.slider_handle_radius), sp(self.slider_handle_radius*2), sp(self.slider_handle_radius*2)]
+            width: sp(1.0)
 
 
 

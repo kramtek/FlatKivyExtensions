@@ -5,7 +5,7 @@ from kivy.properties import (ObjectProperty, OptionProperty, NumericProperty,
 from kivy.animation import Animation
 
 from kivy.uix.slider import Slider
-from kivy.metrics import sp
+from kivy.metrics import sp, dp
 from kivy.animation import Animation
 from kivy.graphics import Color, Ellipse, Rectangle
 from kivy.graphics import (StencilPush, StencilPop, StencilUse,
@@ -18,7 +18,7 @@ from flat_kivy.uix.behaviors import GrabBehavior, ThemeBehavior
 #class CustomSliderTouchRippleBehavior(SliderTouchRippleBehavior):
 #    pass
 
-class CustomSliderTouchRippleBehavior(object):
+class CustomSliderTouchRippleBehavior(ThemeBehavior):
     ripple_rad = NumericProperty(10)
     ripple_pos = ListProperty([0, 0])
     ripple_color = ListProperty((1., 1., 1., 1.))
@@ -29,19 +29,11 @@ class CustomSliderTouchRippleBehavior(object):
     ripple_func_in = StringProperty('in_cubic')
     ripple_func_out = StringProperty('out_quad')
 
-    v1 = NumericProperty(7)
-    v2 = NumericProperty(14)
-    v3 = NumericProperty(16)
-    v4 = NumericProperty(17)
-    v4_ = NumericProperty(17)
-    v5 = NumericProperty(32) # size of the stencil when drawing ellipse
+    slider_bar_width = NumericProperty(14)
+    slider_handle_radius = NumericProperty(16)
 
-    v1 = NumericProperty(3)
-    v2 = NumericProperty(6)
-    v3 = NumericProperty(12)
-    v4 = NumericProperty(13)
-    v4_ = NumericProperty(13)
-    v5 = NumericProperty(24) # size of the stencil when drawing ellipse
+    slider_bar_width = NumericProperty(3)
+    slider_handle_radius = NumericProperty(12)
 
     def __init__(self, **kwargs):
         super(CustomSliderTouchRippleBehavior, self).__init__(**kwargs)
@@ -69,13 +61,14 @@ class CustomSliderTouchRippleBehavior(object):
                 width, height = self.size
 
                 if self.orientation == 'horizontal':
-                    ellipse_pos = (self.value_pos[0] - sp(self.v3), self.center_y - sp(self.v4_))
-                    stencil_pos = (self.x + self.padding + sp(1), self.center_y - sp(self.v1))
-                    stencil_size = (self.width - self.padding * 2 - sp(2), sp(self.v2))
+                    ellipse_pos = (self.value_pos[0] - sp(self.slider_handle_radius), self.center_y - sp(self.slider_handle_radius+1))
+                    stencil_pos = (self.x + self.padding + sp(1), self.center_y - sp(self.slider_bar_width/2))
+                    #stencil_size = (self.width - self.padding * 2 - sp(2), self.slider_bar_width)
+                    stencil_size = (self.width - self.padding * 2 - sp(2), 4)
                 else:
-                    ellipse_pos = (self.center_x - sp(self.v4_), self.value_pos[1] - sp(self.v3))
-                    stencil_pos = (self.center_x - sp(self.v1), self.y + self.padding + sp(1))
-                    stencil_size = (sp(self.v2), self.height - self.padding * 2 - sp(2))
+                    ellipse_pos = (self.center_x - sp(self.slider_handle_radius+1), self.value_pos[1] - sp(self.slider_handle_radius))
+                    stencil_pos = (self.center_x - sp(self.slider_bar_width/2), self.y + self.padding + sp(1))
+                    stencil_size = (sp(self.slider_bar_width), self.height - self.padding * 2 - sp(2))
 
                 StencilPush()
                 Rectangle(
@@ -83,7 +76,7 @@ class CustomSliderTouchRippleBehavior(object):
                     size=stencil_size)
                 self.slider_stencil = Ellipse(
                     pos=ellipse_pos,
-                    size=(sp(self.v5), sp(self.v5)))
+                    size=(sp(self.slider_handle_radius*2), sp(self.slider_handle_radius*2)))
                 StencilUse(op='lequal')
                 self.col_instruction = Color(rgba=self.ripple_color)
                 self.ellipse = Ellipse(size=(ripple_rad, ripple_rad),
@@ -95,7 +88,7 @@ class CustomSliderTouchRippleBehavior(object):
                     size=stencil_size)
                 self.slider_stencil_unuse = Ellipse(
                     pos=ellipse_pos,
-                    size=(sp(self.v5), sp(self.v5)))
+                    size=(sp(self.slider_handle_radius*2), sp(self.slider_handle_radius*2)))
 
                 StencilPop()
             self.bind(ripple_color=self.set_color, ripple_pos=self.set_ellipse,
@@ -104,15 +97,15 @@ class CustomSliderTouchRippleBehavior(object):
 
     def update_stencil(self):
         if self.orientation == 'horizontal':
-            pos = [self.value_pos[0] - sp(self.v3),
-                   self.center_y - sp(self.v4_)]
-            ellipse = [self.value_pos[0] - sp(self.v3),
-                       self.center_y - sp(self.v4_), sp(self.v5), sp(self.v5)]
+            pos = [self.value_pos[0] - sp(self.slider_handle_radius),
+                   self.center_y - sp(self.slider_handle_radius+1)]
+            ellipse = [self.value_pos[0] - sp(self.slider_handle_radius),
+                       self.center_y - sp(self.slider_handle_radius+1), sp(self.slider_handle_radius*2), sp(self.slider_handle_radius*2)]
         else:
-            pos = [self.center_x - sp(self.v4_),
-                   self.value_pos[1] - sp(self.v3)]
-            ellipse = [self.center_x - sp(self.v4_),
-                       self.value_pos[1] - sp(self.v3), sp(self.v5), sp(self.v5)]
+            pos = [self.center_x - sp(self.slider_handle_radius+1),
+                   self.value_pos[1] - sp(self.slider_handle_radius)]
+            ellipse = [self.center_x - sp(self.slider_handle_radius+1),
+                       self.value_pos[1] - sp(self.slider_handle_radius), sp(self.slider_handle_radius*2), sp(self.slider_handle_radius*2)]
 
         if self.slider_stencil is not None:
             self.slider_stencil.pos = pos
@@ -147,7 +140,7 @@ class CustomSliderTouchRippleBehavior(object):
         return super(CustomSliderTouchRippleBehavior, self).on_touch_up(touch)
 
     def anim_complete(self, anim, instance):
-        self.ripple_rad = 10
+        self.ripple_rad = 5
         self.canvas.after.clear()
         self.slider_stencil = None
         self.slider_stencil_unuse = None
@@ -162,19 +155,11 @@ class CustomSlider(GrabBehavior, CustomSliderTouchRippleBehavior, ThemeBehavior,
     slider_outline_color_tuple = ListProperty(['Orange', '500'])
     ripple_color_tuple = ListProperty(['Grey', '0000'])
 
-#class CustomSlider(FlatSlider):
-    v1 = NumericProperty(8)     # half the slider width for offset positioning
-    v2 = NumericProperty(16)    # width of the slider background, #
-    v2_ = NumericProperty(16)    # used as offset when positioning the slider handle
-    #v3 = NumericProperty(17)    # offset used for the slider handle
-    v3 = NumericProperty(16)    # offset used for the slider handle
-    v4 = NumericProperty(32)    # size of the slider handle
-
-    v1 = NumericProperty(4)
-    v2 = NumericProperty(8)
-    v2_ = NumericProperty(12)    # used as offset when positioning the slider handle
-    v3 = NumericProperty(12) # this should be 1/2 v4
-    v4 = NumericProperty(24)
+    # slider_bar_width = NumericProperty(16)
+    # slider_handle_radius = NumericProperty(16)
+    #
+    # slider_bar_width = NumericProperty(3)
+    # slider_handle_radius = NumericProperty(12)
     pass
 
 
