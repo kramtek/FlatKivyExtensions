@@ -13,7 +13,7 @@ from flat_kivy.font_definitions import style_manager
 from flat_kivy_extensions.uix.customiconbutton import CustomIconButton
 
 Builder.load_string('''
-#:import NavigationDrawer kivy_garden.navigationdrawer.NavigationDrawer
+#:import NavigationDrawer kivy.garden.navigationdrawer.NavigationDrawer
 #:import NoTransition kivy.uix.screenmanager.NoTransition
 #:import FadeTransition kivy.uix.screenmanager.FadeTransition
 <RootWidget>:
