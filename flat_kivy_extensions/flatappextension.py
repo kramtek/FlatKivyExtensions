@@ -12,6 +12,19 @@ from flat_kivy.font_definitions import style_manager
 
 from flat_kivy_extensions.uix.customiconbutton import CustomIconButton
 
+import os
+import flat_kivy
+flat_kivy_font_path = os.path.join(os.path.dirname(os.path.abspath(flat_kivy.__file__)), *['data', 'font'])
+import flat_kivy_extensions
+extensions_font_path = os.path.join(os.path.dirname(os.path.abspath(flat_kivy_extensions.__file__)), *['data', 'font'])
+
+paths = [flat_kivy_font_path, extensions_font_path]
+common_prefix = os.path.commonprefix(paths)
+relative_paths = [os.path.relpath(path, common_prefix) for path in paths]
+components = relative_paths[0].split(os.sep)
+relative_path_to_extensions  = os.sep.join(['..']*len(components))
+relative_path_to_fonts  = os.path.join(relative_path_to_extensions, relative_paths[1])
+
 Builder.load_string('''
 #:import NavigationDrawer kivy.garden.navigationdrawer.NavigationDrawer
 #:import NoTransition kivy.uix.screenmanager.NoTransition
@@ -333,44 +346,44 @@ class ExtendedFlatApp(FlatApp):
 
         font_styles = {
             'HeaderTitle': {
-                'font': 'Roboto-Bold.ttf',
+                #'font': 'Roboto-Bold.ttf',
                 # Question: what is the best way to include additional fonts?
-                #'font': 'proximanova-bold-webfont.ttf',
+                'font': '%s/proximanova-regular-webfont.ttf' % relative_path_to_fonts,
                 'sizings': {'mobile': (25, 'sp'), 'desktop': (20, 'sp')},
                 'alpha': .87,
                 'wrap': False,
                 },
             'NavigationButton': {
-                'font': 'Roboto-Bold.ttf',
-                # 'font': 'proximanova-bold-webfont.ttf',
+                #'font': 'Roboto-Bold.ttf',
+                'font': '%s/proximanova-regular-webfont.ttf' % relative_path_to_fonts,
                 'sizings': {'mobile': (16, 'sp'), 'desktop': (14, 'sp')},
                 'alpha': .87,
                 'wrap': False,
             },
             'NavigationLabelMainHeading': {
-                'font': 'Roboto-Bold.ttf',
-                # 'font': 'proximanova-bold-webfont.ttf',
+                #'font': 'Roboto-Bold.ttf',
+                'font': '%s/proximanova-bold-webfont.ttf' % relative_path_to_fonts,
                 'sizings': {'mobile': (20, 'sp'), 'desktop': (17, 'sp')},
                 'alpha': .87,
                 'wrap': False,
             },
             'NavigationLabelSubHeading': {
-                'font': 'Roboto-Bold.ttf',
-                # 'font': 'proximanova-bold-webfont.ttf',
+                #'font': 'Roboto-Bold.ttf',
+                'font': '%s/proximanova-bold-webfont.ttf' % relative_path_to_fonts,
                 'sizings': {'mobile': (18, 'sp'), 'desktop': (15, 'sp')},
                 'alpha': .87,
                 'wrap': False,
             },
             'GroupedLayoutTitle': {
-                'font': 'Roboto-Bold.ttf',
-                # 'font': 'proximanova-bold-webfont.ttf',
+                #'font': 'Roboto-Bold.ttf',
+                'font': '%s/proximanova-bold-webfont.ttf' % relative_path_to_fonts,
                 'sizings': {'mobile': (22, 'sp'), 'desktop': (17, 'sp')},
                 'alpha': .87,
                 'wrap': False,
             },
             'CustomButton1': {
-                'font': 'Roboto-Bold.ttf',
-                # 'font': 'proximanova-bold-webfont.ttf',
+                #'font': 'Roboto-Bold.ttf',
+                'font': '%s/proximanova-semibold-webfont.ttf' % relative_path_to_fonts,
                 'sizings': {'mobile': (17, 'sp'), 'desktop': (17, 'sp')},
                 'alpha': .87,
                 'wrap': False,
