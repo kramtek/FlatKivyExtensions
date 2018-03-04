@@ -81,7 +81,7 @@
             rgba: app.get_color(self.slider_color_tuple)
         # draw the main slider handle
         Ellipse:
-            pos: (self.value_pos[0] - sp(self.slider_handle_radius), self.center_y - sp(self.slider_handle_radius)) if self.orientation == 'horizontal' else (self.center_x - sp(self.slider_handle_radius), self.value_pos[1] - sp(self.slider_bar_width))
+            pos: (self.value_pos[0] - sp(self.slider_handle_radius), self.center_y - sp(self.slider_handle_radius)) if self.orientation == 'horizontal' else (self.center_x - sp(self.slider_handle_radius), self.value_pos[1] - sp(self.slider_handle_radius))
             size: (sp(self.slider_handle_radius*2), sp(self.slider_handle_radius*2))
         Color:
             rgba: app.get_color(self.slider_outline_color_tuple)
