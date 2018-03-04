@@ -16,14 +16,14 @@ Builder.load_string('''
 <-StyledLayout>:
     orientation: 'tb-lr'
     size_hint: 1, None
-    
+
     background_color: (0.0, 0.5, 0.5, 1.0)
     border_line_width: 2.0
     border_color: (.1, .1, .1, 0.0)
     radius: 10
-    
+
     padding: '5dp'
-        
+
     canvas.before:
         Color:
             rgba: self.background_color
@@ -44,7 +44,7 @@ Builder.load_string('''
     #     Rectangle:
     #         size: self.size
     #         pos: self.pos
-    
+
 <_MainLayout>:
     # canvas.before:
     #     Color:
@@ -52,7 +52,7 @@ Builder.load_string('''
     #     Rectangle:
     #         size: self.size
     #         pos: self.pos
-            
+
 <_ContentLayout>:
     # canvas.before:
     #     Color:
@@ -173,8 +173,6 @@ class GroupedLayout(StyledLayout):
         container.height = widget.height
         widget.bind(pos=self._center)
         container.add_widget(widget)
-        if hasattr(widget, 'text'):
-            print 'adding widget: %s' % str(widget.text)
         self._content_layout.add_widget(container)
         ht = self._calc_height();
         self._content_layout.height = ht
