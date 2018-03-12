@@ -72,5 +72,5 @@ app_config_entries = ['Demo Options',
                      ]
 
 if __name__ == '__main__':
-    app = ExtendedFlatApp(app_config_entries, title, about)
+    app = ExtendedFlatApp(app_config_entries, title, about, use_coverflow_navigation=True)
     app.run()

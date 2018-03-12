@@ -148,13 +148,12 @@ class ExtendedFlatApp(FlatApp):
         self.app_config_entries = app_config_entries
         self.about = about
         self.lazy_loading = False
+        self.use_coverflow_navigation = kwargs.get('use_coverflow_navigation', False)
         self._first_screen = None
         self._first_navigation_label = None
 
     def build(self):
         self.root = RootWidget()
-        # Question: Is this the best place to get references to
-        #           widgets with ids in the root widget?
         self._navigationdrawer = self.root.ids.navigationdrawer
         self._side_panel = self.root.ids.side_panel
         self._header = self.root.ids.header
@@ -171,7 +170,8 @@ class ExtendedFlatApp(FlatApp):
         for entry in self.app_config_entries:
             entry_constructors[type(entry)](entry)
 
-        # return self.root
+        if not self.use_coverflow_navigation:
+            return self.root
 
         self._thumbnails = list()
         self._is_opening = True
