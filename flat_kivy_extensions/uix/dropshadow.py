@@ -23,10 +23,11 @@ Builder.load_string('''
     size: dp(10), dp(15)
     widget_size: dp(10), dp(10)
     container_size: dp(15), dp(15)
-    #overhead: dp(2)
 
     anchor_x: 'left'
     anchor_y: 'top'
+
+    overhead: 22
 
     BoxLayout:
         orientation: 'vertical'
@@ -60,13 +61,16 @@ Builder.load_string('''
                 size_hint: None, None
                 size: root.widget_size
                 offset_x: root.offset
-                offset_y: root.overhead-root.offset
+                offset_y: root.overhead - root.offset
 
                 canvas.before:
                     Color:
                         rgba: root.shadow_color
                     RoundedRectangle:
                         size: self.size
+                        # Question: why does this line result in TypeError: float() argument
+                        #           must be a string or a number...?
+                        #           It is almost as though offset_x and offset_y are bad (??)
                         pos: (self.pos[0] + dp(self.offset_x), self.pos[1] + dp(self.offset_y))
                         radius: [dp(root.radius),dp(root.radius),dp(root.radius),dp(root.radius)]
 
