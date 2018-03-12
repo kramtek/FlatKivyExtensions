@@ -14,6 +14,7 @@ from flat_kivy_extensions.uix.customscreen import CustomScreen
 from flat_kivy_extensions.uix.customlayouts import StyledLayout, GroupedLayout
 from flat_kivy_extensions.uix.dropshadow import DropShadow
 from flat_kivy_extensions.uix.custombutton import CustomButton
+from flat_kivy_extensions.uix.customcheckbox import CustomCheckBoxListItem
 
 Builder.load_string('''
 <-KivyWidgetScreen>:
@@ -65,7 +66,7 @@ Builder.load_string('''
         height: '50dp'
 
 <-CustomButtonDemoScreen>:
-    title: 'CS #2'
+    title: 'Custom Buttons'
     theme: ('app', 'screen')
 
     CustomButton:
@@ -91,12 +92,98 @@ Builder.load_string('''
         radius: '4dp'
         color_tuple: ('Green', '800')
 
+<-CustomCheckBoxDemoScreen>:
+    title: 'Custom Checkboxes'
+    theme: ('app', 'screen')
+
+    CustomCheckBoxListItem:
+        text: 'Check box'
+        theme: ('app', 'default')
+        height: '50dp'
+
+    CustomCheckBoxListItem:
+        text: 'Radio Button 1'
+        group: 'this-radio'
+        theme: ('app', 'default')
+        height: '50dp'
+
+        radius: '12dp'
+        check_scale: .25
+        icon: 'fa-circle'
+        check_color_tuple: ('Brown', '500')
+        check_color_hue_down: '300'
+        outline_color_tuple: ('Blue', '500')
+
+        size_scaling: 0.5
+
+        exclusive: True
+
+
+    CustomCheckBoxListItem:
+        text: 'Radio Button 2'
+        group: 'this-radio'
+        theme: ('app', 'default')
+        height: '50dp'
+
+        radius: '12dp'
+        check_scale: .25
+        icon: 'fa-circle'
+        check_color_tuple: ('Brown', '500')
+        check_color_hue_down: '8#00'
+        outline_color_tuple: ('Blue', '500')
+
+        size_scaling: 0.5
+
+        exclusive: True
+
+        current_state: True
+
+
+
+    CustomCheckBoxListItem:
+        text: 'Error Indicator'
+        theme: ('app', 'default')
+        height: '50dp'
+        icon: 'fa-exclamation'
+        check_color_tuple: ('Red', '500')
+        outline_color_tuple: ('Gray', '500')
+
+    CustomCheckBoxListItem:
+        text: 'Warning Indicator'
+        theme: ('app', 'default')
+        height: '50dp'
+        icon: 'fa-warning'
+        check_color_tuple: ('Yellow', '800')
+        outline_color_tuple: ('Gray', '500')
+        check_scale: .5
+        on_active: if self.active: print('warning activated')
+        current_state: True
+
+    CustomCheckBoxListItem:
+        text: 'Exception Indicator'
+        theme: ('app', 'default')
+        height: '50dp'
+        icon: 'fa-times'
+        check_color_tuple: ('Red', '500')
+        outline_color_tuple: ('Gray', '500')
+
+<-CustomSliderDemoScreen>:
+    title: 'Custom Sliders'
+    theme: ('app', 'screen')
+
     CustomSlider:
         orientation: 'horizontal'
         min: 10
         max: 110
         theme: ('green', 'main')
+        height: '60dp'
 
+    CustomSlider:
+        orientation: 'vertical'
+        min: 10
+        max: 110
+        theme: ('green', 'main')
+        height: '120dp'
 
 <-CustomLayoutsScreen>:
     title: 'Another Custom Screen'
@@ -144,6 +231,12 @@ class KivyWidgetScreen(CustomScreen):
     pass
 
 class CustomButtonDemoScreen(CustomScreen):
+    pass
+
+class CustomCheckBoxDemoScreen(CustomScreen):
+    pass
+
+class CustomSliderDemoScreen(CustomScreen):
     pass
 
 class CustomLayoutsScreen(CustomScreen):

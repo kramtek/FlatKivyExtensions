@@ -2,6 +2,9 @@
 import sys
 sys.path.append('flat_kivy_extensions/submodules')
 
+from kivy .garden import garden_system_dir
+print('Garden system dir: %s\n\n\n' % str(garden_system_dir))
+
 from flat_kivy_extensions.flatappextension import ExtendedFlatApp
 
 # 1) Developer specifies application title and a string to describe
@@ -15,7 +18,9 @@ about = 'Something to describe the purpose of the application.'
 #    in the navigation panel for switching
 
 from screens import FlatKivyDemoScreen, KivyScreen1, KivyScreen2
-from screens2 import KivyWidgetScreen, CustomButtonDemoScreen, CustomLayoutsScreen, DropShadowScreen
+from screens2 import (KivyWidgetScreen, CustomButtonDemoScreen,
+                     CustomLayoutsScreen, DropShadowScreen, CustomSliderDemoScreen,
+                     CustomCheckBoxDemoScreen)
 #    An application configuration list is used to specify what screens
 #    should be included and how to navigate to them.
 #
@@ -43,7 +48,6 @@ from screens2 import KivyWidgetScreen, CustomButtonDemoScreen, CustomLayoutsScre
 #
 
 app_config_entries = ['Demo Options',
-                      ('Drop Shadowed Widgets', DropShadowScreen, [], {}),
                       'Standard screens in app',
                       ('Kivy Screen 1', KivyScreen1, [], {}),
                       ('Kivy Screen 2', KivyScreen2, [], {}),
@@ -52,9 +56,14 @@ app_config_entries = ['Demo Options',
 
                       'Custom screens',
                       ('Custom Screen Example', KivyWidgetScreen, [], {}),
+
                       ('Custom Buttons', CustomButtonDemoScreen, [], {}),
+                      ('Custom Sliders', CustomSliderDemoScreen, [], {}),
+                      ('Custom Checkboxes', CustomCheckBoxDemoScreen, [], {}),
 
                       ('Grouped Layouts', CustomLayoutsScreen , [], {}),
+
+                      ('Drop Shadowed Widgets', DropShadowScreen, [], {}),
 
                       {'text':'Custom Heading Label',
                        'style':'NavigationLabelSubHeading',

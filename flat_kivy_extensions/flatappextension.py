@@ -1,4 +1,8 @@
+import time, threading
 
+from navigationscreen import NavigationScreen
+
+from kivy.clock import mainthread
 from kivy.uix.widget import Widget
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
@@ -11,6 +15,8 @@ from flat_kivy.uix.flatlabel import FlatLabel
 from flat_kivy.font_definitions import style_manager
 
 from flat_kivy_extensions.uix.customiconbutton import CustomIconButton
+from flat_kivy_extensions.uix.customscreen import CustomScreen
+from flat_kivy_extensions.uix.thumbnailwidget import ThumbNailWidget
 
 import os
 import flat_kivy
@@ -88,7 +94,7 @@ Builder.load_string('''
                     # Question: When selecting FadeTransition the switching
                     #           annimation seems to go black when switching,
                     #           how can this be avoided?
-                    transition: FadeTransition()
+                    #transition: FadeTransition(duration=5.0)
                     canvas.before:
                         Color:
                             rgb: root.background_color
@@ -165,7 +171,45 @@ class ExtendedFlatApp(FlatApp):
         for entry in self.app_config_entries:
             entry_constructors[type(entry)](entry)
 
+        # return self.root
+
+        self._thumbnails = list()
+        self._is_opening = True
+        self._open_screen_index = len(self._screenmanager.screens)-1
+        self.open_all_screens()
+
         return self.root
+
+    @mainthread
+    def open_all_screens(self):
+        screen = self._screenmanager.screens[self._open_screen_index]
+        screen.bind(on_enter=self._local_on_enter)
+        self._screenmanager.current = screen.name
+
+    def _local_on_touch_up(self, touch):
+        print 'local on touch up for thumbnail...'
+
+    def _local_on_enter(self, screen):
+        #screen.on_enter(screen)
+        if not self._is_opening:
+            return
+        thumbnail = ThumbNailWidget(screen)
+        thumbnail.bind(on_touch_up=self._local_on_touch_up)
+        self._thumbnails.append((thumbnail, screen.name))
+        self._open_screen_index -= 1
+        if self._open_screen_index >= 0:
+            self.open_all_screens()
+        else:
+            self.finalize()
+
+    @mainthread
+    def finalize(self):
+        entry = ('Navigation Screen', NavigationScreen, [self._thumbnails], {})
+        self._create_navigation_button(entry)
+        self._screenmanager.current = self._screenmanager.screens[-1].name
+        #self._screenmanager.current = self._screenmanager.screens[0].name
+        self._is_opening = False
+        self._screenmanager.transition = FadeTransition()
 
     def setup_themes(self):
         main = {
@@ -304,11 +348,28 @@ class ExtendedFlatApp(FlatApp):
 
         default = {
             'CustomButton': {
-                'color_tuple': ('Brown', '500'),
+               'color_tuple': ('Brown', '500'),
                 'font_color_tuple': ('Gray', '100'),
                 'style': 'CustomButton1',
                 'radius' : '10dp',
             },
+            'CustomCheckBoxListItem': {
+                'font_color_tuple': ('Blue', '800'),
+                'check_color_tuple': ('Green', '600'),
+                'check_color_hue_down': '200',
+                'outline_color_tuple': ('Gray', '500'),
+                'style': 'Button',
+                'valign' : 'middle',
+
+                'size_scaling' : 0.6,
+                'outline_size': '1.5dp',
+                'style': 'CustomButton1',
+
+                'check_scale': .6,
+                'radius' : '4dp',
+                'icon' : 'fa-check',
+            },
+
         }
 
 
@@ -334,10 +395,12 @@ class ExtendedFlatApp(FlatApp):
 
         from flat_kivy_extensions.uix.custombutton import CustomButton
         from flat_kivy_extensions.uix.customslider import CustomSlider, CustomSliderTouchRippleBehavior
+        from flat_kivy_extensions.uix.customcheckbox import CustomCheckBoxListItem
         self.theme_manager.types_to_theme['CustomSlider'] = CustomSlider
         self.theme_manager.types_to_theme['CustomSliderTouchRippleBehavior'] = CustomSliderTouchRippleBehavior
         self.theme_manager.types_to_theme['CustomButton'] = CustomButton
         self.theme_manager.types_to_theme['CustomIconButton'] = CustomIconButton
+        self.theme_manager.types_to_theme['CustomCheckBoxListItem'] = CustomCheckBoxListItem
         self.theme_manager.types_to_theme['FlatIconButtonLeft'] = FlatIconButtonLeft
 
     def add_themes(self, themes):

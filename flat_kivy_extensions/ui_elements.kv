@@ -92,4 +92,54 @@
 
 
 
+<-CustomCheckBox>:
+    ripple_color: app.get_color(self.ripple_color_tuple)
+    radius: '1dp'
+    size_scaling: 1 
+    canvas.before:
+        Color:
+            rgba: app.get_color(self.outline_color_tuple)
+        Line
+            rounded_rectangle: [self.x + self.width*(1-self.size_scaling)/2, self.y + self.height*(1-self.size_scaling)/2, self.width*self.size_scaling, self.height*self.size_scaling, self.radius]
+            width: self.outline_size
+
+
+<-CustomCheckBoxListItem>:
+    orientation: 'horizontal'
+    active: checkbox.active
+    ripple_color: app.get_color(self.ripple_color_tuple)
+    spacing: '5dp'
+    icon: 'fa-check'
+    radius: 5
+    exclusive: False 
+    FlatLabel:
+        id: label
+        text: root.text
+        size_hint: (.8, 1.0)
+        color: app.get_color(root.font_color_tuple)
+        style: root.style
+        halign: root.halign
+        font_ramp_tuple: root.font_ramp_tuple
+        valign: root.valign
+        text_size: self.size
+    CustomCheckBox:
+        group: root.group
+        id: checkbox
+        no_interact: True
+        size_hint: (None, 1.0)
+        width: self.height
+        alpha: root.alpha
+        outline_color_tuple: root.outline_color_tuple
+        outline_size: root.outline_size
+        check_color_tuple: root.check_color_tuple
+        color_tuple: root.checkbox_color_tuple
+        check_scale: root.check_scale
+        icon: root.icon
+        size_scaling: root.size_scaling
+        radius: root.radius
+        exclusive: root.exclusive
+        on_active: root.on_checkbox_active(self, self.active)
+        #root.setter('touch_down_active')
+
+
 
