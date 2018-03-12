@@ -4,7 +4,7 @@ from weakref import ref
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.properties import (ObjectProperty, OptionProperty, NumericProperty,
-                             ListProperty, StringProperty)
+                             ListProperty, StringProperty, BooleanProperty)
 from kivy.metrics import sp
 from kivy.animation import Animation
 from kivy.graphics import Color, Ellipse, Rectangle
@@ -155,13 +155,13 @@ class ButtonBehavior(object):
                     if isinstance(self, CheckBox):
                         touch_id = touch.ud['log_id']
                         log_manager.log_interface.set_entry(
-                            'touches', touch_id, 
-                            'checkbox_pressed_down', self.state, 
+                            'touches', touch_id,
+                            'checkbox_pressed_down', self.state,
                             do_timestamp=True)
                     else:
                         touch_id = touch.ud['log_id']
                         log_manager.log_interface.set_entry(
-                            'touches', touch_id, 
+                            'touches', touch_id,
                             'button_pressed', self.text, do_timestamp=True)
             self._do_press()
             self.dispatch(b'on_press')
@@ -171,20 +171,20 @@ class ButtonBehavior(object):
         return super(ButtonBehavior, self).on_touch_move(touch)
 
     def on_touch_up(self, touch):
-        if self in touch.ud:  
+        if self in touch.ud:
             if isinstance(self, LogBehavior):
                 log_manager = self.log_manager
                 if log_manager.do_logging:
                     if isinstance(self, CheckBox):
                         touch_id = touch.ud['log_id']
                         log_manager.log_interface.set_entry(
-                            'touches', touch_id, 
-                            'checkbox_released', self.state, 
+                            'touches', touch_id,
+                            'checkbox_released', self.state,
                             do_timestamp=True)
                     else:
                         touch_id = touch.ud['log_id']
                         log_manager.log_interface.set_entry(
-                            'touches', touch_id, 'button_released', 
+                            'touches', touch_id, 'button_released',
                             self.text, do_timestamp=True)
             self._do_release()
             self.dispatch(b'on_release')
@@ -236,6 +236,8 @@ class ToggleButtonBehavior(ButtonBehavior):
     :attr:`group` is a :class:`~kivy.properties.ObjectProperty`
     '''
 
+    exclusive = BooleanProperty(False)
+
     def __init__(self, **kwargs):
         self._previous_group = None
         super(ToggleButtonBehavior, self).__init__(**kwargs)
@@ -269,6 +271,18 @@ class ToggleButtonBehavior(ButtonBehavior):
     def _do_press(self):
         self._release_group(self)
         self.state = 'normal' if self.state == 'down' else 'down'
+
+        if self.group is None or not self.exclusive:
+            return
+
+        any_active = False
+        for widget in self.get_widgets(self.group):
+            if widget.state == 'down':
+                any_active = True
+                break
+        if not any_active:
+            self.state = 'down'
+
 
     def _do_release(self):
         pass
