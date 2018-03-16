@@ -21,6 +21,9 @@ from screens import FlatKivyDemoScreen, KivyScreen1, KivyScreen2
 from screens2 import (KivyWidgetScreen, CustomButtonDemoScreen,
                      CustomLayoutsScreen, DropShadowScreen, CustomSliderDemoScreen,
                      CustomCheckBoxDemoScreen)
+
+from graph_screen import GraphDemoScreen
+
 #    An application configuration list is used to specify what screens
 #    should be included and how to navigate to them.
 #
@@ -60,6 +63,7 @@ app_config_entries = ['Demo Options',
                       ('Custom Buttons', CustomButtonDemoScreen, [], {}),
                       ('Custom Sliders', CustomSliderDemoScreen, [], {}),
                       ('Custom Checkboxes', CustomCheckBoxDemoScreen, [], {}),
+                      ('Graphs', GraphDemoScreen, [], {}),
 
                       ('Grouped Layouts', CustomLayoutsScreen , [], {}),
 
