@@ -18,7 +18,7 @@ from kivy.clock import Clock
 
 
 from kivy.lang import Builder
-from widget3D import Widget3D, Image3D, _Image3D, rotatingPoints
+from widget3D import Widget3D, Image3D, _Image3D, rotatingPoints, _Image3D2
 import utils
 
 #Window.set_icon("ojbxproicon.png")
@@ -27,7 +27,7 @@ Builder.load_string('''
 <-_CoreImage>:
 #    canvas.before:
 #        Color:
-#            rgba: (1.0, 0.5, 1.0, 1.0)
+#            rgba: (0.0, 0.5, 1.0, 0.5)
 #        Rectangle:
 #            size: self.size
 #            pos: self.pos
@@ -56,12 +56,15 @@ class CoverItem(Widget3D):
 
         #self.bg = Image3D(source='no_cover.png', size_hint=(None,None) )
         #self.bg = Image3D(source='cover.png', size_hint=(None,None) )
-        self.bg = Image3D(size_hint=(None,None) )
 
         scaling = 0.5
         a = scaling * Window.width
         b = scaling * Window.height
+        #a = scaling * 600
+        #b = scaling * 600
+        self.bg = _Image3D2(size_hint=(None,None), x=.4, size=(a,b) )
         self.image = Image3D(size_hint=(None,None), x=.4, size=(a,b))
+        self.bg.pos = self.image.pos
         #self.points = rotatingPoints(scale3D=(2, 2, 1))
 
         #self.title = Button(text='hello', size_hint=(None,None), height=40, width=150, x=-75, y=40, font_size=20, background_normal="barra_play.png")
@@ -71,6 +74,11 @@ class CoverItem(Widget3D):
 
         self.add_widget(self.bg)
         self.add_widget(self.title)
+
+        #self.bind(scale_y=self._test_size)
+
+#    def _test_size(self, instance, value):
+#        print 'test size....'
 
     def set_texture(self, texture):
         if texture != None and texture != False:
@@ -92,6 +100,14 @@ class CoverItem(Widget3D):
 
         super(CoverItem, self).on_opacity(w, val)
 
+#    def on_pos(self, instance, value):
+#        print 'cover item positioning...'
+
+#    def on_size(self, instance, size):
+#        print 'onsizse: %s' % str(instance)
+
+#    def on_scale_y(self, instance, size):
+#        print 'onscaley: %s' % str(instance)
 
 class CoverFlow(Widget3D):
 
@@ -246,7 +262,7 @@ class CoverFlow(Widget3D):
         self.covers_positions=[]
 
 
-        print 'calculating coords....'
+#        print 'calculating coords....'
 
         #calc relative scale of side covers
         sx, sy, sz = (self.scale_x * self.scale_side_covers,
@@ -284,10 +300,12 @@ class CoverFlow(Widget3D):
             extra_z_scaling = 1.0
             if index == 4:
                 extra_xy_scaling = 1.0
-                extra_z_scaling = 10.0
+                #extra_z_scaling = 10.0
             self.covers_positions.append( (i.pos_x,
                                             i.rotate_y,
-                                            (i.scale_x*extra_xy_scaling, i.scale_y*extra_xy_scaling, i.scale_z*extra_z_scaling)
+                                            #(i.scale_x*extra_xy_scaling, i.scale_y*extra_xy_scaling, i.scale_z*extra_z_scaling)
+                                            #(i.scale_x*extra_xy_scaling, i.scale_y*extra_xy_scaling)
+                                            (i.scale_x, i.scale_y)
                                            )
                                          )
 
@@ -319,7 +337,7 @@ class CoverFlow(Widget3D):
             i.rotate_y = yrot
             i.scale_x = scale3d[0]
             i.scale_y = scale3d[1]
-            i.scale_z = scale3d[2]
+            #i.scale_z = scale3d[2]
 
 ##            print "Z: ", i.title.pos_z
 
@@ -398,7 +416,7 @@ class CoverFlow(Widget3D):
 
         #siempre se inicia la carga en la portada central
 
-        print 'in async loadde...'
+#        print 'in async loadde...'
         #indices para ir recorriendo todas las portadas a cargar
         sup = self.index + self.side_ncovers
         inf = sup - 1
@@ -516,7 +534,7 @@ class CoverFlow(Widget3D):
         Restaura las posiciones de manera fluida
         '''
 
-        print 'cancel movement???'
+#        print 'cancel movement???'
         self.canceling_move = True
 
         Clock.unschedule(self.end_move)
@@ -561,7 +579,7 @@ class CoverFlow(Widget3D):
 
     def move(self, direction, duration, launch_move_end=True):
 
-        print 'self.size: %s' % str(self.covers[0].image.size)
+#        print 'self.size: %s' % str(self.covers[0].image.size)
 
         #abortar carga de portada (hasta superar el tiempo de iddle)
         Clock.unschedule(self.async_loader)
@@ -651,7 +669,7 @@ class CoverFlow(Widget3D):
             Clock.schedule_once(self.end_move, duration+.05)
 
     def on_opacity(self, w, val):
-        print 'in on_opacity...'
+#        print 'in on_opacity...'
         for i in self.children:
             i.opacity = val
 
@@ -682,7 +700,7 @@ class CoverFlow(Widget3D):
         '''
         Ejecutado al cambiar la portada central (seleccionada)
         '''
-        print 'on_index', val
+#        print 'on_index', val
         self.direction = 0  #no movement
         self.remove_widget(self.centinel)
 
@@ -708,9 +726,19 @@ class CoverFlow(Widget3D):
         Clock.unschedule(self.init_carousell)
 
     def on_touch_move(self, touch):
-        print '%s got touch move' % str(self)
+#        print '%s got touch move' % str(self)
         if 'angle' in touch.profile:
             print('The touch angle is: %s' % str(touch.a))
+
+#    def on_pos(self, instance, value):
+#        print 'cover flow positioning...'
+
+#    def on_size(self, instance, size):
+#        print 'onsizse: %s' % str(instance)
+
+#    def on_scale_y(self, instance, size):
+#        print 'onscaley: %s' % str(instance)
+
 
 
 class CoverFlowApp(FloatLayout):

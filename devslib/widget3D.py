@@ -50,9 +50,9 @@ class Widget3D(Widget):
     Color of this widget
     '''
 
-    scale_x = NumericProperty(10)
-    scale_y = NumericProperty(10)
-    scale_z = NumericProperty(10)
+    scale_x = NumericProperty(1)
+    scale_y = NumericProperty(1)
+    scale_z = NumericProperty(1)
 
     scale3D = ReferenceListProperty(scale_x, scale_y, scale_z)
     '''
@@ -250,7 +250,6 @@ class Widget3D(Widget):
         glDisable(GL_DEPTH_TEST)
 
 
-
 class Edit3D(FloatLayout):
     def __init__(self, **kwargs):
         super(Edit3D, self).__init__(**kwargs)
@@ -358,7 +357,18 @@ Builder.load_string('''
 #        Rectangle:
 #            size: self.size
 #            pos: self.pos
+
+<-_Image3D2>:
+#    canvas.before:
+#        Color:
+#            rgba: (0.0, 0.5, 0.0, 0.5)
+#        Rectangle:
+#            size: self.size
+#            pos: self.pos
 ''')
+
+class _Image3D2(Widget3D):
+    pass
 
 class _Image3D(Widget3D):
     pass

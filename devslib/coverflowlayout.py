@@ -23,13 +23,13 @@ class MyCoverFlow(CoverFlow):
 
 
 Builder.load_string('''
-<-_FloatLayout>:
+<-_OuterLayout>:
     cols: 1
-    size_hint_y: None
-    height: dp(300)
+    #size_hint_y: None
+    #height: dp(500)
     canvas.before:
         Color:
-            rgba: (0.95, 0.5, 0.95, 1.0)
+            rgba: (0.1, 0.5, 0.95, 0.5)
         Rectangle:
             size: self.size
             pos: self.pos
@@ -46,12 +46,14 @@ class CoverFlowLayout(_OuterLayout):
         self.cover_change_callback = cover_change_callback
 
         #self.coverflow = MyCoverFlow(ncovers=4, path='/Users/kramer/mobilabui/data/images', pos3D=(0,4,-2), cover_rotation=45)
-        self.coverflow = MyCoverFlow(covers, cover_names, ncovers=3, pos3D=(0,4,-2), cover_rotation=45, move_duration=0.2)
+        self.coverflow = MyCoverFlow(covers, cover_names, ncovers=3, pos3D=(0,4,-2), cover_rotation=45, move_duration=0.25)
         #self.coverflow = MyCoverFlow(ncovers=4, pos3D=(0,4,-2), cover_rotation=45)
         self.coverflow.cover_separation = 75
         self.coverflow.scale_x = 0.57/dp(1)
-        self.coverflow.scale_y = 0.957/dp(1)
+        self.coverflow.scale_y = 0.57/dp(1)
 
+        #self.coverflow.size_hint_y = None
+        #self.coverflow.height = dp(400)
         self.add_widget(self.coverflow)
 
         self.moved = False
@@ -59,8 +61,8 @@ class CoverFlowLayout(_OuterLayout):
 #        self.coverflow.size_hint_y = None
 #        self.coverflow.height = dp(400)
 
-        print 'cf size: %s'  % str(self.coverflow.size)
-        print 'cf size hint: %s'  % str(self.coverflow.size_hint)
+#        print 'cf size: %s'  % str(self.coverflow.size)
+#        print 'cf size hint: %s'  % str(self.coverflow.size_hint)
 
         if False:
             self._keyboard = Window.request_keyboard(
@@ -68,17 +70,21 @@ class CoverFlowLayout(_OuterLayout):
             self._keyboard.bind(on_key_down=self._on_keyboard_down)
 
 
-    def do_layout(self, *largs):
-        print 'do layout...'
-        super(CoverFlowLayout, self).do_layout(*largs)
+#    def do_layout(self, *largs):
+#        print 'do layout...'
+#        super(CoverFlowLayout, self).do_layout(*largs)
 
-    def on_size(self, *largs):
-        print 'on size...'
+#    def on_size(self, *largs):
+#        print 'on size...'
 
     def on_touch_move(self, touch):
-        print 'cf size: %s'  % str(self.coverflow.size)
-        print 'cf size hint: %s'  % str(self.coverflow.size_hint)
-        print 'Window size: %s'  % str(Window.size)
+#        print 'cf size: %s'  % str(self.coverflow.size)
+#        print 'cf size hint: %s'  % str(self.coverflow.size_hint)
+#        print 'Window size: %s'  % str(Window.size)
+#        for cover in self.coverflow.covers:
+#            print 'cover: %s'  %str(cover.scale_y)
+
+
 #        print 'current index: %s' % str(self.coverflow.current_index)
         swipe_threshold = dp(50)
         if (touch.x - touch.ox) > swipe_threshold:
@@ -94,9 +100,14 @@ class CoverFlowLayout(_OuterLayout):
             return
         if abs(touch.x - Window.width/2.0) < dp(50):
             ind = self.coverflow.current_index
-            print 'should navigate to index: %s' % str(ind)
+#            print 'should navigate to index: %s' % str(ind)
             if self.cover_change_callback is not None:
                 self.cover_change_callback(self.coverflow.current_index)
+
+        if (touch.x - Window.width/2.0) > dp(100):
+            self.coverflow.move_to_left()
+        if -(touch.x - Window.width/2.0) > dp(100):
+            self.coverflow.move_to_right()
 
     def _keyboard_closed(self):
         self._keyboard.unbind(on_key_down=self._on_keyboard_down)
