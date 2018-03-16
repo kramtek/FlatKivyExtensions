@@ -1,12 +1,16 @@
 import time, threading
 
-from navigationscreen import NavigationScreen
+from navigationscreen import NavigationScreen, NavigationModalView
 
+from kivy.metrics import dp
 from kivy.clock import mainthread
+from kivy.core.window import Window
 from kivy.uix.widget import Widget
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen, FadeTransition, NoTransition
+
+from kivy.uix.modalview import ModalView
 
 from flat_kivy.flatapp import FlatApp
 from flat_kivy.uix.flattextinput import FlatTextInput
@@ -159,8 +163,8 @@ class ExtendedFlatApp(FlatApp):
         self._header = self.root.ids.header
         self._screenmanager = self.root.ids.screenmanager
         self._menu_button = self._header.ids._menu_button
-        self._menu_button.bind(on_press=lambda j: self._navigationdrawer.toggle_state())
 
+        self._menu_button.bind(on_press=lambda j: self._navigationdrawer.toggle_state())
 
         entry_constructors = {type(str()) : self._create_navigation_label_from_string,
                               type(dict()) : self._create_navigation_label_from_dict,
@@ -204,12 +208,20 @@ class ExtendedFlatApp(FlatApp):
 
     @mainthread
     def finalize(self):
-        entry = ('Navigation Screen', NavigationScreen, [self._thumbnails], {})
-        self._create_navigation_button(entry)
-        self._screenmanager.current = self._screenmanager.screens[-1].name
+        self.navigation_popup = NavigationModalView(self._thumbnails)
+        self.navigation_popup.size_hint = (None, None)
+        #self.navigation_popup.size = Window.size
+        self.navigation_popup.size = (0,0)
+        #self.navigation_popup = NavigationModalView()
+        #self.navigation_popup = ModalView()
+        self.navigation_popup.background_color = (.0, .0, .0, .9)
+        #entry = ('Navigation Screen', NavigationScreen, [self._thumbnails], {})
+        #self._create_navigation_button(entry)
+        #self._screenmanager.current = self._screenmanager.screens[-1].name
         #self._screenmanager.current = self._screenmanager.screens[0].name
         self._is_opening = False
         self._screenmanager.transition = FadeTransition()
+        # self._menu_button.bind(on_press=lambda j: self.navigation_popup.open())
 
     def setup_themes(self):
         main = {
