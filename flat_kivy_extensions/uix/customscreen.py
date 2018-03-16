@@ -131,6 +131,9 @@ class CustomScreen(Screen):
         ds.offset = shadow_offset
         ds.shadow_color = shadow_color
         self.outer_container.add_widget(ds)
+
+        self.container_height = Window.height - dp(header_height) - dp(2*padding) - dp(height_offset) - self._title_label.height - 2*dp(padding) - 2*self._main_layout.padding[0]
+
         super(CustomScreen, self).add_widget(self.outer_container)
 
     def on_size(self, instance, value):
