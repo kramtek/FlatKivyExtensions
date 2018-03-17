@@ -5,7 +5,7 @@ sys.path.append('flat_kivy_extensions/submodules')
 from kivy .garden import garden_system_dir
 print('Garden system dir: %s\n\n\n' % str(garden_system_dir))
 
-from flat_kivy_extensions.flatappextension import ExtendedFlatApp
+from flat_kivy_extensions.flatappextension import ExtendedFlatApp, NavDrawerEntryConfig
 
 # 1) Developer specifies application title and a string to describe
 #    the application
@@ -44,35 +44,26 @@ from graph_screen import GraphDemoScreen
 #  dict(): Dict of configuration properties that is used to construct
 #          a Label that is added to the navigation slide out-panel
 #
-#  tuple(): [0] string defining the text property of the navigation button,
-#           [1] class name of screen to construct and link button to
-#           [2] *largs that are passed to screen constructor
-#           [3] **kwargs that are passed to screen constructor
+#  instance of NavDrawerEntryConfig.
+#           instantiating a NavDrawerEntryConfig requires at least
+#           a screen class.
 #
 
-app_config_entries = ['Demo Options',
+app_config_entries = ['Demo Option',
                       'Standard screens in app',
-                      ('Kivy Screen 1', KivyScreen1, [], {}),
-                      ('Kivy Screen 2', KivyScreen2, [], {}),
-
-                      ('FlatKivyDemo Screen', FlatKivyDemoScreen, [], {}),
-
+                      NavDrawerEntryConfig(KivyScreen1, 'Kivy Screen1'),
+                      NavDrawerEntryConfig(KivyScreen2, 'Kivy Screen2'),
+                      NavDrawerEntryConfig(FlatKivyDemoScreen, 'FlatKivy Demo'),
                       'Custom screens',
-                      ('Custom Screen Example', KivyWidgetScreen, [], {}),
-
-                      ('Custom Buttons', CustomButtonDemoScreen, [], {}),
-                      ('Custom Sliders', CustomSliderDemoScreen, [], {}),
-                      ('Custom Checkboxes', CustomCheckBoxDemoScreen, [], {}),
-                      ('Graphs', GraphDemoScreen, [], {}),
-
-                      ('Grouped Layouts', CustomLayoutsScreen , [], {}),
-
-                      ('Drop Shadowed Widgets', DropShadowScreen, [], {}),
-
+                      NavDrawerEntryConfig(KivyWidgetScreen, 'Kivy Widget Demo'),
+                      NavDrawerEntryConfig(CustomButtonDemoScreen, 'Custom Buttons'),
+                      NavDrawerEntryConfig(CustomSliderDemoScreen, 'Custom Sliders'),
+                      NavDrawerEntryConfig(GraphDemoScreen, 'Garden Graph Demo'),
+                      NavDrawerEntryConfig(CustomLayoutsScreen, 'CustomLayouts'),
+                      NavDrawerEntryConfig(DropShadowScreen, 'DropShadow Examples'),
                       {'text':'Custom Heading Label',
-                       'style':'NavigationLabelSubHeading',
+                       'style':'Button',
                        'color_tuple' : ('Yellow', '500')},
-
                      ]
 
 if __name__ == '__main__':

@@ -145,6 +145,54 @@ class RootWidget(Widget):
     pass
 
 
+class ScreenConfig(object):
+
+    def __init__(self, screen_class, screen_args=[], screen_kwargs={}, screen_name=None):
+        self.screen_class = screen_class
+        self.screen_args = screen_args
+        self.screen_kwargs = screen_kwargs
+        self.screen_name = screen_name
+        self._screen = None
+
+    def add_to_screen_manager(self, screenmanager):
+        if self._screen is None:
+            self._screen = self.screen_class(*self.screen_args, **self.screen_kwargs)
+        if self._screen not in self._screenmanager.screens:
+            screenmanager.add_widget(self._screen)
+        return self._screen
+
+    def _getScreen(self):
+        if self._screen is None:
+            self._screen = self.screen_class(*self.screen_args, **self.screen_kwargs)
+            self._screen.name = self.screen_name
+        return self._screen
+
+    screen = property(_getScreen)
+
+
+class NavDrawerEntryConfig(ScreenConfig):
+
+    def __init__(self, screen_class, button_title=None, button_icon=None, screen_args=[], screen_kwargs={}):
+        if button_title is None:
+            button_title = screen_class.__name__
+        self.button_title = button_title
+        self.button_icon = button_icon
+        super(NavDrawerEntryConfig, self).__init__(screen_class, screen_args=screen_args, screen_kwargs=screen_kwargs, screen_name=button_title)
+
+    def create_button(self, screenmanager):
+        btn = FlatIconButtonLeft(text=self.button_title)
+        btn.theme = ('app', 'navigationdrawer')
+        # Question: best way to set these? should something be
+        #           customized, e.g. NavigationIconButton(FlatIconButtonLeft),
+        #           such that the properties are forwarded or
+        #           is it okay to do it here like this?
+        btn.ids.icon.font_size = '15dp'
+        btn.ids.label.halign = 'left'
+        btn.config = self
+        btn.manager = screenmanager
+        return btn
+
+
 class ExtendedFlatApp(FlatApp):
     def __init__(self, app_config_entries, title, about, *largs, **kwargs):
         super(ExtendedFlatApp, self).__init__(*largs, **kwargs)
@@ -166,13 +214,15 @@ class ExtendedFlatApp(FlatApp):
 
         self._menu_button.bind(on_press=lambda j: self._navigationdrawer.toggle_state())
 
-        entry_constructors = {type(str()) : self._create_navigation_label_from_string,
-                              type(dict()) : self._create_navigation_label_from_dict,
-                              type(tuple()) : self._create_navigation_button,
-                              }
-
         for entry in self.app_config_entries:
-            entry_constructors[type(entry)](entry)
+            if type(entry) not in [type(str()), type(dict())] and not isinstance(entry, NavDrawerEntryConfig):
+                raise Exception('Each item in the application config entries list must either be a string, dict, or instance of NavDrawerEntryConfig')
+            if type(entry) == type(str()):
+                entry = {'text' : entry, 'theme' : ('app', 'navigationdrawer')}
+            if type(entry) == type(dict()):
+                self._create_navigation_label_from_dict(entry)
+            if isinstance(entry, NavDrawerEntryConfig):
+                self._create_navigation_button(entry)
 
         if not self.use_coverflow_navigation:
             return self.root
@@ -500,44 +550,48 @@ class ExtendedFlatApp(FlatApp):
         return label
 
     def _create_navigation_button(self, entry):
-        btnText = entry[0]
-        btn = FlatIconButtonLeft(text=btnText)
-        btn.theme = ('app', 'navigationdrawer')
 
-        # Question: best way to set these? should something be
-        #           customized, e.g. NavigationIconButton(FlatIconButtonLeft),
-        #           such that the properties are forwarded or
-        #           is it okay to do it here like this?
-        btn.ids.icon.font_size = '15dp'
-        btn.ids.label.halign = 'left'
+        btn = entry.create_button(self._screenmanager)
+        #btnText = entry.button_title
+        #btn = FlatIconButtonLeft(text=btnText)
+        #btn.theme = ('app', 'navigationdrawer')
+
+        ## Question: best way to set these? should something be
+        ##           customized, e.g. NavigationIconButton(FlatIconButtonLeft),
+        ##           such that the properties are forwarded or
+        ##           is it okay to do it here like this?
+        #btn.ids.icon.font_size = '15dp'
+        #btn.ids.label.halign = 'left'
 
         self._side_panel.add_widget(btn)
 
-        btn.config = entry
-        btn.screen = None
+        #btn.config = entry
+        #btn.manager = self._screenmanager
         btn.bind(on_release=self._switch_to_screen)
 
-        if self._first_screen is None:
-            self._first_screen = self._create_screen(btn)
+        if len(self._screenmanager.children) == 0:
+            self._screenmanager.add_widget(btn.config.screen)
+        else:
+            if not self.lazy_loading:
+                self._screenmanager.add_widget(btn.config.screen)
 
-        if not self.lazy_loading:
-            self._create_screen(btn)
-
-    def _create_screen(self, button):
-        if button.screen is None:
-            print('Creating instance: screen = ' +
-                  str(button.config[1].__name__ +
-                      "(*" + str(button.config[2]) +
-                      ", **" + str(button.config[3]) + ')'))
-            button.screen = button.config[1](*button.config[2], **button.config[3])
-            button.screen.name = button.config[0]
-            self._screenmanager.add_widget(button.screen)
-            return button.screen
+#    def _create_screen(self, button):
+#        if button.screen is None:
+#            print('Creating instance: screen = ' +
+#                  str(button.config[1].__name__ +
+#                      "(*" + str(button.config[2]) +
+#                      ", **" + str(button.config[3]) + ')'))
+#            button.screen = button.config[1](*button.config[2], **button.config[3])
+#            button.screen.name = button.config[0]
+#            self._screenmanager.add_widget(button.screen)
+#            return button.screen
 
     def _switch_to_screen(self, instance):
-        if instance.screen is None:
-            self._create_screen(instance)
-        self._screenmanager.current = instance.screen.name
+        screen = instance.config.screen
+        print 'switching to screen: %s'  % str(screen)
+        if screen not in self._screenmanager.screens:
+            self._screenmanager.add_widget(screen)
+        self._screenmanager.current = screen.name
         self._navigationdrawer.toggle_state()
 
 
