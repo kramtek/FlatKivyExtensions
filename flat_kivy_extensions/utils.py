@@ -1,0 +1,23 @@
+
+import os
+
+def get_relative_font_path(local_font_path):
+    ''' Get the relative path from the font path specified to the flat_kivy font
+    paths so they can be added by flat_kivy
+    '''
+    import flat_kivy
+    flat_kivy_font_path = os.path.join(os.path.dirname(os.path.abspath(flat_kivy.__file__)), *['data', 'font'])
+
+    paths = [flat_kivy_font_path, local_font_path]
+    common_prefix = os.path.commonprefix(paths)
+    relative_paths = [os.path.relpath(path, common_prefix) for path in paths]
+    # components = relative_paths[0].split(os.sep)
+    relative_path_to_extensions = os.sep.join(['..'] * len(relative_paths[0].split(os.sep)))
+    relative_path_to_fonts = os.path.join(relative_path_to_extensions, relative_paths[1])
+    return relative_path_to_fonts
+
+import flat_kivy_extensions
+local_font_path = os.path.join(os.path.dirname(os.path.abspath(flat_kivy_extensions.__file__)),
+                                        *['data', 'font'])
+
+relative_path_to_fonts = get_relative_font_path(local_font_path)
