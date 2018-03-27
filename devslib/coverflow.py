@@ -112,7 +112,7 @@ class CoverItem(Widget3D):
 class CoverFlow(Widget3D):
 
     path = StringProperty()
-    index = NumericProperty(0)
+    index = NumericProperty(-1)
 
     side_ncovers = NumericProperty(0)
     '''
@@ -700,7 +700,7 @@ class CoverFlow(Widget3D):
         '''
         Ejecutado al cambiar la portada central (seleccionada)
         '''
-#        print 'on_index', val
+        print 'on_index', val
         self.direction = 0  #no movement
         self.remove_widget(self.centinel)
 
