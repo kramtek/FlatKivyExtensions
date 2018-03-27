@@ -31,7 +31,7 @@ class CustomCheckBoxListItem(FlatCheckBoxListItem):
 
     def __init__(self, *largs, **kwargs):
         self.checkbox_active = BooleanProperty(False)
-        self.up_color_tuple = None
+        self.up_color_tuple = ('Gray', '500')
 
         super(CustomCheckBoxListItem, self).__init__(*largs, **kwargs)
 
