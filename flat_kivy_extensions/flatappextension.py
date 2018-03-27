@@ -1,39 +1,37 @@
 import time, threading
 
-from navigationscreen import NavigationScreen, NavigationModalView
+from navigationscreen import CoverFlowPopup
 
 from kivy.metrics import dp
-from kivy.clock import mainthread
 from kivy.core.window import Window
+from kivy.clock import mainthread
 from kivy.uix.widget import Widget
 from kivy.lang import Builder
+from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.screenmanager import Screen, FadeTransition, NoTransition
-
+from kivy.uix.screenmanager import FadeTransition, NoTransition, ScreenManager
 from kivy.uix.modalview import ModalView
+from kivy.uix.progressbar import ProgressBar
 
 from flat_kivy.flatapp import FlatApp
-from flat_kivy.uix.flattextinput import FlatTextInput
-from flat_kivy.uix.flaticonbutton import FlatIconButtonLeft
 from flat_kivy.uix.flatlabel import FlatLabel
 from flat_kivy.font_definitions import style_manager
 
 from flat_kivy_extensions.uix.customiconbutton import CustomIconButton
-from flat_kivy_extensions.uix.customscreen import CustomScreen
+from flat_kivy_extensions.uix.custombutton import CustomButton
 from flat_kivy_extensions.uix.thumbnailwidget import ThumbNailWidget
 
-import os
-import flat_kivy
-flat_kivy_font_path = os.path.join(os.path.dirname(os.path.abspath(flat_kivy.__file__)), *['data', 'font'])
-import flat_kivy_extensions
-extensions_font_path = os.path.join(os.path.dirname(os.path.abspath(flat_kivy_extensions.__file__)), *['data', 'font'])
-
-paths = [flat_kivy_font_path, extensions_font_path]
-common_prefix = os.path.commonprefix(paths)
-relative_paths = [os.path.relpath(path, common_prefix) for path in paths]
-components = relative_paths[0].split(os.sep)
-relative_path_to_extensions  = os.sep.join(['..']*len(components))
-relative_path_to_fonts  = os.path.join(relative_path_to_extensions, relative_paths[1])
+# import flat_kivy
+# flat_kivy_font_path = os.path.join(os.path.dirname(os.path.abspath(flat_kivy.__file__)), *['data', 'font'])
+# import flat_kivy_extensions
+# extensions_font_path = os.path.join(os.path.dirname(os.path.abspath(flat_kivy_extensions.__file__)), *['data', 'font'])
+#
+# paths = [flat_kivy_font_path, extensions_font_path]
+# common_prefix = os.path.commonprefix(paths)
+# relative_paths = [os.path.relpath(path, common_prefix) for path in paths]
+# components = relative_paths[0].split(os.sep)
+# relative_path_to_extensions  = os.sep.join(['..']*len(components))
+# relative_path_to_fonts  = os.path.join(relative_path_to_extensions, relative_paths[1])
 
 Builder.load_string('''
 #:import NavigationDrawer kivy.garden.navigationdrawer.NavigationDrawer
@@ -91,7 +89,7 @@ Builder.load_string('''
                         pos: self.pos
                         size: self.size
 
-                ScreenManager:
+                CustomScreenManager:
                     id: screenmanager
                     padding: '10dp'
                     transition: NoTransition()
@@ -133,6 +131,19 @@ Builder.load_string('''
         text: root.title
         theme: ('app', 'header')
 
+<-BlankThumbNail>:
+    text: 'hi'
+    canvas.before:
+        Color:
+            rgba: (.9, .9, .9, .9)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    FlatLabel:
+        text: root.text
+        color_tuple: ('Green', '900')
+
 ''')
 
 
@@ -143,6 +154,99 @@ class HeaderLayout(BoxLayout):
 
 class RootWidget(Widget):
     pass
+
+class BlankThumbNail(FlatLabel):
+    pass
+
+class CustomScreenManager(ScreenManager):
+
+    def __init__(self, **kwargs):
+        super(CustomScreenManager, self).__init__(**kwargs)
+        self._thumbnailLut = dict()
+        self._open_screen_index = -1
+        self._current_screen = None;
+
+        # self._is_opening = False
+
+    def add_widget(self, screen, *largs):
+        super(CustomScreenManager, self).add_widget(screen, *largs)
+        screen.bind(on_enter=self._on_screen_enter)
+        self._thumbnailLut[screen] = BlankThumbNail(text='??',
+                                            size_hint=(None, None),
+                                            size=(Window.width*.75, Window.height*.75),
+                                            )
+
+    def _on_screen_enter(self, screen):
+        print 'current screen: %s' % str(self.current_screen)
+        if self._open_screen_index >= 0:
+            if isinstance(self._thumbnailLut[screen], BlankThumbNail):
+                self._thumbnailLut[screen] = ThumbNailWidget(screen)
+            self.pb.value = len(self.screens) - self._open_screen_index
+            self._trigger_next_screen()
+
+    def get_all_thumbnails(self, callback=None):
+        self._current_screen = self.current_screen
+        no_need_to_generate = True
+        for screen in self.screens:
+            if isinstance(self._thumbnailLut[screen], BlankThumbNail):
+                no_need_to_generate = False
+                break
+        if no_need_to_generate:
+            callback()
+            return
+
+        self._callback = callback
+
+        # Display a modal view to indicate screen loading progress
+        self.mv = ModalView(size_hint=(None, None), size=(0,0), background_color=(.1, .1, .1, 0.95))
+        self.lbl = FlatLabel(text='Loading Screens...', style='CustomButton1')
+        self.pb = ProgressBar(max=len(self.screens), value=1)
+        self.pb.size_hint = (None, None)
+        self.pb.size = (dp(200), dp(40))
+        layout = BoxLayout(orientation='vertical', size_hint = (None, None), size=(dp(200), dp(80)))
+        layout.add_widget(self.lbl)
+        layout.add_widget(self.pb)
+        self.mv.add_widget(layout)
+        self.mv.auto_dismiss = False
+        self.mv.bind(on_open=self._continue)
+        self.mv.open()
+
+    def _continue(self, mv):
+        self._open_screen_index = len(self.screens) - 1
+        self._trigger_next_screen()
+        # threading.Thread(target=self._wait_for_thumbnails).start()
+
+    # def _wait_for_thumbnails(self):
+    #     while self._open_screen_index >= 0:
+    #         time.sleep(0.25)
+    #     self.mv.dismiss()
+    #     if self._callback is not None:
+    #         self._callback()
+
+    @mainthread
+    def _trigger_next_screen(self):
+        print 'screen index: %s'  % str(self._open_screen_index)
+        while self._open_screen_index >= 0:
+            screen = self.screens[self._open_screen_index]
+
+            if isinstance(self._thumbnailLut[screen], BlankThumbNail):
+                self.current = screen.name
+                return
+            self._open_screen_index -= 1
+        self.mv.dismiss()
+        if self._callback is not None:
+            self._callback()
+
+    def show_navigation_popup(self):
+        thumbnails = list()
+        for screen in self.screens:
+            thumbnails.append( self._thumbnailLut[screen] )
+        print 'current screen: %s' % str(self.current_screen)
+        navigation_popup = CoverFlowPopup(thumbnails, self._index_selected, self.screens.index(self._current_screen))
+        navigation_popup.open()
+
+    def _index_selected(self, index):
+        self.current = self.screens[index].name
 
 
 class ScreenConfig(object):
@@ -163,6 +267,7 @@ class ScreenConfig(object):
 
     def _getScreen(self):
         if self._screen is None:
+            print('Instantiating screen from class: %s' % (str(self.screen_class.__name__)))
             self._screen = self.screen_class(*self.screen_args, **self.screen_kwargs)
             self._screen.name = self.screen_name
         return self._screen
@@ -180,27 +285,28 @@ class NavDrawerEntryConfig(ScreenConfig):
         super(NavDrawerEntryConfig, self).__init__(screen_class, screen_args=screen_args, screen_kwargs=screen_kwargs, screen_name=button_title)
 
     def create_button(self, screenmanager):
-        btn = FlatIconButtonLeft(text=self.button_title)
+        btn = CustomIconButton(text=self.button_title)
         btn.theme = ('app', 'navigationdrawer')
-        # Question: best way to set these? should something be
-        #           customized, e.g. NavigationIconButton(FlatIconButtonLeft),
-        #           such that the properties are forwarded or
-        #           is it okay to do it here like this?
-        btn.ids.icon.font_size = '15dp'
-        btn.ids.label.halign = 'left'
         btn.config = self
         btn.manager = screenmanager
         return btn
 
 
 class ExtendedFlatApp(FlatApp):
-    def __init__(self, app_config_entries, title, about, *largs, **kwargs):
-        super(ExtendedFlatApp, self).__init__(*largs, **kwargs)
+    def __init__(self, app_config_entries, title, about,
+                 use_coverflow_navigation=True,
+                 lazy_loading=False,
+                 themes={}, types_to_theme={}, font_styles={},
+                 **kwargs):
+        self._themes = themes
+        self._types_to_theme = types_to_theme
+        self._font_styles = font_styles
+        super(ExtendedFlatApp, self).__init__(**kwargs)
         self.title = title
         self.app_config_entries = app_config_entries
         self.about = about
-        self.lazy_loading = False
-        self.use_coverflow_navigation = kwargs.get('use_coverflow_navigation', False)
+        self.lazy_loading = lazy_loading
+        self._use_coverflow_navigation = use_coverflow_navigation
         self._first_screen = None
         self._first_navigation_label = None
 
@@ -220,306 +326,74 @@ class ExtendedFlatApp(FlatApp):
             if type(entry) == type(str()):
                 entry = {'text' : entry, 'theme' : ('app', 'navigationdrawer')}
             if type(entry) == type(dict()):
-                self._create_navigation_label_from_dict(entry)
+                self._create_navigation_label(entry)
             if isinstance(entry, NavDrawerEntryConfig):
                 self._create_navigation_button(entry)
 
-        if not self.use_coverflow_navigation:
-            return self.root
+        # if not self.use_coverflow_navigation:
+        #     return self.root
 
-        self._thumbnails = list()
-        self._is_opening = True
-        self._open_screen_index = len(self._screenmanager.screens)-1
-        self.open_all_screens()
+        # self._screenmanager.get_all_thumbnails()
 
         return self.root
 
-    @mainthread
-    def open_all_screens(self):
-        screen = self._screenmanager.screens[self._open_screen_index]
-        screen.bind(on_enter=self._local_on_enter)
-        self._screenmanager.current = screen.name
+        # self._thumbnails = list()
+        # self._is_opening = True
+        # self._open_screen_index = len(self._screenmanager.screens)-1
+        # self.open_all_screens()
+        #
+        # return self.root
 
-    def _local_on_touch_up(self, touch):
-        print 'local on touch up for thumbnail...'
-
-    def _local_on_enter(self, screen):
-        #screen.on_enter(screen)
-        if not self._is_opening:
-            return
-        thumbnail = ThumbNailWidget(screen)
-        thumbnail.bind(on_touch_up=self._local_on_touch_up)
-        self._thumbnails.append((thumbnail, screen.name))
-        self._open_screen_index -= 1
-        if self._open_screen_index >= 0:
-            self.open_all_screens()
-        else:
-            self.finalize()
-
-    @mainthread
-    def finalize(self):
-        self.navigation_popup = NavigationModalView(self._thumbnails)
-        self.navigation_popup.size_hint = (None, None)
-        #self.navigation_popup.size = Window.size
-        self.navigation_popup.size = (0,0)
-        #self.navigation_popup = NavigationModalView()
-        #self.navigation_popup = ModalView()
-        self.navigation_popup.background_color = (.0, .0, .0, .9)
-        #entry = ('Navigation Screen', NavigationScreen, [self._thumbnails], {})
-        #self._create_navigation_button(entry)
-        #self._screenmanager.current = self._screenmanager.screens[-1].name
-        #self._screenmanager.current = self._screenmanager.screens[0].name
-        self._is_opening = False
-        self._screenmanager.transition = FadeTransition()
-        # self._menu_button.bind(on_press=lambda j: self.navigation_popup.open())
+#    @mainthread
+#    def open_all_screens(self):
+#        screen = self._screenmanager.screens[self._open_screen_index]
+#        screen.bind(on_enter=self._local_on_enter)
+#        self._screenmanager.current = screen.name
+#
+#    def _local_on_enter(self, screen):
+#        if not self._is_opening:
+#            return
+#        thumbnail = ThumbNailWidget(screen)
+#        thumbnail.name = screen.name
+#        self._thumbnails.append(thumbnail)
+#        self._open_screen_index -= 1
+#        if self._open_screen_index >= 0:
+#            self.open_all_screens()
+#        else:
+#            self.finalize()
+#
+#    @mainthread
+#    def finalize(self):
+#        self.navigation_popup = CoverFlowPopup(self._thumbnails)
+#        self.navigation_popup.size_hint = (None, None)
+#        self.navigation_popup.size = (0,0)
+#        self.navigation_popup.background_color = (.0, .0, .0, .9)
+#        self._is_opening = False
+#        self._screenmanager.transition = FadeTransition()
+#        # self._menu_button.bind(on_press=lambda j: self.navigation_popup.open())
 
     def setup_themes(self):
-        main = {
-            'FlatButton': {
-                'color_tuple': ('Gray', '0000'),
-                'font_color_tuple': ('LightGreen', '800'),
-                'style': 'Button',
-                },
-            'RaisedFlatButton': {
-                'color_tuple': ('Gray', '0000'),
-                'font_color_tuple': ('LightGreen', '800'),
-                'style': 'Button',
-                },
-            'FlatLabel': {
-                'style': 'Button',
-                },
-            'FlatSlider': {
-                'bar_fill_color_tuple': ('LightGreen', '500'),
-                'handle_accent_color_tuple': ('LightGreen', '200'),
-                },
-            'CustomSliderTouchRippleBehavior' : {
-            },
 
-            'CustomSlider': {
-                'color_tuple' : ('Brown', '600'),
-                'outline_color_tuple' : ('Brown', '700'),
-                'slider_color_tuple' : ('Blue', '200'),
-                'slider_outline_color_tuple' : ('Green', '700'),
-                'ripple_color_tuple' : ('Brown', '400'),
-                },
-            }
+        # Add default application themes
+        from themes_and_fonts import themes, types_to_theme
+        self.add_themes(themes, types_to_theme)
 
-        accent = {
-            'FlatButton': {
-                'color_tuple': ('LightGreen', '500'),
-                'font_color_tuple': ('Gray', '1000'),
-                'style': 'Button',
-                },
-            'RaisedFlatButton': {
-                'color_tuple': ('LightGreen', '500'),
-                'font_color_tuple': ('Gray', '1000'),
-                'style': 'Button',
-                },
-            'FlatIconButton': {
-                'color_tuple': ('LightGreen', '500'),
-                'font_color_tuple': ('Gray', '1000'),
-                'style': 'Button',
-                'icon_color_tuple': ('Gray', '1000')
-                },
-            'FlatToggleButton': {
-                'color_tuple': ('LightGreen', '500'),
-                'font_color_tuple': ('Gray', '1000'),
-                'style': 'Button',
-                },
-            'RaisedFlatToggleButton': {
-                'color_tuple': ('LightGreen', '500'),
-                'font_color_tuple': ('Gray', '1000'),
-                'style': 'Button',
-                },
-            'FlatCheckBox': {
-                'color_tuple': ('Gray', '0000'),
-                'check_color_tuple': ('LightGreen', '500'),
-                'outline_color_tuple': ('Gray', '1000'),
-                'style': 'Button',
-                'check_scale': .7,
-                'outline_size': '10dp',
-                },
-            'FlatCheckBoxListItem': {
-                'font_color_tuple': ('Gray', '1000'),
-                'check_color_tuple': ('LightGreen', '500'),
-                'outline_color_tuple': ('Gray', '800'),
-                'style': 'Button',
-                'check_scale': .7,
-                'outline_size': '10dp',
-                },
-            }
-
-        themes = {
-                'green' : {'main' : main,
-                           'accent' : accent,
-                           }
-                 }
-        self.add_themes(themes)
-
-        header = {
-            'CustomIconButton': {
-                'color_tuple': ('Brown', '900'),
-                'font_color_tuple': ('Gray', '100'),
-                'style': 'Button',
-                'icon_color_tuple': ('Gray', '100'),
-                'icon_font_size' : '25dp',
-                },
-            'FlatLabel': {
-                'color_tuple' : ('Orange', '500'),
-                'style' : 'HeaderTitle',
-                },
-            }
-
-        navigationdrawer = {
-            'FlatLabel': {
-                'size_hint_y' : None,
-                'height' : '35dp',
-                # 'font_size' : '20dp',
-                'color_tuple' : ('Green', '300'),
-                'style' : 'NavigationLabelMainHeading',
-            },
-            'FlatIconButtonLeft': {
-                'color_tuple': ('Brown', '800'),
-                'font_color_tuple': ('Blue', '300'),
-                'size_hint_y' : None,
-                'height' : '35dp',
-                'icon' : 'fa-chevron-right',
-                'icon_color_tuple': ('Red', '500'),
-                'padding' : '3dp',
-                'style': 'NavigationButton',
-            },
-        }
-
-        screen = {
-            'FlatLabel': {
-                'color_tuple' : ('Brown', '800'),
-                'style' : 'HeaderTitle',
-                'size_hint_y' : None,
-                'height' : '40dp',
-             },
-        }
-
-        grouped_layout = {
-            'FlatLabel': {
-                'color_tuple': ('Orange', '800'),
-                'style': 'GroupedLayoutTitle',
-                'size_hint_y': None,
-                'height': '35dp',
-            },
-        }
-
-        default = {
-            'CustomButton': {
-               'color_tuple': ('Brown', '500'),
-                'font_color_tuple': ('Gray', '100'),
-                'style': 'CustomButton1',
-                'radius' : '10dp',
-            },
-            'CustomCheckBoxListItem': {
-                'font_color_tuple': ('Blue', '800'),
-                'check_color_tuple': ('Green', '600'),
-                'check_color_hue_down': '200',
-                'outline_color_tuple': ('Gray', '500'),
-                'style': 'Button',
-                'valign' : 'middle',
-
-                'size_scaling' : 0.6,
-                'outline_size': '1.5dp',
-                'style': 'CustomButton1',
-
-                'check_scale': .6,
-                'radius' : '4dp',
-                'icon' : 'fa-check',
-            },
-
-        }
+        # Add user themes if specified
+        self.add_themes(self._themes, self._types_to_theme)
 
 
-        themes = {
-                'app' : {'header' : header,
-                         'navigationdrawer' : navigationdrawer,
-                         'screen' : screen,
-                         'grouped_layout' : grouped_layout,
-                         'default' : default,
-                        }
-                }
-
-        #self.theme_manager.add_theme('green', 'main', main)
-        #self.theme_manager.add_theme('green', 'accent', accent)
-
-        #self.theme_manager.add_theme('app', 'header', header)
-        #self.theme_manager.add_theme('app', 'navigationdrawer', navigationdrawer)
-        #self.theme_manager.add_theme('app', 'screen', screen)
-        #self.theme_manager.add_theme('app', 'grouped_layout', grouped_layout)
-        #self.theme_manager.add_theme('app', 'default', default)
-
-        self.add_themes(themes)
-
-        from flat_kivy_extensions.uix.custombutton import CustomButton
-        from flat_kivy_extensions.uix.customslider import CustomSlider, CustomSliderTouchRippleBehavior
-        from flat_kivy_extensions.uix.customcheckbox import CustomCheckBoxListItem
-        self.theme_manager.types_to_theme['CustomSlider'] = CustomSlider
-        self.theme_manager.types_to_theme['CustomSliderTouchRippleBehavior'] = CustomSliderTouchRippleBehavior
-        self.theme_manager.types_to_theme['CustomButton'] = CustomButton
-        self.theme_manager.types_to_theme['CustomIconButton'] = CustomIconButton
-        self.theme_manager.types_to_theme['CustomCheckBoxListItem'] = CustomCheckBoxListItem
-        self.theme_manager.types_to_theme['FlatIconButtonLeft'] = FlatIconButtonLeft
-
-    def add_themes(self, themes):
+    def add_themes(self, themes, types_to_theme={}):
         for (theme, value) in themes.items():
             for (variant, theme_dict) in value.items():
                 self.theme_manager.add_theme(theme, variant, theme_dict)
-
+        for (key,value) in types_to_theme.items():
+            self.theme_manager.types_to_theme[key] = value
 
     def setup_font_ramps(self):
         super(ExtendedFlatApp, self).setup_font_ramps()
 
-        font_styles = {
-            'HeaderTitle': {
-                #'font': 'Roboto-Bold.ttf',
-                # Question: what is the best way to include additional fonts?
-                'font': '%s/proximanova-regular-webfont.ttf' % relative_path_to_fonts,
-                'sizings': {'mobile': (25, 'sp'), 'desktop': (20, 'sp')},
-                'alpha': .87,
-                'wrap': False,
-                },
-            'NavigationButton': {
-                #'font': 'Roboto-Bold.ttf',
-                'font': '%s/proximanova-regular-webfont.ttf' % relative_path_to_fonts,
-                'sizings': {'mobile': (16, 'sp'), 'desktop': (14, 'sp')},
-                'alpha': .87,
-                'wrap': False,
-            },
-            'NavigationLabelMainHeading': {
-                #'font': 'Roboto-Bold.ttf',
-                'font': '%s/proximanova-bold-webfont.ttf' % relative_path_to_fonts,
-                'sizings': {'mobile': (20, 'sp'), 'desktop': (17, 'sp')},
-                'alpha': .87,
-                'wrap': False,
-            },
-            'NavigationLabelSubHeading': {
-                #'font': 'Roboto-Bold.ttf',
-                'font': '%s/proximanova-bold-webfont.ttf' % relative_path_to_fonts,
-                'sizings': {'mobile': (18, 'sp'), 'desktop': (15, 'sp')},
-                'alpha': .87,
-                'wrap': False,
-            },
-            'GroupedLayoutTitle': {
-                #'font': 'Roboto-Bold.ttf',
-                'font': '%s/proximanova-bold-webfont.ttf' % relative_path_to_fonts,
-                'sizings': {'mobile': (22, 'sp'), 'desktop': (17, 'sp')},
-                'alpha': .87,
-                'wrap': False,
-            },
-            'CustomButton1': {
-                #'font': 'Roboto-Bold.ttf',
-                'font': '%s/proximanova-semibold-webfont.ttf' % relative_path_to_fonts,
-                'sizings': {'mobile': (17, 'sp'), 'desktop': (17, 'sp')},
-                'alpha': .87,
-                'wrap': False,
-            },
-            }
-
+        # Load application default font styles
+        from themes_and_fonts import font_styles
         self.add_font_styles(font_styles)
 
     def add_font_styles(self, font_styles):
@@ -529,15 +403,15 @@ class ExtendedFlatApp(FlatApp):
             style_manager.add_style(style['font'], each, sizings['mobile'],
                 sizings['desktop'], style['alpha'])
 
-    def _create_navigation_label_from_string(self, entry):
-        entry = {'text' : entry, 'theme' : ('app', 'navigationdrawer')}
-        if self._first_navigation_label is None:
-            self._first_navigation_label = self._create_navigation_label_from_dict(entry)
-            return
-        entry['style'] = 'NavigationLabelSubHeading'
-        self._create_navigation_label_from_dict(entry)
+    # def _create_navigation_label_from_string(self, entry):
+    #     entry = {'text' : entry, 'theme' : ('app', 'navigationdrawer')}
+    #     if self._first_navigation_label is None:
+    #         self._first_navigation_label = self._create_navigation_label_from_dict(entry)
+    #         return
+    #     entry['style'] = 'NavigationLabelSubHeading'
+    #     self._create_navigation_label_from_dict(entry)
 
-    def _create_navigation_label_from_dict(self, entry):
+    def _create_navigation_label(self, entry):
         label = FlatLabel(text=entry.get('text', 'None'))
         if 'theme' in entry.keys():
             setattr(label, 'theme', entry['theme'])
@@ -550,41 +424,14 @@ class ExtendedFlatApp(FlatApp):
         return label
 
     def _create_navigation_button(self, entry):
-
         btn = entry.create_button(self._screenmanager)
-        #btnText = entry.button_title
-        #btn = FlatIconButtonLeft(text=btnText)
-        #btn.theme = ('app', 'navigationdrawer')
-
-        ## Question: best way to set these? should something be
-        ##           customized, e.g. NavigationIconButton(FlatIconButtonLeft),
-        ##           such that the properties are forwarded or
-        ##           is it okay to do it here like this?
-        #btn.ids.icon.font_size = '15dp'
-        #btn.ids.label.halign = 'left'
-
         self._side_panel.add_widget(btn)
-
-        #btn.config = entry
-        #btn.manager = self._screenmanager
         btn.bind(on_release=self._switch_to_screen)
-
         if len(self._screenmanager.children) == 0:
             self._screenmanager.add_widget(btn.config.screen)
         else:
             if not self.lazy_loading:
                 self._screenmanager.add_widget(btn.config.screen)
-
-#    def _create_screen(self, button):
-#        if button.screen is None:
-#            print('Creating instance: screen = ' +
-#                  str(button.config[1].__name__ +
-#                      "(*" + str(button.config[2]) +
-#                      ", **" + str(button.config[3]) + ')'))
-#            button.screen = button.config[1](*button.config[2], **button.config[3])
-#            button.screen.name = button.config[0]
-#            self._screenmanager.add_widget(button.screen)
-#            return button.screen
 
     def _switch_to_screen(self, instance):
         screen = instance.config.screen
