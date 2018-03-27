@@ -25,34 +25,41 @@ Builder.load_string('''
             pos: self.pos
 
 
-<NavigationModalView>:
+<CoverFlowPopup>:
 
 ''')
 
-class NavigationModalView(ModalView):
+class CoverFlowPopup(ModalView):
 
-    def __init__(self, thumbnails, *largs, **kwargs):
-    #def __init__(self, *largs, **kwargs):
-        super(NavigationModalView, self).__init__(*largs, **kwargs)
+    def __init__(self, widgets, index_changed_callback=None, index=0, *largs, **kwargs):
+        super(CoverFlowPopup, self).__init__(*largs, **kwargs)
 
-        self.thumbnails = thumbnails
-        (self.lst_covers, self.cover_names) = zip(*thumbnails)
+        self.widgets = widgets
 
-        self.cfl = CoverFlowLayout(self.lst_covers, self.cover_names, cover_change_callback=self._cover_changed)
+        print 'should set index to: %s' % str(index)
+        self.index_changed_callback = index_changed_callback
+        lst_covers = widgets
+        cover_names = list()
+        for widget in widgets:
+            cover_names.append(str(id(widget)))
+        self.cfl = CoverFlowLayout(lst_covers, cover_names, cover_change_callback=self._cover_changed, index=index)
         self.cfl.size_hint = (None,None)
         self.cfl.size = (dp(0), dp(0))
         self.add_widget(self.cfl)
         self.auto_dismiss = False
-        #self.cfl.background_color = (.1, .5, .1, .95)
-        #self.background_color = (.1, .9, .1, .95)
-        #self.size = Window.size
+
+        self.size_hint = (None, None)
+        self.size = (1,1)
 
     def _cover_changed(self, index):
-        sm = App.get_running_app()._screenmanager
-        screen = sm.screens[index]
-        print 'coverflow navigation switch to screen: %s' % str(screen.name)
-        sm.current = screen.name
+        self.index_changed_callback(index)
         self.dismiss()
+        return
+        # sm = App.get_running_app()._screenmanager
+        # screen = sm.screens[index]
+        # print 'coverflow navigation switch to screen: %s' % str(screen.name)
+        # sm.current = screen.name
+        # self.dismiss()
 
 class NavigationScreen(Screen):
 
