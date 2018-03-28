@@ -7,7 +7,7 @@ import numpy as np
 
 from kivy.app import App
 from kivy.lang import Builder
-from kivy.clock import Clock
+from kivy.clock import Clock, mainthread
 from kivy.uix.label import Label
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.stacklayout import StackLayout
@@ -25,8 +25,6 @@ from flat_kivy_extensions.uix.customlayouts import StyledLayout, GroupedLayout
 from flat_kivy_extensions.uix.dropshadow import DropShadow
 from flat_kivy_extensions.uix.custombutton import CustomButton
 from flat_kivy_extensions.uix.customcheckbox import CustomCheckBoxListItem
-
-from navigationscreen import NavigationModalView
 
 Builder.load_string('''
 <-KivyWidgetScreen>:
@@ -258,8 +256,15 @@ class CustomButtonDemoScreen(CustomScreen):
 
     def show_popup(self):
         print 'show popup...'
-        App.get_running_app().navigation_popup.open()
+        #App.get_running_app().navigation_popup.open()
+        # App.get_running_app()._screenmanager.open_all_screens()
+        App.get_running_app()._screenmanager.get_all_thumbnails(self._show_it)
+
         #App.get_running_app().raise_error('A', 'B')
+
+    @mainthread
+    def _show_it(self):
+        App.get_running_app()._screenmanager.show_navigation_popup()
 
 
 class CustomCheckBoxDemoScreen(CustomScreen):
