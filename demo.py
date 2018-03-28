@@ -2,6 +2,9 @@
 import sys
 sys.path.append('flat_kivy_extensions/submodules')
 
+#import os
+#os.environ['KIVY_METRICS_DENSITY'] = '2.0'
+
 from kivy .garden import garden_system_dir
 print('Garden system dir: %s\n\n\n' % str(garden_system_dir))
 
@@ -24,32 +27,28 @@ from screens2 import (KivyWidgetScreen, CustomButtonDemoScreen,
 
 from graph_screen import GraphDemoScreen
 
+from package_control_screen import PackageManagerScreen
+
 #    An application configuration list is used to specify what screens
 #    should be included and how to navigate to them.
 #
-#    This configuration list defines the widgets that are included in
-#    the navigation side-panel and each item in the list is used to configure
+#    This list  configures the widgets that are included in
+#    the navigation side-panel. Eeach item in the list is used to configure
 #    either a:
 #
-#     - Label used for navigation panel separator headers
+#     - Label used for navigation panel separator headers.  If
+#       the item in the list is a string it is used as the text in a
+#       navigation panel header.  If the item is a dict then
+#       it is used as the kwargs when creating the FlatLabel for
+#       a navigation panel header.
 #
-#     - Button for each Screen to include.
-#         Each button instance holds a reference to the screen
-#         and triggers navigation to that screen via on_release
-
-# Each item in the app_config_entries list must be one of the following types:
-#
-#  str():  Text used in a Label that is added to th navigation slide-out panel
-#
-#  dict(): Dict of configuration properties that is used to construct
-#          a Label that is added to the navigation slide out-panel
-#
-#  instance of NavDrawerEntryConfig.
-#           instantiating a NavDrawerEntryConfig requires at least
-#           a screen class.
+#     - NavigationDrawerEntry config each Screen to include.
+#       Contsruction of a NavDrawerEntryConfig instance
+#       requires at least a screen class, nd usually a string
+#       that is used for navigation button title.  See xyz for details.
 #
 
-app_config_entries = ['Demo Option',
+app_config_entries = ['Some Menu',
                       'Standard screens in app',
                       NavDrawerEntryConfig(KivyScreen1, 'Kivy Screen1'),
                       NavDrawerEntryConfig(KivyScreen2, 'Kivy Screen2'),
@@ -57,15 +56,24 @@ app_config_entries = ['Demo Option',
                       'Custom screens',
                       NavDrawerEntryConfig(KivyWidgetScreen, 'Kivy Widget Demo'),
                       NavDrawerEntryConfig(CustomButtonDemoScreen, 'Custom Buttons'),
+                      NavDrawerEntryConfig(CustomCheckBoxDemoScreen, 'Custom CheckBoxes'),
                       NavDrawerEntryConfig(CustomSliderDemoScreen, 'Custom Sliders'),
+                      'Special screens',
                       NavDrawerEntryConfig(GraphDemoScreen, 'Garden Graph Demo'),
                       NavDrawerEntryConfig(CustomLayoutsScreen, 'CustomLayouts'),
                       NavDrawerEntryConfig(DropShadowScreen, 'DropShadow Examples'),
-                      {'text':'Custom Heading Label',
-                       'style':'Button',
-                       'color_tuple' : ('Yellow', '500')},
+                      #{'text':'Custom Heading Label',
+                      # 'style':'Button',
+                      # 'color_tuple' : ('Yellow', '500')},
                      ]
 
+#
+# Include themes or font stypes to override default application
+# settings or add new ones
+#
+from app_themes_and_fonts import themes
+
 if __name__ == '__main__':
-    app = ExtendedFlatApp(app_config_entries, title, about, use_coverflow_navigation=True)
+    app = ExtendedFlatApp(app_config_entries, title, about, use_coverflow_navigation=True, themes=themes)
     app.run()
+
