@@ -2,7 +2,7 @@
 import sys
 sys.path.append('flat_kivy_extensions/submodules')
 
-from flat_kivy_extensions.flatappextension import ExtendedFlatApp
+from flat_kivy_extensions.flatappextension import ExtendedFlatApp, NavDrawerEntryConfig
 
 # 1) Developer specifies application title and a string to describe
 #    the application
@@ -43,10 +43,13 @@ from screens import FlatKivyDemoScreen, KivyScreen1, KivyScreen2
 #
 
 app_config_entries = ['Main Label',
-                      ('FlatKivyDemo Screen', FlatKivyDemoScreen, [], {}),
+                      #('FlatKivyDemo Screen', FlatKivyDemoScreen, [], {}),
+                      NavDrawerEntryConfig(FlatKivyDemoScreen, 'FlatKivy Demo Screen'),
                       'SubHeading Label',
-                      ('Kivy Screen 1', KivyScreen1, [], {}),
-                      ('Kivy Screen 2', KivyScreen2, [], {}),
+                      #('Kivy Screen 1', KivyScreen1, [], {}),
+                      NavDrawerEntryConfig(KivyScreen1, 'Kivy screen1'),
+                      #('Kivy Screen 2', KivyScreen2, [], {}),
+                      NavDrawerEntryConfig(KivyScreen2, 'Kivy screen2'),
                       {'text':'Custom Heading Label',
                        'style':'NavigationLabelSubHeading',
                        'color_tuple' : ('Yellow', '500')},
