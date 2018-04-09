@@ -3,6 +3,7 @@
     color: app.get_color(self.color_tuple) 
     ripple_color: app.get_color(self.ripple_color_tuple)
     icon_font_size: dp(5) 
+    orientation: 'tb-lr'
     canvas.before:
         Color:
             rgb: root.color_down if root.state == 'down' or root.disabled else root.color
@@ -10,7 +11,7 @@
             size: self.size
             pos: self.pos
     StackLayout:
-        orientation: 'tb-lr'
+        orientation: root.orientation
         id: label_space
         padding: root.content_padding
         spacing: root.content_spacing
