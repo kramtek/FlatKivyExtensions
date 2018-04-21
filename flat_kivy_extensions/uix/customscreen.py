@@ -109,7 +109,15 @@ class CustomScreen(Screen):
 
         self.outer_container = _OuterLayout()
 
-        if False:
+        padding = 5
+        height_offset = 4
+        header_height = 40
+        #blur_radius = 4
+        #shadow_offset = 6
+        #shadow_color = (0.3, 0.1, 0.1, 0.5)
+
+        self.container_height = Window.height - dp(header_height) - dp(2*padding) - dp(height_offset) - self._title_label.height - 2*dp(padding) - 2*self._main_layout.padding[0]
+        if True:
             self.outer_container.add_widget(self._main_layout)
             super(CustomScreen, self).add_widget(self.outer_container)
             #super(CustomScreen, self).add_widget(self._main_layout)
@@ -126,13 +134,14 @@ class CustomScreen(Screen):
         self._main_layout.size_hint = (None, None)
         self._main_layout.height = Window.height - dp(header_height) - dp(2*padding) - dp(height_offset)
         self._main_layout.width = Window.width - dp(2*padding+height_offset)
-        ds = DropShadow(self._main_layout, height_offset=height_offset)
-        ds.blur_radius = blur_radius
-        ds.offset = shadow_offset
-        ds.shadow_color = shadow_color
-        self.outer_container.add_widget(ds)
+        self.outer_container.add_widget(self._main_layout)
+#        ds = DropShadow(self._main_layout, height_offset=height_offset)
+#        ds.blur_radius = blur_radius
+#        ds.offset = shadow_offset
+#        ds.shadow_color = shadow_color
+#        self.outer_container.add_widget(ds)
 
-        self.container_height = Window.height - dp(header_height) - dp(2*padding) - dp(height_offset) - self._title_label.height - 2*dp(padding) - 2*self._main_layout.padding[0]
+        #self.container_height = Window.height - dp(header_height) - dp(2*padding) - dp(height_offset) - self._title_label.height - 2*dp(padding) - 2*self._main_layout.padding[0]
 
         super(CustomScreen, self).add_widget(self.outer_container)
 
