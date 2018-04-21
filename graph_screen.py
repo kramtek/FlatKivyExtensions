@@ -100,7 +100,9 @@ class GraphDemoScreen(CustomScreen):
             ymin=0,
             _with_stencilbuffer=False,
             **graph_theme)
-        self.b.add_widget(graph)
+#        self.b.add_widget(graph)
+        graph.height = dp(200)
+        self.add_widget(graph)
 
         if np is not None:
             (xbounds, ybounds, data) = self.make_contour_data()
@@ -115,12 +117,14 @@ class GraphDemoScreen(CustomScreen):
             plot.color = [1, 0.7, 0.2, 1]
             graph2.add_plot(plot)
 
-            self.b.add_widget(graph2)
+            graph2.height = dp(200)
+#            self.b.add_widget(graph2)
+            self.add_widget(graph2)
             self.contourplot = plot
 
             Clock.schedule_interval(self.update_contour, 1 / 10.)
 
-        self.add_widget(self.b)
+#        self.add_widget(self.b)
 
     def make_contour_data(self, ts=0):
         omega = 2 * pi / 30
