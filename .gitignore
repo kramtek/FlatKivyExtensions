@@ -99,3 +99,9 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+
+launcher_config.txt
+
+push_files.py
+
