@@ -1,4 +1,6 @@
 
+import time
+
 from kivy.properties import (ObjectProperty, OptionProperty, NumericProperty,
                              ListProperty, StringProperty)
 
@@ -7,6 +9,7 @@ from kivy.animation import Animation
 from kivy.uix.slider import Slider
 from kivy.metrics import sp, dp
 from kivy.animation import Animation
+from kivy.uix.boxlayout import BoxLayout
 from kivy.graphics import Color, Ellipse, Rectangle
 from kivy.graphics import (StencilPush, StencilPop, StencilUse,
                            StencilUnUse, Color, Rectangle)
@@ -29,11 +32,11 @@ class CustomSliderTouchRippleBehavior(ThemeBehavior):
     ripple_func_in = StringProperty('in_cubic')
     ripple_func_out = StringProperty('out_quad')
 
-    slider_bar_width = NumericProperty(14)
-    slider_handle_radius = NumericProperty(16)
+    # slider_bar_width = NumericProperty(14)
+    # slider_handle_radius = NumericProperty(16)
 
-    slider_bar_width = NumericProperty(3)
-    slider_handle_radius = NumericProperty(12)
+    slider_bar_width = NumericProperty(dp(2))
+    slider_handle_radius = NumericProperty(dp(10))
 
     def __init__(self, **kwargs):
         super(CustomSliderTouchRippleBehavior, self).__init__(**kwargs)
@@ -61,14 +64,14 @@ class CustomSliderTouchRippleBehavior(ThemeBehavior):
                 width, height = self.size
 
                 if self.orientation == 'horizontal':
-                    ellipse_pos = (self.value_pos[0] - sp(self.slider_handle_radius), self.center_y - sp(self.slider_handle_radius+1))
-                    stencil_pos = (self.x + self.padding + sp(1), self.center_y - sp(self.slider_bar_width/2))
+                    ellipse_pos = (self.value_pos[0] - self.slider_handle_radius, self.center_y - self.slider_handle_radius+1)
+                    stencil_pos = (self.x + self.padding + sp(1), self.center_y - self.slider_bar_width/2)
                     #stencil_size = (self.width - self.padding * 2 - sp(2), self.slider_bar_width)
                     stencil_size = (self.width - self.padding * 2 - sp(2), 4)
                 else:
-                    ellipse_pos = (self.center_x - sp(self.slider_handle_radius+1), self.value_pos[1] - sp(self.slider_handle_radius))
-                    stencil_pos = (self.center_x - sp(self.slider_bar_width/2), self.y + self.padding + sp(1))
-                    stencil_size = (sp(self.slider_bar_width), self.height - self.padding * 2 - sp(2))
+                    ellipse_pos = (self.center_x - self.slider_handle_radius+1, self.value_pos[1] - self.slider_handle_radius)
+                    stencil_pos = (self.center_x - self.slider_bar_width/2, self.y + self.padding + dp(1))
+                    stencil_size = (self.slider_bar_width, self.height - self.padding * 2 - sp(2))
 
                 StencilPush()
                 Rectangle(
@@ -76,7 +79,7 @@ class CustomSliderTouchRippleBehavior(ThemeBehavior):
                     size=stencil_size)
                 self.slider_stencil = Ellipse(
                     pos=ellipse_pos,
-                    size=(sp(self.slider_handle_radius*2), sp(self.slider_handle_radius*2)))
+                    size=(self.slider_handle_radius*2, self.slider_handle_radius*2))
                 StencilUse(op='lequal')
                 self.col_instruction = Color(rgba=self.ripple_color)
                 self.ellipse = Ellipse(size=(ripple_rad, ripple_rad),
@@ -88,7 +91,7 @@ class CustomSliderTouchRippleBehavior(ThemeBehavior):
                     size=stencil_size)
                 self.slider_stencil_unuse = Ellipse(
                     pos=ellipse_pos,
-                    size=(sp(self.slider_handle_radius*2), sp(self.slider_handle_radius*2)))
+                    size=(self.slider_handle_radius*2, self.slider_handle_radius*2))
 
                 StencilPop()
             self.bind(ripple_color=self.set_color, ripple_pos=self.set_ellipse,
@@ -97,15 +100,15 @@ class CustomSliderTouchRippleBehavior(ThemeBehavior):
 
     def update_stencil(self):
         if self.orientation == 'horizontal':
-            pos = [self.value_pos[0] - sp(self.slider_handle_radius),
-                   self.center_y - sp(self.slider_handle_radius+1)]
-            ellipse = [self.value_pos[0] - sp(self.slider_handle_radius),
-                       self.center_y - sp(self.slider_handle_radius+1), sp(self.slider_handle_radius*2), sp(self.slider_handle_radius*2)]
+            pos = [self.value_pos[0] - self.slider_handle_radius,
+                   self.center_y - self.slider_handle_radius+1]
+            ellipse = [self.value_pos[0] - self.slider_handle_radius,
+                       self.center_y - self.slider_handle_radius+1, self.slider_handle_radius*2, self.slider_handle_radius*2]
         else:
-            pos = [self.center_x - sp(self.slider_handle_radius+1),
-                   self.value_pos[1] - sp(self.slider_handle_radius)]
-            ellipse = [self.center_x - sp(self.slider_handle_radius+1),
-                       self.value_pos[1] - sp(self.slider_handle_radius), sp(self.slider_handle_radius*2), sp(self.slider_handle_radius*2)]
+            pos = [self.center_x - self.slider_handle_radius+1,
+                   self.value_pos[1] - self.slider_handle_radius]
+            ellipse = [self.center_x - self.slider_handle_radius+1,
+                       self.value_pos[1] - self.slider_handle_radius, self.slider_handle_radius*2, self.slider_handle_radius*2]
 
         if self.slider_stencil is not None:
             self.slider_stencil.pos = pos
@@ -154,12 +157,108 @@ class CustomSlider(GrabBehavior, CustomSliderTouchRippleBehavior, ThemeBehavior,
     outline_color_tuple = ListProperty(['Blue', '600'])
     slider_outline_color_tuple = ListProperty(['Orange', '500'])
     ripple_color_tuple = ListProperty(['Grey', '0000'])
+    released_value = NumericProperty(0.0)
 
-    # slider_bar_width = NumericProperty(16)
-    # slider_handle_radius = NumericProperty(16)
-    #
-    # slider_bar_width = NumericProperty(3)
-    # slider_handle_radius = NumericProperty(12)
+    def on_touch_up(self, touch):
+        now = time.time()
+        if not hasattr(self, '_last_time'):
+            self._last_time = 0.0
+        if not hasattr(self, '_last_value'):
+            self._last_value = None
+            return True
+        if self._last_value != self.value:
+            timeDelta = now - self._last_time
+            if timeDelta > 0.25:
+                self._last_value = self.value
+                self._last_time = now
+                self.released_value = self._last_value
+        return super(CustomSlider, self).on_touch_up(touch)
+
+
+class ExtendedSlider(BoxLayout):
+
+    label_text = StringProperty('')
+    label_format = StringProperty('')
+    units = StringProperty('-')
+    min = NumericProperty(0)
+    max = NumericProperty(100)
+
+    def __init__(self, **kwargs):
+        super(ExtendedSlider, self).__init__(**kwargs)
+        orientation = kwargs.get('orientation', 'horizontal')
+        if orientation == 'horizontal':
+            self.orientation = 'horizontal'
+        else:
+            self.orientation = 'vertical'
+        self.widget = None
+        self._create_widget()
+
+    def _create_widget(self):
+        if self.widget is not None:
+            self.remove_widget(self.widget)
+        if self.orientation == 'horizontal':
+            self.widget = ExtendedSliderHorizontal()
+        else:
+            self.widget = ExtendedSliderVertical()
+        self.add_widget(self.widget)
+
+    def on_units(self, instance, value):
+        if self.widget is not None:
+            self.widget.units = value
+            self.widget._update_label(self.widget.slider, self.widget.slider.value)
+
+    def on_label_text(self, instance, value):
+        if self.widget is not None:
+            self.widget.label_text = value
+            self.widget._update_label(self.widget.slider, self.widget.slider.value)
+
+    def on_label_format(self, instance, value):
+        if self.widget is not None:
+            self.widget.label_format = value
+            self.widget._update_label(self.widget.slider, self.widget.slider.value)
+
+    def on_min(self, intance, value):
+        if self.widget is not None:
+            self.widget.min = value
+            self.widget._update_label(self.widget.slider, self.widget.slider.value)
+
+    def on_max(self, intance, value):
+        if self.widget is not None:
+            self.widget.max = value
+            self.widget._update_label(self.widget.slider, self.widget.slider.value)
+
+
+    def on_orientation(self, obj, value):
+        self.orientation = value
+        self._create_widget()
+
+
+class _BaseExtendedSlider(BoxLayout):
+
+    label_text = StringProperty('')
+    units = StringProperty('-')
+
+    def _on_done_building(self):
+        self.slider = self.ids.slider
+        self.info_label = self.ids.label
+        self.slider.bind(released_value=self._slider_released)
+        self.slider.bind(value=self._update_label)
+        self._update_label(self.slider, self.slider.value)
+
+    def _slider_released(self, instance, value):
+        print 'slider relased: value: %s' % str(self.slider.released_value)
+
+    def _update_label(self, instance, value):
+        a = self.label_format % value
+        if isinstance(self, ExtendedSliderVertical):
+            self.info_label.text = self.label_text + ':\n' + a + ' ' + self.units
+        else:
+            self.info_label.text = self.label_text + ': ' + a + ' ' + self.units
+
+class ExtendedSliderHorizontal(_BaseExtendedSlider):
+    pass
+
+class ExtendedSliderVertical(_BaseExtendedSlider):
     pass
 
 

@@ -17,6 +17,8 @@ main = {
         'handle_accent_color_tuple': ('LightGreen', '200'),
     },
     'CustomSliderTouchRippleBehavior': {
+        'slider_bar_width' : '2dp',
+        'slider_handle_radius' : '10dp',
     },
 
     'CustomSlider': {
@@ -25,6 +27,8 @@ main = {
         'slider_color_tuple': ('Blue', '200'),
         'slider_outline_color_tuple': ('Green', '700'),
         'ripple_color_tuple': ('Brown', '400'),
+        'slider_bar_width' : '2dp',
+        'slider_handle_radius' : '10dp',
     },
 }
 

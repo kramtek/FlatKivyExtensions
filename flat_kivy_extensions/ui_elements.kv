@@ -70,26 +70,141 @@
             rgba: app.get_color(self.color_tuple)
         # draw the slider background
         Rectangle:
-            pos: (self.x + self.padding, self.center_y - sp(self.slider_bar_width/2)) if self.orientation == 'horizontal' else (self.center_x - sp(self.slider_bar_width/2), self.y + self.padding)
-            size: (self.width - self.padding * 2, sp(self.slider_bar_width)) if self.orientation == 'horizontal' else (sp(self.slider_bar_width), self.height - self.padding * 2)
+            pos: (self.x + self.padding, self.center_y - self.slider_bar_width/2) if self.orientation == 'horizontal' else (self.center_x - self.slider_bar_width/2, self.y + self.padding)
+            size: (self.width - self.padding * 2, self.slider_bar_width) if self.orientation == 'horizontal' else (self.slider_bar_width, self.height - self.padding * 2)
         Color:
             rgba: app.get_color(self.outline_color_tuple)
         # draw the line around the slider background
         Line:
-            rounded_rectangle: [self.x + self.padding, self.center_y - sp(self.slider_bar_width/2), self.width - self.padding * 2, sp(self.slider_bar_width), sp(2)] if self.orientation == 'horizontal' else [self.center_x - sp(self.slider_bar_width/2), self.y + self.padding, sp(self.slider_bar_width), self.height - self.padding * 2, sp(2)]
+            rounded_rectangle: [self.x + self.padding, self.center_y - self.slider_bar_width/2, self.width - self.padding * 2, self.slider_bar_width, dp(1)] if self.orientation == 'horizontal' else [self.center_x - self.slider_bar_width/2, self.y + self.padding, self.slider_bar_width, self.height - self.padding * 2, dp(1)]
             width: sp(0.5)
         Color:
             rgba: app.get_color(self.slider_color_tuple)
         # draw the main slider handle
         Ellipse:
-            pos: (self.value_pos[0] - sp(self.slider_handle_radius), self.center_y - sp(self.slider_handle_radius)) if self.orientation == 'horizontal' else (self.center_x - sp(self.slider_handle_radius), self.value_pos[1] - sp(self.slider_handle_radius))
-            size: (sp(self.slider_handle_radius*2), sp(self.slider_handle_radius*2))
+            pos: (self.value_pos[0] - self.slider_handle_radius, self.center_y - self.slider_handle_radius) if self.orientation == 'horizontal' else (self.center_x - self.slider_handle_radius, self.value_pos[1] - self.slider_handle_radius)
+            size: (self.slider_handle_radius*2, self.slider_handle_radius*2)
         Color:
             rgba: app.get_color(self.slider_outline_color_tuple)
         # draw the line around the slider handle
         Line:
-            ellipse: [self.value_pos[0] - sp(self.slider_handle_radius), self.center_y - sp(self.slider_handle_radius), sp(self.slider_handle_radius*2), sp(self.slider_handle_radius*2)] if self.orientation == 'horizontal' else [self.center_x - sp(self.slider_handle_radius), self.value_pos[1] - sp(self.slider_handle_radius), sp(self.slider_handle_radius*2), sp(self.slider_handle_radius*2)]
+            ellipse: [self.value_pos[0] - self.slider_handle_radius, self.center_y - self.slider_handle_radius, self.slider_handle_radius*2, self.slider_handle_radius*2] if self.orientation == 'horizontal' else [self.center_x - self.slider_handle_radius, self.value_pos[1] - self.slider_handle_radius, self.slider_handle_radius*2, self.slider_handle_radius*2]
             width: sp(1.0)
+
+
+<-ExtendedSliderHorizontal>:
+    orientation: 'vertical'
+    size_hint_y: None
+    height: '100dp'
+    label_text: 'something'
+    label_format: '%2.3f'
+    units: 'dB'
+    font_color_tuple: ('Gray', '800')
+    min: 0
+    max: 20 
+    FlatLabel:
+        id: label
+        text: root.label_text
+        size_hint_y: None
+        height: '35dp'
+        color_tuple: root.font_color_tuple
+        text_size: self.size
+        halign: 'left' 
+        style: 'CustomButton1'
+    CustomSlider:
+        id: slider
+        size_hint_y: None
+        height: '40dp'
+        min: root.min
+        max: root.max
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: None
+        height: '20dp'
+        FlatLabel:
+            id: min_label
+            color: app.get_color(root.font_color_tuple)
+            text: '%s %s' % (str(root.min), root.units)
+            text_size: self.size
+            color_tuple: root.font_color_tuple
+            halign: 'left'
+            valign: 'top'
+            style: 'CustomButton1'
+            size_hint_y: None
+            height: '15dp'
+            font_size: '15dp'
+        Widget:
+        FlatLabel:
+            id: min_label
+            color: app.get_color(root.font_color_tuple)
+            text_size: self.size
+            text: '%s %s' % (str(root.max), root.units)
+            color_tuple: root.font_color_tuple
+            halign: 'right'
+            valign: 'top'
+            style: 'CustomButton1'
+            size_hint_y: None
+            height: '15dp'
+            font_size: '15dp'
+            on_parent: root._on_done_building()
+
+
+<-ExtendedSliderVertical>:
+    orientation: 'vertical'
+    size_hint_y: None
+    height: '200dp'
+    label_text: 'something'
+    label_format: '%2.3f'
+    units: 'dB'
+    font_color_tuple: ('Gray', '800')
+    min: 0
+    max: 20 
+
+    FlatLabel:
+        id: max_label
+        color: app.get_color(root.font_color_tuple)
+        text: '%s %s' % (str(root.max), root.units)
+        text_size: self.size
+        color_tuple: root.font_color_tuple
+        halign: 'center'
+        valign: 'top'
+        style: 'CustomButton1'
+        size_hint_y: None
+        height: '15dp'
+        font_size: '15dp'
+
+    CustomSlider:
+        id: slider
+        orientation: 'vertical'
+        size_hint_y: None
+        height: root.height - dp(80)
+        min: root.min
+        max: root.max
+
+    FlatLabel:
+        id: min_label
+        color: app.get_color(root.font_color_tuple)
+        text_size: self.size
+        text: '%s %s' % (str(root.min), root.units)
+        color_tuple: root.font_color_tuple
+        halign: 'center'
+        valign: 'bottom'
+        style: 'CustomButton1'
+        size_hint_y: None
+        height: '15dp'
+        font_size: '15dp'
+
+    FlatLabel:
+        id: label
+        text: root.label_text
+        size_hint_y: None
+        height: '50dp'
+        color_tuple: root.font_color_tuple
+        text_size: self.size
+        halign: 'center' 
+        style: 'CustomButton1'
+
+        on_parent: root._on_done_building()
 
 
 

@@ -16,7 +16,7 @@ header = {
 navigationdrawer = {
     'FlatLabel': {
         'size_hint_y' : None,
-        'height' : '35dp',
+        'height' : '25dp',
         # 'font_size' : '20dp',
         'color_tuple' : ('Green', '300'),
         'style' : 'NavigationLabelMainHeading',
@@ -78,11 +78,11 @@ default = {
         'style': 'Button',
         'valign' : 'middle',
 
-        'size_scaling' : 0.6,
+        'size_scaling' : 0.5,
         'outline_size': '1.5dp',
         'style': 'CustomButton1',
 
-        'check_scale': .6,
+        'check_scale': .5,
         'radius' : '4dp',
         'icon' : 'fa-check',
     },
@@ -116,7 +116,7 @@ from utils import relative_path_to_fonts
 
 font_styles = {
     'HeaderTitle': {
-        'font': '%s/proximanova-regular-webfont.ttf' % relative_path_to_fonts,
+        'font': '%s/proximanova-semibold-webfont.ttf' % relative_path_to_fonts,
         'sizings': {'mobile': (20, 'sp'), 'desktop': (18, 'sp')},
         'alpha': .87,
         'wrap': False,

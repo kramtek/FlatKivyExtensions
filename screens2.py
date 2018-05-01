@@ -103,10 +103,10 @@ Builder.load_string('''
         color_tuple: ('Green', '800')
 
     CustomButton:
-        text: 'show...'
+        text: 'CoverFlow Navigation'
         theme: ('app', 'default')
         size_hint: None, None
-        size: dp(200), dp(40)
+        size: dp(250), dp(40)
         radius: '4dp'
         color_tuple: ('Blue', '800')
         on_release: root.show_popup()
@@ -174,9 +174,12 @@ Builder.load_string('''
         icon: 'fa-warning'
         check_color_tuple: ('Yellow', '800')
         outline_color_tuple: ('Gray', '500')
-        check_scale: .5
+        check_scale: .4
         on_active: if self.active: print('warning activated')
         current_state: True
+        radius: '1dp'
+        outline_color_tuple: ('Gray', '900')
+        outline_size: '0.5dp'
 
     CustomCheckBoxListItem:
         text: 'Exception Indicator'
@@ -195,14 +198,46 @@ Builder.load_string('''
         min: 10
         max: 110
         theme: ('green', 'main')
-        height: '60dp'
+        height: '50dp'
 
     CustomSlider:
         orientation: 'vertical'
         min: 10
         max: 110
         theme: ('green', 'main')
-        height: '120dp'
+        height: '100dp'
+
+    ExtendedSlider:
+        orientation: 'horizontal'
+        size_hint_y: None
+        height: '100dp'
+        label_text: 'Value'
+
+
+    BoxLayout:
+        size_hint_y: None
+        height: '200dp'
+
+        ExtendedSlider:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: '200dp'
+            label_text: 'VertValue1'
+            units: 'ms'
+            max: 30
+            min: 20
+            label_format: '%1.1f'
+
+        ExtendedSlider:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: '200dp'
+            label_text: 'VertValue2'
+            units: 'volts'
+            max: 60
+            min: 40
+            label_format: '%1.2f'
+
 
 <-CustomLayoutsScreen>:
     title: 'Another Custom Screen'
