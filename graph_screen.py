@@ -23,12 +23,13 @@ Builder.load_string('''
 ''')
 
 class GraphDemoScreen(CustomScreen):
+
     def __init__(self, *largs, **kwargs):
         super(GraphDemoScreen, self).__init__(*largs, **kwargs)
 
-        self.b = BoxLayout(orientation='vertical')
-        self.b.size_hint_y = None
-        self.b.height = self.container_height
+        # self.b = BoxLayout(orientation='vertical')
+        # self.b.size_hint_y = None
+        # self.b.height = self.container_height
 
         # example of a custom theme
         colors = itertools.cycle([
