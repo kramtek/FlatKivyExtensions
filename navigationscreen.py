@@ -16,7 +16,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
 
 Builder.load_string('''
-<-NavigationScreen>:
+<-NavigationScreen_>:
     canvas.before:
         Color:
             rgba: (0.05, 0.1, 0.05, 1.0)
@@ -61,10 +61,11 @@ class CoverFlowPopup(ModalView):
         # sm.current = screen.name
         # self.dismiss()
 
-class NavigationScreen(Screen):
+
+class NavigationScreen_(Screen):
 
     def __init__(self, thumbnails, *largs, **kwargs):
-        super(NavigationScreen, self).__init__(*largs, **kwargs)
+        super(NavigationScreen_, self).__init__(*largs, **kwargs)
 
         _lst_covers = [
           '/Users/kramer/mobilabui/data/images/python.png',
@@ -95,7 +96,7 @@ class NavigationScreen(Screen):
 
     def do_layout(self, *largs):
         print 'do layout...'
-        super(NavigationScreen, self).do_layout(*largs)
+        super(NavigationScreen_, self).do_layout(*largs)
 
     def on_enter(self, *largs):
         print 'entered navigation screeen.'

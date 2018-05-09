@@ -1,6 +1,7 @@
 import time, threading
 
-from navigationscreen import CoverFlowPopup
+#from navigationscreen import CoverFlowPopup
+from flat_kivy_extensions.uix.coverflowpopup import CoverFlowPopup
 
 from kivy.metrics import dp
 from kivy.core.window import Window
