@@ -700,7 +700,6 @@ class CoverFlow(Widget3D):
         '''
         Ejecutado al cambiar la portada central (seleccionada)
         '''
-        print 'on_index', val
         self.direction = 0  #no movement
         self.remove_widget(self.centinel)
 
