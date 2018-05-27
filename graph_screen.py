@@ -8,9 +8,7 @@ import numpy as np
 from kivy.metrics import dp
 from kivy.clock import Clock
 from kivy.lang import Builder
-from kivy.uix.boxlayout import BoxLayout
 from kivy.utils import get_color_from_hex as rgb
-from kivy.uix.screenmanager import Screen
 
 from flat_kivy_extensions.uix.customscreen import CustomScreen
 
@@ -27,11 +25,7 @@ class GraphDemoScreen(CustomScreen):
     def __init__(self, *largs, **kwargs):
         super(GraphDemoScreen, self).__init__(*largs, **kwargs)
 
-        # self.b = BoxLayout(orientation='vertical')
-        # self.b.size_hint_y = None
-        # self.b.height = self.container_height
-
-        # example of a custom theme
+        # example of a custom graph theme
         colors = itertools.cycle([
             rgb('7dac9f'), rgb('dc7062'), rgb('66a8d4'), rgb('e5b060')])
         graph_theme = {
@@ -84,7 +78,12 @@ class GraphDemoScreen(CustomScreen):
         plot.bind_to_graph(graph)
         plot.points = [(x, .1 + randrange(10) / 10.) for x in range(-50, 1)]
 
+        graph.size_hint_y = None
+        graph.height = dp(200)
+        self.add_widget(graph)
+
         Clock.schedule_interval(self.update_points, 1 / 10.)
+        self.update_points(None)
 
         graph2 = Graph(
             xlabel='Position (m)',
@@ -101,31 +100,27 @@ class GraphDemoScreen(CustomScreen):
             ymin=0,
             _with_stencilbuffer=False,
             **graph_theme)
-#        self.b.add_widget(graph)
-        graph.height = dp(200)
-        self.add_widget(graph)
 
-        if np is not None:
-            (xbounds, ybounds, data) = self.make_contour_data()
-            # This is required to fit the graph to the data extents
-            graph2.xmin, graph2.xmax = xbounds
-            graph2.ymin, graph2.ymax = ybounds
+        (xbounds, ybounds, data) = self.make_contour_data()
+        # This is required to fit the graph to the data extents
+        graph2.xmin, graph2.xmax = xbounds
+        graph2.ymin, graph2.ymax = ybounds
 
-            plot = ContourPlot()
-            plot.data = data
-            plot.xrange = xbounds
-            plot.yrange = ybounds
-            plot.color = [1, 0.7, 0.2, 1]
-            graph2.add_plot(plot)
+        plot = ContourPlot()
+        plot.data = data
+        plot.xrange = xbounds
+        plot.yrange = ybounds
+        plot.color = [1, 0.7, 0.2, 1]
+        graph2.add_plot(plot)
 
-            graph2.height = dp(200)
-#            self.b.add_widget(graph2)
-            self.add_widget(graph2)
-            self.contourplot = plot
+        graph.size_hint_y = None
+        graph2.height = dp(200)
+        self.add_widget(graph2)
+        self.contourplot = plot
 
-            Clock.schedule_interval(self.update_contour, 1 / 10.)
+        Clock.schedule_interval(self.update_contour, 1 / 10.)
+        self.update_contour(None)
 
-#        self.add_widget(self.b)
 
     def make_contour_data(self, ts=0):
         omega = 2 * pi / 30
