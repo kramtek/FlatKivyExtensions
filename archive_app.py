@@ -3,9 +3,13 @@ import os, string, shutil, subprocess, glob, fnmatch, zipfile, platform
 
 from subprocess import call
 
+projectName = 'FlatKivyExtensions'
+projectDir = '/Users/kramer/'
+
 def copyApp():
     # Copy over this application
     src = '/Users/kramer/%s' % projectName
+    src = '%s%s' % (projectDir, projectName)
     dst = '/tmp/%s' % projectName
     print 'Copying app: %s  --> %s' % (src, dst)
     shutil.copytree(src, dst)
@@ -45,7 +49,6 @@ tmpLocation = '/tmp/'
 if platform.system() == 'Windows':
     tmpLocation = 'c:\\tmp\\'
 print 'tmp location: %s' % tmpLocation
-projectName = 'FlatKivyExtensions'
 projectPath = os.getcwd()
 if platform.system() == 'Windows':
     archiveRoot = '%s\\%s' % (tmpLocation, projectName)
