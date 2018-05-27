@@ -100,11 +100,12 @@ themes = {
 
 from flat_kivy_extensions.uix.custombutton import CustomButton
 from flat_kivy_extensions.uix.customiconbutton import CustomIconButton
-from flat_kivy_extensions.uix.customslider import CustomSlider, CustomSliderTouchRippleBehavior
+from flat_kivy_extensions.uix.customslider import CustomSlider, CustomSliderTouchRippleBehavior, ExtendedSlider
 from flat_kivy_extensions.uix.customcheckbox import CustomCheckBoxListItem
 
 types_to_theme = {
     'CustomSlider' : CustomSlider,
+    'ExtendedSlider' : ExtendedSlider,
     'CustomSliderTouchRippleBehavior': CustomSliderTouchRippleBehavior,
     'CustomButton' : CustomButton,
     'CustomIconButton' : CustomIconButton,
