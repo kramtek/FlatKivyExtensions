@@ -27,6 +27,8 @@ from screens2 import (KivyWidgetScreen, CustomButtonDemoScreen,
                      CustomCheckBoxDemoScreen)
 
 from graph_screen import GraphDemoScreen
+from pizza_screen import PizzaDemoScreen
+from spinner_screen import SpinnerDemoScreen
 
 from package_control_screen import PackageManagerScreen
 
@@ -51,6 +53,8 @@ from package_control_screen import PackageManagerScreen
 
 app_config_entries = ['Some Menu',
                       'Standard screens in app',
+                      NavDrawerEntryConfig(SpinnerDemoScreen, 'SpinnerDemo'),
+                      NavDrawerEntryConfig(PizzaDemoScreen, 'Pizza Demo'),
                       NavDrawerEntryConfig(KivyScreen1, 'Kivy Screen1'),
                       NavDrawerEntryConfig(KivyScreen2, 'Kivy Screen2'),
                       NavDrawerEntryConfig(FlatKivyDemoScreen, 'FlatKivy Demo'),
