@@ -5,7 +5,7 @@ from flat_kivy_extensions.uix.coverflowpopup import CoverFlowPopup
 
 from kivy.metrics import dp
 from kivy.core.window import Window
-from kivy.clock import mainthread
+from kivy.clock import mainthread, Clock
 from kivy.uix.widget import Widget
 from kivy.lang import Builder
 from kivy.uix.button import Button
@@ -17,6 +17,9 @@ from kivy.uix.progressbar import ProgressBar
 from flat_kivy.flatapp import FlatApp
 from flat_kivy.uix.flatlabel import FlatLabel
 from flat_kivy.font_definitions import style_manager
+
+from flat_kivy_extensions.uix import CustomErrorContent
+from flat_kivy_extensions.uix.custompopup import CustomPopup
 
 from flat_kivy_extensions.uix.customiconbutton import CustomIconButton
 from flat_kivy_extensions.uix.custombutton import CustomButton
@@ -178,8 +181,8 @@ class CustomScreenManager(ScreenManager):
                                             )
 
     def _on_screen_enter(self, screen):
-        print 'current screen: %s' % str(self.current_screen)
         if self._open_screen_index >= 0:
+            screen.do_layout()
             if isinstance(self._thumbnailLut[screen], BlankThumbNail):
                 self._thumbnailLut[screen] = ThumbNailWidget(screen)
             self.pb.value = len(self.screens) - self._open_screen_index
@@ -226,7 +229,6 @@ class CustomScreenManager(ScreenManager):
 
     @mainthread
     def _trigger_next_screen(self):
-        print 'screen index: %s'  % str(self._open_screen_index)
         while self._open_screen_index >= 0:
             screen = self.screens[self._open_screen_index]
 
@@ -242,7 +244,6 @@ class CustomScreenManager(ScreenManager):
         thumbnails = list()
         for screen in self.screens:
             thumbnails.append( self._thumbnailLut[screen] )
-        print 'current screen: %s' % str(self.current_screen)
         navigation_popup = CoverFlowPopup(thumbnails, self._index_selected, self.screens.index(self._current_screen))
         navigation_popup.open()
 
@@ -404,6 +405,24 @@ class ExtendedFlatApp(FlatApp):
             style_manager.add_style(style['font'], each, sizings['mobile'],
                 sizings['desktop'], style['alpha'])
 
+    def raise_error(self, error_title, error_text, auto_dismiss=True, timeout=None):
+        error_content = CustomErrorContent()
+        error_popup = CustomPopup(
+            content=error_content, size_hint=(.5, .3),
+            auto_dismiss=auto_dismiss)
+
+        error_popup.title_color_tuple = ('Brown', '600')
+
+        error_content.error_text = error_text
+        error_popup.title = error_title
+        dismiss_button = error_content.dismiss_button
+        dismiss_button.bind(on_release=error_popup.dismiss)
+        error_popup.open()
+        if timeout is not None:
+            def close_popup(dt):
+                error_popup.dismiss()
+            Clock.schedule_once(close_popup, timeout)
+
     # def _create_navigation_label_from_string(self, entry):
     #     entry = {'text' : entry, 'theme' : ('app', 'navigationdrawer')}
     #     if self._first_navigation_label is None:
@@ -436,7 +455,6 @@ class ExtendedFlatApp(FlatApp):
 
     def _switch_to_screen(self, instance):
         screen = instance.config.screen
-        print 'switching to screen: %s'  % str(screen)
         if screen not in self._screenmanager.screens:
             self._screenmanager.add_widget(screen)
         self._screenmanager.current = screen.name

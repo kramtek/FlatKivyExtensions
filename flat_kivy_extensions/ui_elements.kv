@@ -95,7 +95,7 @@
 <-ExtendedSliderHorizontal>:
     orientation: 'vertical'
     size_hint_y: None
-    height: '100dp'
+    height: '90dp'
     label_text: 'something'
     label_format: '%2.3f'
     units: 'dB'
@@ -113,6 +113,7 @@
         style: 'CustomButton1'
     CustomSlider:
         id: slider
+        theme: root.theme
         size_hint_y: None
         height: '40dp'
         min: root.min
@@ -120,32 +121,32 @@
     BoxLayout:
         orientation: 'horizontal'
         size_hint_y: None
-        height: '20dp'
+        height: '15dp'
         FlatLabel:
             id: min_label
-            color: app.get_color(root.font_color_tuple)
+            # color: app.get_color(root.font_color_tuple)
             text: '%s %s' % (str(root.min), root.units)
-            text_size: self.size
             color_tuple: root.font_color_tuple
+            text_size: self.size
             halign: 'left'
             valign: 'top'
             style: 'CustomButton1'
             size_hint_y: None
-            height: '15dp'
-            font_size: '15dp'
-        Widget:
+            height: '12dp'
+            font_size: '12dp'
+        #Widget:
         FlatLabel:
             id: min_label
-            color: app.get_color(root.font_color_tuple)
-            text_size: self.size
+            # color: app.get_color(root.font_color_tuple)
             text: '%s %s' % (str(root.max), root.units)
             color_tuple: root.font_color_tuple
+            text_size: self.size
             halign: 'right'
             valign: 'top'
             style: 'CustomButton1'
             size_hint_y: None
-            height: '15dp'
-            font_size: '15dp'
+            height: '12dp'
+            font_size: '12dp'
             on_parent: root._on_done_building()
 
 
@@ -170,8 +171,8 @@
         valign: 'top'
         style: 'CustomButton1'
         size_hint_y: None
-        height: '15dp'
-        font_size: '15dp'
+        height: '12dp'
+        font_size: '12dp'
 
     CustomSlider:
         id: slider
@@ -191,8 +192,8 @@
         valign: 'bottom'
         style: 'CustomButton1'
         size_hint_y: None
-        height: '15dp'
-        font_size: '15dp'
+        height: '12dp'
+        font_size: '12dp'
 
     FlatLabel:
         id: label
@@ -257,5 +258,70 @@
         on_active: root.on_checkbox_active(self, self.active)
         #root.setter('touch_down_active')
 
+
+<CustomErrorContent>:
+    orientation: 'tb-lr'
+    size_hint: (1.0, 1.0)
+    dismiss_button: dismiss_button
+    cols: 1
+    padding: 5
+    spacing: 5
+    FlatLabel:
+        text_size: self.size
+        size_hint: (1.0, .8)
+        # font_ramp_tuple: ('error_content' + str(randint(1,10000)), '1')
+        style: 'NavigationLabelMainHeading'
+        valign: 'top'
+        text: root.error_text
+        color_tuple: ('Gray', '1000')
+    FlatButton:
+        id: dismiss_button
+        text: 'Ok'
+        size_hint: (1.0, .2)
+        style: 'NavigationLabelMainHeading'
+
+
+<-CustomPopup>:
+    _container: container
+
+    canvas.before:
+        Color:
+            rgba: root.background_color[:3] + [root.background_color[-1] * self._anim_alpha]
+        Rectangle:
+            size: self._window.size if self._window else (0, 0)
+        Color:
+            rgba: root.popup_color
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+    GridLayout:
+        padding: 12
+        cols: 1
+        size_hint: None, None
+        pos: root.pos
+        size: root.size
+
+        FlatLabel:
+            text: root.title
+            color: app.get_color(root.title_color_tuple)
+            size_hint_y: None
+            height: self.texture_size[1] + 16
+            text_size: self.width - 16, None
+            font_size: root.title_size
+            style: 'NavigationLabelMainHeading'
+
+        Widget:
+            size_hint_y: None
+            height: 4
+            canvas:
+                Color:
+                    rgba: root.separator_color
+                Rectangle:
+                    pos: self.x, self.y + root.separator_height / 2.
+                    size: self.width, root.separator_height
+
+        BoxLayout:
+            id: container
 
 
