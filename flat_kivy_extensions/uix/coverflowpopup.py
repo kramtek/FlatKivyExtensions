@@ -13,7 +13,6 @@ class CoverFlowPopup(ModalView):
 
         self.widgets = widgets
 
-        print 'should set index to: %s' % str(index)
         self.index_changed_callback = index_changed_callback
         lst_covers = widgets
         cover_names = list()
