@@ -64,12 +64,12 @@ class CustomSliderTouchRippleBehavior(ThemeBehavior):
                 width, height = self.size
 
                 if self.orientation == 'horizontal':
-                    ellipse_pos = (self.value_pos[0] - self.slider_handle_radius, self.center_y - self.slider_handle_radius+1)
+                    ellipse_pos = (self.value_pos[0] - self.slider_handle_radius, self.center_y - self.slider_handle_radius+-1*1)
                     stencil_pos = (self.x + self.padding + sp(1), self.center_y - self.slider_bar_width/2)
                     #stencil_size = (self.width - self.padding * 2 - sp(2), self.slider_bar_width)
                     stencil_size = (self.width - self.padding * 2 - sp(2), 4)
                 else:
-                    ellipse_pos = (self.center_x - self.slider_handle_radius+1, self.value_pos[1] - self.slider_handle_radius)
+                    ellipse_pos = (self.center_x - self.slider_handle_radius+-1*1, self.value_pos[1] - self.slider_handle_radius)
                     stencil_pos = (self.center_x - self.slider_bar_width/2, self.y + self.padding + dp(1))
                     stencil_size = (self.slider_bar_width, self.height - self.padding * 2 - sp(2))
 
@@ -175,7 +175,7 @@ class CustomSlider(GrabBehavior, CustomSliderTouchRippleBehavior, ThemeBehavior,
         return super(CustomSlider, self).on_touch_up(touch)
 
 
-class ExtendedSlider(BoxLayout):
+class ExtendedSlider(BoxLayout, ThemeBehavior):
 
     label_text = StringProperty('')
     label_format = StringProperty('')
@@ -192,6 +192,9 @@ class ExtendedSlider(BoxLayout):
             self.orientation = 'vertical'
         self.widget = None
         self._create_widget()
+
+    def on_theme(self, instance, value):
+        self.widget.theme = value
 
     def _create_widget(self):
         if self.widget is not None:
@@ -233,7 +236,7 @@ class ExtendedSlider(BoxLayout):
         self._create_widget()
 
 
-class _BaseExtendedSlider(BoxLayout):
+class _BaseExtendedSlider(BoxLayout, ThemeBehavior):
 
     label_text = StringProperty('')
     units = StringProperty('-')
