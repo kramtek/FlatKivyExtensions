@@ -66,12 +66,11 @@ class CustomSliderTouchRippleBehavior(ThemeBehavior):
                 if self.orientation == 'horizontal':
                     ellipse_pos = (self.value_pos[0] - self.slider_handle_radius, self.center_y - self.slider_handle_radius+-1*1)
                     stencil_pos = (self.x + self.padding + sp(1), self.center_y - self.slider_bar_width/2)
-                    #stencil_size = (self.width - self.padding * 2 - sp(2), self.slider_bar_width)
-                    stencil_size = (self.width - self.padding * 2 - sp(2), 4)
+                    stencil_size = (self.width - self.padding * 2 - sp(0), self.slider_bar_width)
                 else:
                     ellipse_pos = (self.center_x - self.slider_handle_radius+-1*1, self.value_pos[1] - self.slider_handle_radius)
                     stencil_pos = (self.center_x - self.slider_bar_width/2, self.y + self.padding + dp(1))
-                    stencil_size = (self.slider_bar_width, self.height - self.padding * 2 - sp(2))
+                    stencil_size = (self.slider_bar_width, self.height - self.padding * 2 - sp(0))
 
                 StencilPush()
                 Rectangle(
