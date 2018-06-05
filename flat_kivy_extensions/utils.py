@@ -1,5 +1,5 @@
-
 import os
+import xml.etree.ElementTree as ET
 
 def get_relative_font_path(local_font_path):
     ''' Get the relative path from the font path specified to the flat_kivy font
@@ -19,5 +19,18 @@ def get_relative_font_path(local_font_path):
 import flat_kivy_extensions
 local_font_path = os.path.join(os.path.dirname(os.path.abspath(flat_kivy_extensions.__file__)),
                                         *['data', 'font'])
-
 relative_path_to_fonts = get_relative_font_path(local_font_path)
+
+def get_app_config_entry(configTag):
+    forceReload = True
+    if forceReload:
+        filename = 'app_config.xml'
+        try:
+            tree = ET.ElementTree(file=filename)
+            current_root = tree.getroot()
+        except Exception as e:
+            print 'Exception: %s  (returning None)' % str(e)
+            return None
+    return current_root.find(configTag)
+
+
