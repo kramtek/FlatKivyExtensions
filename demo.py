@@ -26,12 +26,6 @@ from screens2 import (KivyWidgetScreen, CustomButtonDemoScreen,
                      CustomLayoutsScreen, DropShadowScreen, CustomSliderDemoScreen,
                      CustomCheckBoxDemoScreen)
 
-from graph_screen import GraphDemoScreen
-from pizza_screen import PizzaDemoScreen
-from spinner_screen import SpinnerDemoScreen
-
-from package_control_screen import PackageManagerScreen
-
 #    An application configuration list is used to specify what screens
 #    should be included and how to navigate to them.
 #
@@ -51,20 +45,16 @@ from package_control_screen import PackageManagerScreen
 #       that is used for navigation button title.  See xyz for details.
 #
 
-app_config_entries = ['Some Menu',
-                      'Standard screens in app',
-                      NavDrawerEntryConfig(SpinnerDemoScreen, 'SpinnerDemo'),
-                      NavDrawerEntryConfig(PizzaDemoScreen, 'Pizza Demo'),
-                      NavDrawerEntryConfig(KivyScreen1, 'Kivy Screen1'),
-                      NavDrawerEntryConfig(KivyScreen2, 'Kivy Screen2'),
+app_config_entries = ['Demo Screens',
+                      'Kivy Screens',
+                      #NavDrawerEntryConfig(KivyScreen1, 'Kivy Screen1'),
+                      #NavDrawerEntryConfig(KivyScreen2, 'Kivy Screen2'),
                       NavDrawerEntryConfig(FlatKivyDemoScreen, 'FlatKivy Demo'),
-                      'Custom screens',
+                      'Custom Screens',
                       NavDrawerEntryConfig(KivyWidgetScreen, 'Kivy Widget Demo'),
                       NavDrawerEntryConfig(CustomButtonDemoScreen, 'Custom Buttons'),
                       NavDrawerEntryConfig(CustomCheckBoxDemoScreen, 'Custom CheckBoxes'),
                       NavDrawerEntryConfig(CustomSliderDemoScreen, 'Custom Sliders'),
-                      'Special screens',
-                      NavDrawerEntryConfig(GraphDemoScreen, 'Garden Graph Demo'),
                       NavDrawerEntryConfig(CustomLayoutsScreen, 'CustomLayouts'),
                       NavDrawerEntryConfig(DropShadowScreen, 'DropShadow Examples'),
                       #{'text':'Custom Heading Label',
