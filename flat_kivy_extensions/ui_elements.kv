@@ -1,4 +1,5 @@
 
+#:import ProgressSpinner kivy.garden.progressspinner.ProgressSpinner
 <-CustomButtonBase>:
     color: app.get_color(self.color_tuple)
     ripple_color: app.get_color(self.ripple_color_tuple)
@@ -181,6 +182,7 @@
         height: root.height - dp(80)
         min: root.min
         max: root.max
+        theme: root.theme
 
     FlatLabel:
         id: min_label
@@ -273,12 +275,51 @@
         style: 'NavigationLabelMainHeading'
         valign: 'top'
         text: root.error_text
-        color_tuple: ('Gray', '1000')
-    FlatButton:
+        color_tuple: root.label_color_tuple
+    CustomButton:
         id: dismiss_button
+        theme: root.theme
         text: 'Ok'
-        size_hint: (1.0, .2)
+        size_hint: (0.6, None)
+        height: dp(35)
         style: 'NavigationLabelMainHeading'
+
+<CustomBusyContent>:
+    orientation: 'tb-lr'
+    size_hint: (1.0, 1.0)
+    dismiss_button: dismiss_button
+    cols: 1
+    padding: 5
+    spacing: 5
+    radius: '2dp'
+
+    ProgressSpinner:
+        size_hint: (1, None)
+        height: dp(50)
+        color: 0.2, 0.4, .2, 1
+        stroke_width: dp(8.25)
+        stroke_length: 10
+
+    FlatLabel:
+        size_hint: (1.0, None)
+        height: dp(50)
+        text_size: self.size
+        # font_ramp_tuple: ('error_content' + str(randint(1,10000)), '1')
+        style: 'NavigationLabelMainHeading'
+        valign: 'top'
+        halign: 'center'
+        text: root.busy_text
+        color_tuple: root.label_color_tuple
+
+    CustomButton:
+        id: dismiss_button
+        theme: root.theme
+        text: 'Cancel'
+        size_hint: (0.6, None)
+        height: dp(35)
+        style: 'NavigationLabelMainHeading'
+        color_tuple: ('Brown', '400')
+        radius: root.radius
 
 
 <-CustomPopup>:
