@@ -1,4 +1,3 @@
-
 import sys
 sys.path.append('flat_kivy_extensions/submodules')
 
@@ -18,8 +17,10 @@ from graph_screen import GraphDemoScreen
 from pizza_screen import PizzaDemoScreen
 from spinner_screen import SpinnerDemoScreen
 from package_control_screen import PackageManagerScreen
+from code_review_screens import FileChooserScreen
 
 app_config_entries = ['Garden Demos',
+                      NavDrawerEntryConfig(FileChooserScreen, 'File Chooser'),
                       NavDrawerEntryConfig(PizzaDemoScreen, 'Pizza Demo'),
                       NavDrawerEntryConfig(SpinnerDemoScreen, 'SpinnerDemo'),
                       NavDrawerEntryConfig(GraphDemoScreen, 'Garden Graph Demo'),
@@ -31,4 +32,3 @@ app_config_entries = ['Garden Demos',
 if __name__ == '__main__':
     app = ExtendedFlatApp(app_config_entries, title, about, use_coverflow_navigation=True)
     app.run()
-
