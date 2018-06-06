@@ -212,6 +212,7 @@ Builder.load_string('''
         size_hint_y: None
         height: '100dp'
         label_text: 'Value'
+        theme: ('green', 'main')
 
 
     BoxLayout:
@@ -227,6 +228,7 @@ Builder.load_string('''
             max: 30
             min: 20
             label_format: '%1.1f'
+            theme: ('green', 'main')
 
         ExtendedSlider:
             orientation: 'vertical'
@@ -237,6 +239,7 @@ Builder.load_string('''
             max: 60
             min: 40
             label_format: '%1.2f'
+            theme: ('green', 'main')
 
 
 <-CustomLayoutsScreen>:
