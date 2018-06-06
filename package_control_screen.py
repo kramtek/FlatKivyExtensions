@@ -88,7 +88,7 @@ class ItemLayout(BoxLayout):
     pass
 
     def done_building(self):
-        print 'done building: %s' % str(self.package_name)
+        print('done building: %s package: %s' % (str(self), str(self.package_name)))
         self.switch = self.ids.switch
 
 
