@@ -41,10 +41,10 @@ Builder.load_string('''
     border_color: (.1, .1, .3, 1.0)
     border_line_width: 0.5
     radius: 2
-
+    background_color: (0.95, 0.95, 0.95, 1.0)
     canvas.before:
         Color:
-            rgba: (0.95, 0.95, 0.95, 1.0)
+            rgba: root.background_color
         Rectangle:
             size: self.size
             pos: self.pos
@@ -85,6 +85,7 @@ class CustomScreen(Screen):
     title = StringProperty('SomeScreen')
     theme = ListProperty()
     style = StringProperty()
+    background_color = ListProperty([0.95, 0.95, 0.95, 1.0])
 
     def __init__(self, *largs, **kwargs):
         self._main_layout = _MainLayout(orientation='vertical',
@@ -94,6 +95,7 @@ class CustomScreen(Screen):
                                     theme=self.theme,
                                     )
         self.bind(title=self._title_label.setter('text'))
+        self.bind(background_color=self._main_layout.setter('background_color'))
         # Question: can style be set in constructor, or does
         # property propagation require setting style after theme?
         self.bind(theme=self._title_label.setter('theme'))
@@ -167,8 +169,15 @@ class CustomScreen(Screen):
         widget.bind(pos=self._center)
         container.add_widget(widget)
         self._content_layout.add_widget(container)
+        self._content_layout.do_layout()
 
     def remove_widget(self, widget):
-        widget.container.remove_widget(widget)
-        self._content_layout.remove_widget(widget.container)
+        found_child = None
+        for child in self._content_layout.children:
+            if widget in child.children:
+                found_child = child
+                child.remove_widget(widget)
+        if found_child is not None:
+            self._content_layout.remove_widget(found_child)
+
 
