@@ -56,10 +56,25 @@ screen = {
 
 grouped_layout = {
     'FlatLabel': {
-        'color_tuple': ('Orange', '800'),
+        'color_tuple': ('Brown', '800'),
         'style': 'GroupedLayoutTitle',
         'size_hint_y': None,
-        'height': '35dp',
+        'height': '25dp',
+    },
+}
+
+popup = {
+    'CustomButton': {
+        'color_tuple': ('Brown', '500'),
+        'font_color_tuple': ('Gray', '100'),
+        'style': 'CustomButton1',
+        'radius' : '2dp',
+    },
+    'CustomBusyContent': {
+        'color_tuple': ('Brown', '500'),
+        'font_color_tuple': ('Gray', '400'),
+        'style': 'CustomButton1',
+        'radius' : '2dp',
     },
 }
 
@@ -95,6 +110,7 @@ themes = {
              'screen' : screen,
              'grouped_layout' : grouped_layout,
              'default' : default,
+             'shit' : popup,
              }
 }
 
@@ -102,6 +118,7 @@ from flat_kivy_extensions.uix.custombutton import CustomButton
 from flat_kivy_extensions.uix.customiconbutton import CustomIconButton
 from flat_kivy_extensions.uix.customslider import CustomSlider, CustomSliderTouchRippleBehavior, ExtendedSlider
 from flat_kivy_extensions.uix.customcheckbox import CustomCheckBoxListItem
+from flat_kivy_extensions.uix import CustomBusyContent
 
 types_to_theme = {
     'CustomSlider' : CustomSlider,
@@ -110,6 +127,7 @@ types_to_theme = {
     'CustomButton' : CustomButton,
     'CustomIconButton' : CustomIconButton,
     'CustomCheckBoxListItem' : CustomCheckBoxListItem,
+    'CustomBusyContent' : CustomBusyContent,
     # 'FlatIconButtonLeft' : FlatIconButtonLeft,
 }
 
