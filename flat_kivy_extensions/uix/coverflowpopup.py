@@ -1,7 +1,7 @@
 import sys, time
 #sys.path.append('/Users/kramer/Downloads')
 
-from devslib.coverflowlayout import CoverFlowLayout
+from flat_kivy_extensions.third_party.devslib.coverflowlayout import CoverFlowLayout
 
 from kivy.metrics import dp
 from kivy.uix.modalview import ModalView

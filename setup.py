@@ -5,7 +5,10 @@ setup(name='FlatKivyExtensions', version=__version__, author='53mkramer',
       author_email='kramtek@gmail.com',
       packages=['flat_kivy_extensions',
                 'flat_kivy_extensions.uix',
-                'devslib'],
+                'flat_kivy_extensions.third_party',
+                'flat_kivy_extensions.third_party.devslib',
+                ],
+
       data_files=[
             ('lib/python2.7/site-packages/flat_kivy_extensions',
             ['flat_kivy_extensions/ui_elements.kv',
