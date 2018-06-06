@@ -1,4 +1,4 @@
-import time, threading
+import time, threading, os
 
 #from navigationscreen import CoverFlowPopup
 from flat_kivy_extensions.uix.coverflowpopup import CoverFlowPopup
@@ -10,6 +10,7 @@ from kivy.uix.widget import Widget
 from kivy.lang import Builder
 from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.screenmanager import FadeTransition, NoTransition, ScreenManager
 from kivy.uix.modalview import ModalView
 from kivy.uix.progressbar import ProgressBar
@@ -18,7 +19,7 @@ from flat_kivy.flatapp import FlatApp
 from flat_kivy.uix.flatlabel import FlatLabel
 from flat_kivy.font_definitions import style_manager
 
-from flat_kivy_extensions.uix import CustomErrorContent
+from flat_kivy_extensions.uix import CustomErrorContent, CustomBusyContent
 from flat_kivy_extensions.uix.custompopup import CustomPopup
 
 from flat_kivy_extensions.uix.customiconbutton import CustomIconButton
@@ -134,6 +135,15 @@ Builder.load_string('''
     FlatLabel:
         text: root.title
         theme: ('app', 'header')
+        #text_size: self.size
+        #halign: 'center'
+        #valign: 'middle'
+        center_x: root.center_x
+
+    Widget:
+        size_hint_x: None
+        width: root.menu_button_width
+
 
 <-BlankThumbNail>:
     text: 'hi'
@@ -151,7 +161,8 @@ Builder.load_string('''
 ''')
 
 
-Builder.load_file('flat_kivy_extensions/ui_elements.kv')
+flat_kivy_extensions_path = os.path.dirname(os.path.abspath(__file__))
+Builder.load_file('%s/ui_elements.kv' % flat_kivy_extensions_path)
 
 class HeaderLayout(BoxLayout):
     pass
@@ -182,7 +193,7 @@ class CustomScreenManager(ScreenManager):
 
     def _on_screen_enter(self, screen):
         if self._open_screen_index >= 0:
-            screen.do_layout()
+            #screen.do_layout()
             if isinstance(self._thumbnailLut[screen], BlankThumbNail):
                 self._thumbnailLut[screen] = ThumbNailWidget(screen)
             self.pb.value = len(self.screens) - self._open_screen_index
@@ -314,6 +325,7 @@ class ExtendedFlatApp(FlatApp):
 
     def build(self):
         self.root = RootWidget()
+        self.root.title = self.title
         self._navigationdrawer = self.root.ids.navigationdrawer
         self._side_panel = self.root.ids.side_panel
         self._header = self.root.ids.header
@@ -405,16 +417,55 @@ class ExtendedFlatApp(FlatApp):
             style_manager.add_style(style['font'], each, sizings['mobile'],
                 sizings['desktop'], style['alpha'])
 
+    def raise_busy(self, busy_title, busy_text, auto_dismiss=True, timeout=None, cancel_callback=None, timeout_callback=None):
+        busy_content = CustomBusyContent()
+        busy_content.theme=('app', 'shit')
+        busy_popup = CustomPopup(
+            content=busy_content, size_hint=(.5, None), height=dp(205),
+            auto_dismiss=auto_dismiss,
+            separator_color=(0,0,0,1),
+            background_color=(0,0,0,.25),)
+        busy_popup.title_color_tuple = ('Brown', '600')
+        busy_content.label_color_tuple = ('Brown', '800')
+        busy_popup.popup_color=(.95, .95, .95, 1.0)
+
+        busy_content.busy_text = busy_text
+        busy_popup.title = busy_title
+        dismiss_button = busy_content.dismiss_button
+        def dismiss_popup(self, *largs):
+            event.cancel()
+            busy_popup.dismiss()
+            if cancel_callback is not None:
+                cancel_callback()
+        #dismiss_button.bind(on_release=busy_popup.dismiss)
+        dismiss_button.bind(on_release=dismiss_popup)
+        busy_popup.open()
+
+        if timeout is not None:
+            def close_popup(dt):
+                busy_popup.dismiss()
+                if timeout_callback is not None:
+                    timeout_callback()
+            event = Clock.schedule_once(close_popup, timeout)
+            def clear_timeout(self):
+                event.cancel()
+            busy_popup.bind(on_dismiss=clear_timeout)
+        return busy_popup
+
     def raise_error(self, error_title, error_text, auto_dismiss=True, timeout=None):
         error_content = CustomErrorContent()
         error_popup = CustomPopup(
-            content=error_content, size_hint=(.5, .3),
-            auto_dismiss=auto_dismiss)
+            content=error_content, size_hint=(.6, .3),
+            auto_dismiss=auto_dismiss,
+            background_color=(0,0,0,0.25),)
 
         error_popup.title_color_tuple = ('Brown', '600')
+        error_popup.popup_color=(.95, .95, .95, 1.0)
 
         error_content.error_text = error_text
+        error_content.label_color_tuple = ('Brown', '800')
         error_popup.title = error_title
+        error_content.theme=('app', 'shit')
         dismiss_button = error_content.dismiss_button
         dismiss_button.bind(on_release=error_popup.dismiss)
         error_popup.open()
@@ -460,4 +511,7 @@ class ExtendedFlatApp(FlatApp):
         self._screenmanager.current = screen.name
         self._navigationdrawer.toggle_state()
 
+    def on_pause(self):
+        print("Pausing application.")
+        return True
 
