@@ -17,11 +17,15 @@ about = 'Demonstration of some kivy garden elements.'
 from graph_screen import GraphDemoScreen
 from pizza_screen import PizzaDemoScreen
 from spinner_screen import SpinnerDemoScreen
+from package_control_screen import PackageManagerScreen
 
 app_config_entries = ['Garden Demos',
                       NavDrawerEntryConfig(PizzaDemoScreen, 'Pizza Demo'),
                       NavDrawerEntryConfig(SpinnerDemoScreen, 'SpinnerDemo'),
                       NavDrawerEntryConfig(GraphDemoScreen, 'Garden Graph Demo'),
+                      'Extra',
+                      NavDrawerEntryConfig(PackageManagerScreen, 'Package Manager'),
+
                      ]
 
 if __name__ == '__main__':

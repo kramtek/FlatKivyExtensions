@@ -120,7 +120,7 @@ class PackageVersionLayout(GridLayout):
         self.size_hint_y = None
         self.bind(minimum_height=self.setter('height'))
 
-        packages = ['numpy', 'kivy', 'csv', 'flat_kivy', 'joe']
+        packages = ['numpy', 'kivy', 'csv', 'flat_kivy', 'joe', 'flat_kivy_extensions']
 
         l = BoxLayout(size_hint_y=None, height=dp(label_height), padding=dp(10))
         label = CustomLabel(text='Package', color=(0,0,0.3,1),
@@ -228,8 +228,8 @@ class PackageManagerScreen(Screen):
         version_layout = PackageVersionLayout(cols=1, spacing=dp(5))
         installer_layout = PackageInstallerLayout(cos=1, spacing=dp(5))
 
-        #self.add_widget(version_layout)
-        self.add_widget(installer_layout)
+        self.add_widget(version_layout)
+        #self.add_widget(installer_layout)
 
         version_layout.add_widget(Widget(size_hint_y=None, height=dp(200)))
         #installer_layout.add_widget(Widget(size_hint_y=None, height=dp(200)))
