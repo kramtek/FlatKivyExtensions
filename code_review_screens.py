@@ -1,7 +1,9 @@
 
 
+import difflib
 
-
+from kivy.core.window import Window
+from kivy.clock import Clock
 from kivy.metrics import dp
 from kivy.lang import Builder
 
@@ -11,8 +13,8 @@ Builder.load_string('''
 <-FileChooserScreen>:
     title: 'File Editor'
     theme: ('app', 'screen')
-    codeinput_layout: self.codeinput_layout
-    filechooser_layout: self.filechooser_layout
+    codeinput_layout: codeinput_layout.__self__
+    filechooser_layout: filechooser_layout.__self__
 
     BoxLayout:
         id: filechooser_layout
@@ -41,23 +43,40 @@ Builder.load_string('''
         height: dp(400)
         done_button: self.done_button
 
+        CustomButton:
+            id: keyboard_button
+            theme: ('app', 'default')
+            size_hint_y: None
+            height: dp(20)
+            text: 'Show Keyboard'
+            color_tuple: ('Gray', '600')
+            font_size: dp(12)
+            radius: dp(2)
+            on_release: root.show_keyboard()
+
         CodeInput:
             id: codeinput
             padding: '4dp'
+            multiline: True
             text: 'class Hello(object):'
             # focus: True if root.parent else False
             focus: False
             font_size: dp(10)
             #disabled: True
+            keyboard_mode: 'managed'
+            #on_parent: self.hide_keyboard
+            #on_double_tap: root.double_tap
+            #on_text_validate: root.validate_text()
 
         BoxLayout:
             size_hint_y: None
             height: dp(50)
+            spacing: dp(5)
 
             CustomButton:
                 id: save_button
                 theme: ('app', 'default')
-                color_tuple: ('Red', '500')
+                color_tuple: ('Gray', '200')
                 text: 'Save'
                 size_hint_y: None
                 height: dp(50)
@@ -92,13 +111,16 @@ class FileChooserScreen(CustomScreen):
         self.codeinput = self.ids.codeinput
         self.done_button = self.ids.done_button
         self.save_button = self.ids.save_button
+        self.keyboard_button = self.ids.keyboard_button
 
         self.filechooser.bind(selection=self.selection_updated)
         self.codeinput.bind(text=self.text_updated)
+        self.codeinput.bind(on_double_tap=self.double_tap)
+        self.codeinput.bind(on_text_validate=self.validate_text)
         self.remove_widget(self.codeinput_layout)
 
         self._built = True
-
+        self._keyboard_open = False
 
     def selection_updated(self, filechooser, selection):
         print 'selection updated to: %s  ' % str(selection)
@@ -110,21 +132,75 @@ class FileChooserScreen(CustomScreen):
         lines = f.readlines()
         f.close()
 
+        self.codeinput.text = ''
         self._last_text = ''.join(lines)
         self.codeinput.text = self._last_text
         self.selection = selection[0]
         self.save_button.disabled = True
+        self.save_button.color_tuple = ('Gray', '200')
+
+    def _keyboard_closed(self):
+        print 'keyboard_closed'
+        if not self._keyboard_open:
+            self.codeinput.show_keyboard()
+            return
+        self._keyboard.unbind(on_key_down=self._on_keyboard_down)
+        self._keyboard = None
+
+    def validate_text(self, *largs):
+        print 'validating text...'
+
+    def show_keyboard(self, *largs):
+        if self._keyboard_open:
+            self.codeinput.hide_keyboard()
+        else:
+            self.codeinput.show_keyboard()
+            #self._keyboard = Window.request_keyboard(
+            #    self._keyboard_closed, self)
+            #self._keyboard.bind(on_key_down=self._on_keyboard_down)
+        self._keyboard_open = not self._keyboard_open
+        self.keyboard_button.text = 'Show Keyboard' if not self._keyboard_open else 'Hide Keyboard'
+
+    def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
+        print str(keycode)
+        #if keycode[1] == 'enter':
+        #    return True
+        return False
+
+
+    def double_tap(self, *largs):
+        print 'double tap'
+        self.show_keyboard()
 
     def text_updated(self, instance, text):
         if self._last_text == text:
             return
+
+        if self._last_text is not None:
+        #    h = ''.join(difflib.ndiff(self._last_text, text))
+        #    print 'diff: "%s"' % str(h)
+            seqm = difflib.SequenceMatcher(None, self._last_text, text)
+            for (opcode, a0, a1, b0, b1) in seqm.get_opcodes():
+                if opcode == 'insert':
+                    if seqm.b[b0:b1] == '\n':
+                        print ' we know that keyboard is going away... but why?'
+                        #def show_it(*largs):
+                        #    print '  really reshowing keyboard?'
+                        #    self.codeinput.focus = True
+                        #    self.codeinput.show_keyboard()
+                        #Clock.schedule_once(show_it)
+                        self.show_keyboard()
+
         self.save_button.disabled = False
+        self.save_button.color_tuple = ('Red', '500')
         self._last_text = text
 
     def save_coding(self):
         f = open(self.selection, 'w')
         f.writelines(self._last_text.strip()+'\n')
         f.close()
+        self.save_button.disabled = True
+        self.save_button.color_tuple = ('Gray', '200')
 
     def done_coding(self):
         self.add_widget(self.filechooser_layout)
