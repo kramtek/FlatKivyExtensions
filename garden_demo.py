@@ -2,11 +2,15 @@ import sys
 sys.path.append('flat_kivy_extensions/submodules')
 
 #import os
+#os.environ['KIVY_DPI'] = '2.0'
 #os.environ['KIVY_METRICS_DENSITY'] = '2.0'
 #os.environ['KIVY_WINDOW'] = 'sdl2'
 
 from kivy .garden import garden_system_dir
 print('Garden system dir: %s\n\n\n' % str(garden_system_dir))
+
+#from kivy.core.window import Window
+#Window.rotation = 90
 
 from flat_kivy_extensions.flatappextension import ExtendedFlatApp, NavDrawerEntryConfig
 
