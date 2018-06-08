@@ -426,6 +426,7 @@ class ExtendedFlatApp(FlatApp):
             separator_color=(0,0,0,1),
             background_color=(0,0,0,.25),)
         busy_popup.title_color_tuple = ('Brown', '600')
+        busy_popup.title_size = dp(12)
         busy_content.label_color_tuple = ('Brown', '800')
         busy_popup.popup_color=(.95, .95, .95, 1.0)
 
@@ -455,8 +456,9 @@ class ExtendedFlatApp(FlatApp):
     def raise_error(self, error_title, error_text, auto_dismiss=True, timeout=None):
         error_content = CustomErrorContent()
         error_popup = CustomPopup(
-            content=error_content, size_hint=(.6, .3),
+            content=error_content, size_hint=(.6, None), height=dp(205),
             auto_dismiss=auto_dismiss,
+            separator_color=(0,0,0,1),
             background_color=(0,0,0,0.25),)
 
         error_popup.title_color_tuple = ('Brown', '600')
@@ -465,6 +467,7 @@ class ExtendedFlatApp(FlatApp):
         error_content.error_text = error_text
         error_content.label_color_tuple = ('Brown', '800')
         error_popup.title = error_title
+        error_popup.title_size = dp(12)
         error_content.theme=('app', 'shit')
         dismiss_button = error_content.dismiss_button
         dismiss_button.bind(on_release=error_popup.dismiss)
