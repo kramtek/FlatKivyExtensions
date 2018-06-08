@@ -276,13 +276,18 @@
         valign: 'top'
         text: root.error_text
         color_tuple: root.label_color_tuple
+        font_size: dp(12)
+
     CustomButton:
         id: dismiss_button
-        theme: root.theme
+        # theme: root.theme
+        color_tuple: ('Brown', '400')
         text: 'Ok'
         size_hint: (0.6, None)
-        height: dp(35)
+        height: dp(30)
         style: 'NavigationLabelMainHeading'
+        font_size: dp(12)
+        font_color_tuple: ('Gray', '0000') 
 
 <CustomBusyContent>:
     orientation: 'tb-lr'
@@ -310,16 +315,19 @@
         halign: 'center'
         text: root.busy_text
         color_tuple: root.label_color_tuple
+        font_size: dp(12)
 
     CustomButton:
         id: dismiss_button
-        theme: root.theme
+        # theme: root.theme
         text: 'Cancel'
         size_hint: (0.6, None)
-        height: dp(35)
+        height: dp(30)
         style: 'NavigationLabelMainHeading'
         color_tuple: ('Brown', '400')
         radius: root.radius
+        font_size: dp(12)
+        font_color_tuple: ('Gray', '0000') 
 
 
 <-CustomPopup>:
