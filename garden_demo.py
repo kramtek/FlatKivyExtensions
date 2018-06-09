@@ -24,8 +24,8 @@ from package_control_screen import PackageManagerScreen
 from code_review_screens import FileChooserScreen
 
 app_config_entries = ['Garden Demos',
-                      NavDrawerEntryConfig(GraphDemoScreen, 'Garden Graph Demo'),
                       NavDrawerEntryConfig(FileChooserScreen, 'File Chooser'),
+                      NavDrawerEntryConfig(GraphDemoScreen, 'Garden Graph Demo'),
                       NavDrawerEntryConfig(PizzaDemoScreen, 'Pizza Demo'),
                       NavDrawerEntryConfig(SpinnerDemoScreen, 'SpinnerDemo'),
                       'Extra',
