@@ -19,10 +19,10 @@ Builder.load_string('''
     BoxLayout:
         id: filechooser_layout
         size_hint_y: None
-        height: dp(400)
+        height: root.container_height
         canvas.before:
             Color:
-                rgba: (0.1, 0.1, 0.1, 1.0)
+                rgba: (0.1, 0.2, 0.1, 1.0)
             Rectangle:
                 size: self.size
                 pos: self.pos
@@ -31,6 +31,8 @@ Builder.load_string('''
             id: filechooser
             rootpath: './.'
             filters: ['*.py', '*.txt']
+            #size_hint_y: None
+            #height: root.container_height
 
             #FileChooserListLayout:
 
@@ -39,8 +41,8 @@ Builder.load_string('''
         cols: 1
         spacing: dp(5)
         orientation: 'vertical'
-        size_hint_y: None
-        height: dp(400)
+        #size_hint_y: None
+        #height: dp(400)
         done_button: self.done_button
 
         CustomButton:
@@ -57,6 +59,8 @@ Builder.load_string('''
         CodeInput:
             id: codeinput
             padding: '4dp'
+            size_hint_y: None
+            height: root.container_height - dp(20+50)
             multiline: True
             text: 'class Hello(object):'
             # focus: True if root.parent else False
@@ -119,6 +123,13 @@ class FileChooserScreen(CustomScreen):
         self.codeinput.bind(on_text_validate=self.validate_text)
         self.remove_widget(self.codeinput_layout)
 
+        #self.filechooser_layout.size_hint_y = None
+        #self.filechooser_layout.height = self.container_height
+
+        #self.filechooser.size_hint_y = None
+        #self.filechooser.height = self.filechooser_layout.height
+
+
         self._built = True
         self._keyboard_open = False
 
@@ -153,8 +164,10 @@ class FileChooserScreen(CustomScreen):
     def show_keyboard(self, *largs):
         if self._keyboard_open:
             self.codeinput.hide_keyboard()
+            self.codeinput.height = self.container_height - dp(20+50)
         else:
             self.codeinput.show_keyboard()
+            self.codeinput.height = self.container_height / 2.0
             #self._keyboard = Window.request_keyboard(
             #    self._keyboard_closed, self)
             #self._keyboard.bind(on_key_down=self._on_keyboard_down)
@@ -205,18 +218,6 @@ class FileChooserScreen(CustomScreen):
     def done_coding(self):
         self.add_widget(self.filechooser_layout)
         self.remove_widget(self.codeinput_layout)
-        return
-        self.codeinput_layout.size_hint = (None, None)
-        self.codeinput_layout.size = (0,0)
-        #self.done_button.height = 0
-        self.codeinput_layout.remove_widget(self.done_button)
-
-        self.filechooser_layout.size_hint=(None, None)
-        self.filechooser_layout.height = self.height-dp(40)
-        self.filechooser_layout.width= self.width
-        self.filechooser.size_hint=(None, None)
-        self.filechooser.height = self.height-dp(40)
-        self.filechooser.width= self.width
 
 
 
