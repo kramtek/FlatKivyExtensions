@@ -107,18 +107,22 @@ class CustomScreen(Screen):
                                             )
         self._main_layout.add_widget(self._content_layout)
 
+        padding = 2
+        height_offset = 0
+        header_height = 40
+        self.container_height = Window.height - dp(header_height) - dp(2*padding) - dp(height_offset) - self._title_label.height - 2*dp(padding) - 2*self._main_layout.padding[0]
         super(CustomScreen, self).__init__(*largs, **kwargs)
 
         self.outer_container = _OuterLayout()
 
-        padding = 5
-        height_offset = 4
-        header_height = 40
+        #padding = 5
+        #height_offset = 4
+        #header_height = 40
         #blur_radius = 4
         #shadow_offset = 6
         #shadow_color = (0.3, 0.1, 0.1, 0.5)
 
-        self.container_height = Window.height - dp(header_height) - dp(2*padding) - dp(height_offset) - self._title_label.height - 2*dp(padding) - 2*self._main_layout.padding[0]
+        #self.container_height = Window.height - dp(header_height) - dp(2*padding) - dp(height_offset) - self._title_label.height - 2*dp(padding) - 2*self._main_layout.padding[0]
         if True:
             self.outer_container.add_widget(self._main_layout)
             super(CustomScreen, self).add_widget(self.outer_container)
