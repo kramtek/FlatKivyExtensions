@@ -74,7 +74,7 @@ class PizzaDemoScreen(CustomScreen):
             self.values = np.round(self.values*100) / 100
 
             self.pizza.serie = zip(self.labels, self.values, self.colors)
-            time.sleep(0.25)
+            time.sleep(0.1)
 
 
 
