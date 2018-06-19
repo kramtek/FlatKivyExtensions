@@ -19,7 +19,7 @@ from flat_kivy.flatapp import FlatApp
 from flat_kivy.uix.flatlabel import FlatLabel
 from flat_kivy.font_definitions import style_manager
 
-from flat_kivy_extensions.uix import CustomErrorContent, CustomBusyContent
+from flat_kivy_extensions.uix import CustomPopupContent, CustomBusyContent
 from flat_kivy_extensions.uix.custompopup import CustomPopup
 
 from flat_kivy_extensions.uix.customiconbutton import CustomIconButton
@@ -420,70 +420,119 @@ class ExtendedFlatApp(FlatApp):
     def raise_busy(self, busy_title, busy_text, auto_dismiss=True, timeout=None, cancel_callback=None, timeout_callback=None):
         busy_content = CustomBusyContent()
         busy_content.theme=('app', 'shit')
-        busy_popup = CustomPopup(
-            content=busy_content, size_hint=(.5, None), height=dp(205),
+        self.busy_popup = CustomPopup(
+            content=busy_content, size_hint=(None, None), width=dp(200),
             auto_dismiss=auto_dismiss,
             separator_color=(0,0,0,1),
-            background_color=(0,0,0,.25),)
-        busy_popup.title_color_tuple = ('Brown', '600')
-        busy_popup.title_size = dp(12)
+            background_color=(0,0,0,.25),
+            separator_height=dp(1),)
+        busy_content.bind(height=self._update_busy_popup_height)
+        self.busy_popup.title_color_tuple = ('Brown', '600')
+        self.busy_popup.title_size = dp(13)
         busy_content.label_color_tuple = ('Brown', '800')
-        busy_popup.popup_color=(.95, .95, .95, 1.0)
+        self.busy_popup.popup_color=(.95, .95, .95, 1.0)
 
         busy_content.busy_text = busy_text
-        busy_popup.title = busy_title
-        dismiss_button = busy_content.dismiss_button
-        def dismiss_popup(self, *largs):
+        self.busy_popup.title = busy_title
+        cancel_button = busy_content.cancel_button
+        def dismiss_popup(*largs):
             event.cancel()
-            busy_popup.dismiss()
+            self.busy_popup.dismiss()
             if cancel_callback is not None:
                 cancel_callback()
-        #dismiss_button.bind(on_release=busy_popup.dismiss)
-        dismiss_button.bind(on_release=dismiss_popup)
-        busy_popup.open()
+        #dismiss_button.bind(on_release=self.busy_popup.dismiss)
+        cancel_button.bind(on_release=dismiss_popup)
+        self.busy_popup.open()
 
         if timeout is not None:
             def close_popup(dt):
-                busy_popup.dismiss()
+                self.busy_popup.dismiss()
                 if timeout_callback is not None:
                     timeout_callback()
             event = Clock.schedule_once(close_popup, timeout)
             def clear_timeout(self):
                 event.cancel()
-            busy_popup.bind(on_dismiss=clear_timeout)
-        return busy_popup
+            self.busy_popup.bind(on_dismiss=clear_timeout)
+        return self.busy_popup
 
-    def raise_error(self, error_title, error_text, auto_dismiss=True, timeout=None):
-        error_content = CustomErrorContent()
-        error_popup = CustomPopup(
-            content=error_content, size_hint=(.6, None), height=dp(205),
+    def _update_busy_popup_height(self, instance, value):
+        self.busy_popup.height = value + dp(33)
+
+    def raise_dialog(self, title, text, auto_dismiss=True, okay_callback=None, timeout=None):
+        content = CustomPopupContent()
+        content.text = text
+        content.label_color_tuple = ('Brown', '800')
+
+        self.popup = CustomPopup(
+            content=content, size_hint=(None, None), width=dp(200),
             auto_dismiss=auto_dismiss,
             separator_color=(0,0,0,1),
-            background_color=(0,0,0,0.25),)
+            background_color=(0,0,0,0.25),
+            separator_height=dp(1),)
 
-        error_popup.title_color_tuple = ('Brown', '600')
-        error_popup.popup_color=(.95, .95, .95, 1.0)
+        self.popup.title_color_tuple = ('Brown', '600')
+        self.popup.popup_color=(.95, .95, .95, 1.0)
+        self.popup.title = title
+        self.popup.title_size = dp(13)
+        self.popup.height = content.minimum_height - dp(10)
 
-        error_content.error_text = error_text
+        content.bind(height=self._update_popup_height)
+
+        cancel_button = content.cancel_button
+        cancel_button.bind(on_release=self.popup.dismiss)
+
+        def receivedOkay(*largs):
+            self.popup.dismiss()
+            if okay_callback is not None:
+                okay_callback()
+
+
+        ok_button = content.ok_button
+        ok_button.bind(on_release=receivedOkay)
+
+        self.popup.open()
+
+        return self.popup
+
+    def _update_popup_height(self, instance, value):
+        self.popup.height = value + dp(33)
+
+    def raise_error(self, error_title, error_text, auto_dismiss=True, timeout=None):
+        error_content = CustomPopupContent()
+        error_content.text = error_text
         error_content.label_color_tuple = ('Brown', '800')
-        error_popup.title = error_title
-        error_popup.title_size = dp(12)
+
+        self.error_popup = CustomPopup(
+            content=error_content, size_hint=(None, None), width=dp(200),
+            auto_dismiss=auto_dismiss,
+            separator_color=(0,0,0,1),
+            background_color=(0,0,0,0.25),
+            separator_height=dp(1),)
+
+        self.error_popup.title_color_tuple = ('Brown', '600')
+        self.error_popup.popup_color=(.95, .95, .95, 1.0)
+        self.error_popup.title = error_title
+        self.error_popup.title_size = dp(13)
+        self.error_popup.height = error_content.minimum_height + dp(50)
+
+        error_content.bind(height=self._update_error_popup_height)
+        cancel_button = error_content.cancel_button
+        cancel_button.text = 'Ok'
+        cancel_button.bind(on_release=self.error_popup.dismiss)
         error_content.theme=('app', 'shit')
-        dismiss_button = error_content.dismiss_button
-        dismiss_button.bind(on_release=error_popup.dismiss)
-        error_popup.open()
+        error_content.ok_button.size_hint_x = None
+        error_content.ok_button.width = 0
+
+        self.error_popup.open()
         if timeout is not None:
             def close_popup(dt):
-                error_popup.dismiss()
+                self.error_popup.dismiss()
             Clock.schedule_once(close_popup, timeout)
 
-    # def _create_navigation_label_from_string(self, entry):
-    #     entry = {'text' : entry, 'theme' : ('app', 'navigationdrawer')}
-    #     if self._first_navigation_label is None:
-    #         self._first_navigation_label = self._create_navigation_label_from_dict(entry)
-    #         return
-    #     entry['style'] = 'NavigationLabelSubHeading'
-    #     self._create_navigation_label_from_dict(entry)
+        return self.error_popup
+
+    def _update_error_popup_height(self, instance, value):
+        self.error_popup.height = value + dp(33)
 
     def _create_navigation_label(self, entry):
         label = FlatLabel(text=entry.get('text', 'None'))

@@ -25,6 +25,7 @@ from screens import FlatKivyDemoScreen, KivyScreen1, KivyScreen2
 from screens2 import (KivyWidgetScreen, CustomButtonDemoScreen,
                      CustomLayoutsScreen, DropShadowScreen, CustomSliderDemoScreen,
                      CustomCheckBoxDemoScreen)
+from dialog_screen import DialogDemoScreen
 
 #    An application configuration list is used to specify what screens
 #    should be included and how to navigate to them.
@@ -47,8 +48,9 @@ from screens2 import (KivyWidgetScreen, CustomButtonDemoScreen,
 
 app_config_entries = ['Demo Screens',
                       'Kivy Screens',
-                      #NavDrawerEntryConfig(KivyScreen1, 'Kivy Screen1'),
-                      #NavDrawerEntryConfig(KivyScreen2, 'Kivy Screen2'),
+                      NavDrawerEntryConfig(DialogDemoScreen, 'Dialog Demos'),
+                      NavDrawerEntryConfig(KivyScreen1, 'Kivy Screen1'),
+                      NavDrawerEntryConfig(KivyScreen2, 'Kivy Screen2'),
                       NavDrawerEntryConfig(FlatKivyDemoScreen, 'FlatKivy Demo'),
                       'Custom Screens',
                       NavDrawerEntryConfig(KivyWidgetScreen, 'Kivy Widget Demo'),
@@ -57,9 +59,17 @@ app_config_entries = ['Demo Screens',
                       NavDrawerEntryConfig(CustomSliderDemoScreen, 'Custom Sliders'),
                       NavDrawerEntryConfig(CustomLayoutsScreen, 'CustomLayouts'),
                       NavDrawerEntryConfig(DropShadowScreen, 'DropShadow Examples'),
-                      #{'text':'Custom Heading Label',
-                      # 'style':'Button',
-                      # 'color_tuple' : ('Yellow', '500')},
+                      {'text':'Custom Heading Label',
+                       'style':'Button',
+                       'color_tuple' : ('Yellow', '500')},
+                      NavDrawerEntryConfig(KivyScreen1, 'Kivy Screen1'),
+                      NavDrawerEntryConfig(KivyScreen1, 'Kivy Screen1'),
+                      NavDrawerEntryConfig(KivyScreen1, 'Kivy Screen1'),
+                      'Testing',
+                      NavDrawerEntryConfig(KivyScreen1, 'Kivy Screen1'),
+                      NavDrawerEntryConfig(KivyScreen1, 'Kivy Screen1'),
+                      NavDrawerEntryConfig(KivyScreen1, 'Kivy Screen1'),
+                      NavDrawerEntryConfig(KivyScreen1, 'Kivy Screen1'),
                      ]
 
 #

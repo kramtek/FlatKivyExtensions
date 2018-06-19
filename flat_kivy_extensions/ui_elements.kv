@@ -260,43 +260,80 @@
         on_active: root.on_checkbox_active(self, self.active)
         #root.setter('touch_down_active')
 
-
-<CustomErrorContent>:
+<CustomPopupContent>:
     orientation: 'tb-lr'
-    size_hint: (1.0, 1.0)
-    dismiss_button: dismiss_button
+    size_hint: (1.0, None)
+    cancel_button: cancel_button
+    ok_button: ok_button
     cols: 1
-    padding: 5
-    spacing: 5
-    FlatLabel:
-        text_size: self.size
-        size_hint: (1.0, .8)
-        # font_ramp_tuple: ('error_content' + str(randint(1,10000)), '1')
-        style: 'NavigationLabelMainHeading'
-        valign: 'top'
-        text: root.error_text
-        color_tuple: root.label_color_tuple
-        font_size: dp(12)
+    padding: dp(5)
+    spacing: dp(5)
+    height: self.minimum_height
+    message_alignment: 'center'
 
-    CustomButton:
-        id: dismiss_button
-        # theme: root.theme
-        color_tuple: ('Brown', '400')
-        text: 'Ok'
-        size_hint: (0.6, None)
-        height: dp(30)
-        style: 'NavigationLabelMainHeading'
-        font_size: dp(12)
-        font_color_tuple: ('Gray', '0000') 
+    ScrollView:
+        size_hint_y: None
+        label_layout: label_layout.__self__
+        height: min(dp(200), label_layout.minimum_height)
+
+        GridLayout:
+            id: label_layout
+            cols: 1
+            size_hint_y: None
+            height: self.minimum_height
+
+            FlatLabel:
+                id: label
+                size_hint: (1.0, None)
+                text_size: self.width, None
+                height: self.texture_size[1]
+                #height: dp(50)
+                # font_ramp_tuple: ('error_content' + str(randint(1,10000)), '1')
+                style: 'NavigationLabelMainHeading'
+                valign: 'top'
+                halign: root.message_alignment
+                text: root.text
+                color_tuple: root.label_color_tuple
+                font_size: dp(12)
+
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: None
+        height: dp(32)
+        spacing: dp(2)
+
+        CustomButton:
+            id: ok_button
+            # theme: root.theme
+            color_tuple: ('Brown', '400')
+            text: 'Ok'
+            size_hint: (0.6, None)
+            height: dp(30)
+            style: 'NavigationLabelMainHeading'
+            font_size: dp(12)
+            font_color_tuple: ('Gray', '0000') 
+
+        CustomButton:
+            id: cancel_button
+            # theme: root.theme
+            color_tuple: ('Brown', '400')
+            text: 'Cancel'
+            size_hint: (0.6, None)
+            height: dp(30)
+            style: 'NavigationLabelMainHeading'
+            font_size: dp(12)
+            font_color_tuple: ('Gray', '0000') 
+
 
 <CustomBusyContent>:
     orientation: 'tb-lr'
-    size_hint: (1.0, 1.0)
-    dismiss_button: dismiss_button
+    size_hint: (1.0, None)
+    cancel_button: cancel_button
     cols: 1
-    padding: 5
-    spacing: 5
+    padding: dp(5)
+    spacing: dp(5) 
     radius: '2dp'
+    height: self.minimum_height
 
     ProgressSpinner:
         size_hint: (1, None)
@@ -306,9 +343,16 @@
         stroke_length: 10
 
     FlatLabel:
+        id: label
         size_hint: (1.0, None)
-        height: dp(50)
-        text_size: self.size
+        #height: dp(30)
+        # size: self.texture_size
+
+        size_hint: (1.0, None)
+        text_size: self.width, None
+        height: self.texture_size[1]
+
+        # text_size: self.size
         # font_ramp_tuple: ('error_content' + str(randint(1,10000)), '1')
         style: 'NavigationLabelMainHeading'
         valign: 'top'
@@ -318,7 +362,7 @@
         font_size: dp(12)
 
     CustomButton:
-        id: dismiss_button
+        id: cancel_button
         # theme: root.theme
         text: 'Cancel'
         size_hint: (0.6, None)
@@ -345,7 +389,7 @@
             pos: self.pos
 
     GridLayout:
-        padding: 12
+        padding: dp(3) 
         cols: 1
         size_hint: None, None
         pos: root.pos
@@ -355,14 +399,14 @@
             text: root.title
             color: app.get_color(root.title_color_tuple)
             size_hint_y: None
-            height: self.texture_size[1] + 16
+            height: self.texture_size[1] + dp(5)
             text_size: self.width - 16, None
             font_size: root.title_size
             style: 'NavigationLabelMainHeading'
 
         Widget:
             size_hint_y: None
-            height: 4
+            height: dp(1) 
             canvas:
                 Color:
                     rgba: root.separator_color
