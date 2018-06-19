@@ -75,12 +75,19 @@ Builder.load_string('''
             side_panel_width: min(dp(250), 0.6*self.width)
             anim_type:  'slide_above_simple'
 
-            StackLayout:
-                orientation: 'tb-lr'
-                id: side_panel
-                #orientation: 'vertical'
-                padding: '3dp'
-                spacing: '3dp'
+            ScrollView:
+                id: side_panel_container
+
+                #StackLayout:
+                #    orientation: 'tb-lr'
+                GridLayout:
+                    cols: 1
+                    size_hint_y: None
+                    height: self.minimum_height
+                    id: side_panel
+                    #orientation: 'vertical'
+                    padding: '2dp'
+                    spacing: '2dp'
 
                 # this will be populated dynamically when the root application is built
 
