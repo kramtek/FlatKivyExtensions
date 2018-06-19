@@ -3,11 +3,12 @@ from kivy.metrics import dp
 from kivy.lang import Builder
 from kivy.core.window import Window
 
-from kivy.properties import StringProperty, ListProperty
+from kivy.properties import StringProperty, ListProperty, NumericProperty
 from kivy.uix.widget import Widget
 from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.scrollview import ScrollView
 from kivy.graphics import Rectangle, Fbo, Scale, Translate, Color
 
 from flat_kivy.uix.flatlabel import FlatLabel
@@ -29,7 +30,14 @@ Builder.load_string('''
     #         size: self.size
     #         pos: self.pos
 
+<_ScrollLayout>:
+    do_scroll_y: True
+    cols: 1
+
 <_ContentLayout>:
+    size_hint_y: None
+    height: self.minimum_height
+
     # canvas.before:
     #     Color:
     #         rgba: (0.95, 0.95, 0.95, 1.0)
@@ -75,6 +83,10 @@ class _WidgetContainerLayout(BoxLayout):
 class _ContentLayout(GridLayout):
     pass
 
+#class _ScrollLayout(GridLayout):
+class _ScrollLayout(ScrollView):
+    pass
+
 class _MainLayout(BoxLayout):
     pass
 
@@ -86,6 +98,7 @@ class CustomScreen(Screen):
     theme = ListProperty()
     style = StringProperty()
     background_color = ListProperty([0.95, 0.95, 0.95, 1.0])
+    content_spacing = NumericProperty(1)
 
     def __init__(self, *largs, **kwargs):
         self._main_layout = _MainLayout(orientation='vertical',
@@ -105,49 +118,46 @@ class CustomScreen(Screen):
         self._content_layout = _ContentLayout(orientation='vertical', cols=1,
                                             padding=dp(5), spacing=dp(3),
                                             )
-        self._main_layout.add_widget(self._content_layout)
+        #self._main_layout.add_widget(self._content_layout)
+
+        #self._scroll_layout = _ScrollLayout(orientation='vertical', cols=1, padding=dp(1))
+        self._scroll_layout = _ScrollLayout()
+        self._scroll_layout.add_widget(self._content_layout)
+
+        self.bind(content_spacing=self._content_layout.setter('spacing'))
+
+        self._main_layout.add_widget(self._scroll_layout)
 
         padding = 2
         height_offset = 0
         header_height = 40
         self.container_height = Window.height - dp(header_height) - dp(2*padding) - dp(height_offset) - self._title_label.height - 2*dp(padding) - 2*self._main_layout.padding[0]
+        #self._scroll_layout.height = self.container_height
+
         super(CustomScreen, self).__init__(*largs, **kwargs)
 
         self.outer_container = _OuterLayout()
 
-        #padding = 5
-        #height_offset = 4
-        #header_height = 40
-        #blur_radius = 4
-        #shadow_offset = 6
-        #shadow_color = (0.3, 0.1, 0.1, 0.5)
+        self.outer_container.add_widget(self._main_layout)
+        super(CustomScreen, self).add_widget(self.outer_container)
 
-        #self.container_height = Window.height - dp(header_height) - dp(2*padding) - dp(height_offset) - self._title_label.height - 2*dp(padding) - 2*self._main_layout.padding[0]
-        if True:
-            self.outer_container.add_widget(self._main_layout)
-            super(CustomScreen, self).add_widget(self.outer_container)
-            #super(CustomScreen, self).add_widget(self._main_layout)
-            return
-
-        padding = 5
-        height_offset = 4
-        header_height = 40
-        blur_radius = 4
-        shadow_offset = 6
-        shadow_color = (0.3, 0.1, 0.1, 0.5)
+        return
 
         self.outer_container.padding = dp(padding)
         self._main_layout.size_hint = (None, None)
         self._main_layout.height = Window.height - dp(header_height) - dp(2*padding) - dp(height_offset)
         self._main_layout.width = Window.width - dp(2*padding+height_offset)
         self.outer_container.add_widget(self._main_layout)
-#        ds = DropShadow(self._main_layout, height_offset=height_offset)
-#        ds.blur_radius = blur_radius
-#        ds.offset = shadow_offset
-#        ds.shadow_color = shadow_color
-#        self.outer_container.add_widget(ds)
 
-        #self.container_height = Window.height - dp(header_height) - dp(2*padding) - dp(height_offset) - self._title_label.height - 2*dp(padding) - 2*self._main_layout.padding[0]
+        blur_radius = 4
+        shadow_offset = 6
+        shadow_color = (0.3, 0.1, 0.1, 0.5)
+
+        ds = DropShadow(self._main_layout, height_offset=height_offset)
+        ds.blur_radius = blur_radius
+        ds.offset = shadow_offset
+        ds.shadow_color = shadow_color
+        self.outer_container.add_widget(ds)
 
         super(CustomScreen, self).add_widget(self.outer_container)
 
