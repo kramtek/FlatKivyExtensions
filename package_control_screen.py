@@ -98,7 +98,7 @@ def get_version(package_name):
         __version__ = None
         exec('from %s import __version__' % package_name)
         version = __version__
-        print 'version: %s' % str(version)
+        print '%s version: %s' % (package_name, str(version))
     except Exception as e:
         try:
             __ver__ = None
@@ -120,7 +120,7 @@ class PackageVersionLayout(GridLayout):
         self.size_hint_y = None
         self.bind(minimum_height=self.setter('height'))
 
-        packages = ['numpy', 'kivy', 'csv', 'flat_kivy', 'joe', 'flat_kivy_extensions']
+        packages = ['numpy', 'kivy', 'csv', 'flat_kivy', 'flat_kivy_extensions', 'not_there']
 
         l = BoxLayout(size_hint_y=None, height=dp(label_height), padding=dp(10))
         label = CustomLabel(text='Package', color=(0,0,0.3,1),

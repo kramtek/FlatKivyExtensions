@@ -48,10 +48,8 @@ class _CustomGraph(Graph):
                 if self.x_ticks_angle > 0:
                     xlabel.texture_update()
                     size = xlabel.texture_size
-                    print 'size: %s' % str(size)
                     if (size[0]) > maxWidth:
                         maxWidth = size[0]
-            print 'maxWidth: %s ' % str(maxWidth)
             for xlabel in xlabels:
                 w = xlabel.texture_size[0]
                 xlabel.pos = (xlabel.pos[0], xlabel.pos[1] + maxWidth/2.0 + (maxWidth - w)/2.0)
@@ -102,7 +100,6 @@ class LineGraph(_CustomGraph):
         numPoints = self.shape[0]
         self.xmin = 1.0
         self.xmax = numPoints
-        print 'xmax: %s' % str(self.xmax)
         if self.x_ticks_major == 0:
             self.x_ticks_major=self.xmax
 
@@ -139,7 +136,6 @@ class BarGraph(_CustomGraph):
         self.xmax = self.shape[0] + 1
         self.x_ticks_minor = 1
         self.x_ticks_major=1
-        print ' shape: %s'  % str(self.shape)
         scaling = float(1.0/float(self.shape[1]+1))
 
         width   = float(1.0/float(self.shape[1]+1))
@@ -239,7 +235,7 @@ class GraphDemoScreen(CustomScreen):
         plot.points = [(x, .1 + randrange(10) / 10.) for x in range(-50, 1)]
 
         graph.size_hint_y = None
-        graph.height = dp(100)
+        graph.height = dp(150)
         self.add_widget(graph)
 
 
@@ -276,7 +272,7 @@ class GraphDemoScreen(CustomScreen):
         #self.barGraph.x_tick_labels = ['', 'abc', 'def', '123', 'hij', '3']
 
         self.barGraph.size_hint_y = None
-        self.barGraph.height = dp(140)
+        self.barGraph.height = dp(180)
         self.add_widget(self.barGraph)
 
 
@@ -308,7 +304,7 @@ class GraphDemoScreen(CustomScreen):
         #self.lineGraph.x_tick_labels = ['', 'a', 'b', 'c', '']
 
         self.lineGraph.size_hint_y = None
-        self.lineGraph.height = dp(100)
+        self.lineGraph.height = dp(150)
         self.add_widget(self.lineGraph)
 
 
@@ -344,7 +340,7 @@ class GraphDemoScreen(CustomScreen):
         graph2.add_plot(plot)
 
         graph2.size_hint_y = None
-        graph2.height = dp(100)
+        graph2.height = dp(150)
         self.add_widget(graph2)
         self.contourplot = plot
 
@@ -375,8 +371,8 @@ class GraphDemoScreen(CustomScreen):
         self.barGraph.update(data)
 
         data = np.random.random( (10,4)) * 10 - 1.5
-
         self.lineGraph.update(data)
+
 
     def update_contour(self, *args):
         _, _, self.contourplot.data[:] = self.make_contour_data(Clock.get_time())
