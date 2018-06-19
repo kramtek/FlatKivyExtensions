@@ -1,5 +1,6 @@
 import os
 import xml.etree.ElementTree as ET
+from xml.dom import minidom
 
 def get_relative_font_path(local_font_path):
     ''' Get the relative path from the font path specified to the flat_kivy font
@@ -32,5 +33,37 @@ def get_app_config_entry(configTag):
             print 'Exception: %s  (returning None)' % str(e)
             return None
     return current_root.find(configTag)
+
+
+def prettify(elem):
+    roughString = ET.tostring(elem, 'utf-8')
+    reparsed = minidom.parseString(roughString)
+    return reparsed.toprettyxml(indent="  ")
+
+def set_app_config_entry(configTags, tags, attributes):
+    filename = 'app_config.xml'
+    try:
+        tree = ET.ElementTree(file=filename)
+        current_root = tree.getroot()
+    except Exception as e:
+        print 'Exception: %s  (returning None)' % str(e)
+        return None
+
+    element = current_root
+    for tag in configTags:
+        parent = element
+        element = element.find(tag)
+
+    parent.remove(element)
+    element = ET.SubElement(parent, tag)
+
+    for (tag, attrib) in zip(tags, attributes):
+        el = ET.SubElement(element, tag)
+        el.attrib = attrib
+
+    with open(filename, 'w+') as outputFile:
+        outputFile.write(prettify(current_root))
+
+
 
 
