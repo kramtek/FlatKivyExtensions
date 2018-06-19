@@ -198,6 +198,7 @@ Builder.load_string('''
         min: 10
         max: 110
         theme: ('green', 'main')
+        size_hint_y: None
         height: '50dp'
 
     CustomSlider:
@@ -205,7 +206,8 @@ Builder.load_string('''
         min: 10
         max: 110
         theme: ('green', 'main')
-        height: '100dp'
+        height: '200dp'
+        size_hint_y: None
 
     ExtendedSlider:
         orientation: 'horizontal'
@@ -222,7 +224,7 @@ Builder.load_string('''
         ExtendedSlider:
             orientation: 'vertical'
             size_hint_y: None
-            height: '200dp'
+            height: '280dp'
             label_text: 'VertValue1'
             units: 'ms'
             max: 30
@@ -233,7 +235,7 @@ Builder.load_string('''
         ExtendedSlider:
             orientation: 'vertical'
             size_hint_y: None
-            height: '200dp'
+            height: '280dp'
             label_text: 'VertValue2'
             units: 'volts'
             max: 60
