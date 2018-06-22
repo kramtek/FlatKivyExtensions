@@ -7,6 +7,7 @@ from kivy.metrics import dp
 from kivy.clock import Clock, mainthread
 
 from flat_kivy_extensions.uix.customscreen import CustomScreen
+from flat_kivy_extensions.uix.customdropdown import CustomDropDownButton
 from kivy.garden.progressspinner import ProgressSpinner
 
 Builder.load_string('''
@@ -41,8 +42,26 @@ class DialogDemoScreen(CustomScreen):
 
         self.process_running = False
 
+        self.strings = ['a', 'b', 'c', '123']
+        self.dropdown_button = CustomDropDownButton(self.strings)
+        # Set properties of main button
+        self.dropdown_button.theme = ('app', 'default')
+        self.dropdown_button.text = 'Select something'
+        self.dropdown_button.size_hint = (None, None)
+        self.dropdown_button.size = (dp(200), dp(40))
+        self.dropdown_button.radius = 0
+        # Set properties applied to all menu buttons
+        self.dropdown_button.menubutton_theme = ('app', 'default')
+        #self.dropdown_button.menubutton_color = (0.5, 0.5, 0.1, 0.6)
+        self.dropdown_button.dropdown_width = dp(100)
+        self.dropdown_button.bind(selected_item=self.menu_item_selected)
+        self.add_widget(self.dropdown_button)
+
+    def menu_item_selected(self, instance, index):
+        print 'menu item selected:  text; %s' % str(self.strings[index])
+
     def start_background_process(self, *largs):
-        self.busy_popup = App.get_running_app().raise_busy('Currently Busy:', 'Some busy detail about what is going on...',
+        self.busy_popup = App.get_running_app().raise_busy('Currently Busy:', '',
                                           auto_dismiss=False, timeout=5,
                                           timeout_callback=self.timeout,
                                           cancel_callback=self.canceled,)
