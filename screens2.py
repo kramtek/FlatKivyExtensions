@@ -11,6 +11,7 @@ from kivy.clock import Clock, mainthread
 from kivy.uix.label import Label
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.stacklayout import StackLayout
+from kivy.uix.dropdown import DropDown
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.metrics import dp
@@ -74,6 +75,8 @@ Builder.load_string('''
     Switch:
         size_hint_y: None
         height: '50dp'
+
+        on_parent: root.done_building()
 
 <-CustomButtonDemoScreen>:
     title: 'Custom Buttons'
@@ -290,6 +293,19 @@ Builder.load_string('''
 
 class KivyWidgetScreen(CustomScreen):
     pass
+
+    def done_building(self):
+        self.dropdown = DropDown()
+        for index in range(10):
+            btn = Button(text='Value %d' % index, size_hint_y=None, height=dp(35))
+            btn.bind(on_release=lambda btn: self.dropdown.select(btn.text))
+            self.dropdown.add_widget(btn)
+        mainbutton = Button(text='Select one', size_hint=(None, None))
+        mainbutton.size = (dp(200), dp(40))
+        mainbutton.bind(on_release=self.dropdown.open)
+        self.add_widget(mainbutton)
+
+        self.dropdown.bind(on_select=lambda instance, x: setattr(mainbutton, 'text', 'selected: '+x))
 
 class CustomButtonDemoScreen(CustomScreen):
     pass
