@@ -80,5 +80,6 @@ from app_themes_and_fonts import themes
 
 if __name__ == '__main__':
     app = ExtendedFlatApp(app_config_entries, title, about, use_coverflow_navigation=True, themes=themes)
+    app.root.header_color = (.23, .15, .13, 1.0)
     app.run()
 

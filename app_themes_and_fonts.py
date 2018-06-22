@@ -77,9 +77,75 @@ accent = {
     },
 }
 
+
+navigationdrawer = {
+    'FlatLabel': {
+        'size_hint_y' : None,
+        'height' : '25dp',
+        # 'font_size' : '20dp',
+        'color_tuple' : ('Gray', '0000'),
+        'style' : 'NavigationLabelMainHeading',
+    },
+
+    'CustomIconButton': {
+        'color_tuple': ('Gray', '1000'),
+        'font_color_tuple': ('Gray', '0000'),
+        'size_hint_y' : None,
+        'height' : '40dp',
+        'icon' : 'fa-chevron-right',
+        'icon_color_tuple': ('Gray', '0000'),
+        'icon_font_size' : '12dp',
+        'content_padding' : ['3dp', '2dp', '2dp', '0dp'],
+        'style': 'NavigationButton',
+        'orientation' : 'tb-rl',
+    },
+}
+
+header = {
+    'CustomIconButton': {
+        'font_color_tuple': ('Gray', '100'),
+        'style': 'Button',
+        'icon_color_tuple': ('Gray', '200'),
+        'icon_font_size' : '25dp',
+    },
+    'FlatLabel': {
+        'color_tuple' : ('Gray', '200'),
+        'style' : 'HeaderTitle',
+    },
+}
+
+default = {
+    'CustomButton': {
+        'color_tuple': ('Brown', '800'),
+        'font_color_tuple': ('Gray', '100'),
+        'style': 'CustomButton1',
+        'radius' : '5dp',
+    },
+    'CustomCheckBoxListItem': {
+        'font_color_tuple': ('Blue', '800'),
+        'check_color_tuple': ('Green', '600'),
+        'check_color_hue_down': '200',
+        'outline_color_tuple': ('Gray', '500'),
+        'style': 'Button',
+        'valign' : 'middle',
+
+        'size_scaling' : 0.5,
+        'outline_size': '1.5dp',
+        'style': 'CustomButton1',
+
+        'check_scale': .5,
+        'radius' : '4dp',
+        'icon' : 'fa-check',
+    },
+}
+
 themes = {
     'green': {'main': main,
               'accent': accent,
-              }
+              },
+    'app' : {'navigationdrawer' : navigationdrawer,
+             'header' : header,
+             'default' : default,
+             },
 }
 
