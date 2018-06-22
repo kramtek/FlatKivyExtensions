@@ -17,15 +17,15 @@ from flat_kivy_extensions.flatappextension import ExtendedFlatApp, NavDrawerEntr
 title = 'Garden Demos'
 about = 'Demonstration of some kivy garden elements.'
 
-from graph_screen import GraphDemoScreen
+from graph_screen import GardenGraphDemoScreen
 from pizza_screen import PizzaDemoScreen
 from spinner_screen import SpinnerDemoScreen
 from package_control_screen import PackageManagerScreen
 from code_review_screens import FileChooserScreen
 
 app_config_entries = ['Garden Demos',
+                      NavDrawerEntryConfig(GardenGraphDemoScreen, 'Garden Graph Demo'),
                       NavDrawerEntryConfig(SpinnerDemoScreen, 'SpinnerDemo'),
-                      NavDrawerEntryConfig(GraphDemoScreen, 'Garden Graph Demo'),
                       NavDrawerEntryConfig(FileChooserScreen, 'File Chooser'),
                       NavDrawerEntryConfig(PizzaDemoScreen, 'Pizza Demo'),
                       'Extra',

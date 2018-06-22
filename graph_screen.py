@@ -1,6 +1,6 @@
 
-import itertools, math
-from math import sin, cos, pi, log10
+import itertools
+from math import sin, cos, pi
 from random import randrange
 
 import numpy as np
@@ -10,186 +10,37 @@ from kivy.clock import Clock
 from kivy.lang import Builder
 from kivy.utils import get_color_from_hex as rgb
 
-from flat_kivy_extensions.uix.customscreen import CustomScreen
+from kivy.garden.graph import Graph, SmoothLinePlot, MeshLinePlot, BarPlot, MeshStemPlot, ContourPlot
 
-from kivy.garden.graph import Graph, SmoothLinePlot, MeshLinePlot, BarPlot, MeshStemPlot, ContourPlot, LinePlot
-from kivy.properties import ListProperty
+from flat_kivy_extensions.uix.customscreen import CustomScreen
+from flat_kivy_extensions.uix.customgraphs import BarGraph, LineGraph
 
 Builder.load_string('''
-<-GraphDemoScreen>:
+<-GardenGraphDemoScreen>:
     title: 'Graph Screen'
     theme: ('app', 'screen')
 ''')
 
 
-def identity(x):
-    return x
 
-
-
-class _CustomGraph(Graph):
-    x_tick_labels = ListProperty([], allownone=True)
-
-    def update_x_tick_labels(self, instance, value):
-        self._update_labels()
-
-    def _update_labels(self):
-        result = super(_CustomGraph, self)._update_labels()
-        xlabels = self._x_grid_label
-        ylabels = self._y_grid_label
-        maxWidth = 0
-        if len(self.x_tick_labels) > 0:
-            for (index, xlabel) in enumerate(xlabels):
-                if len(self.x_tick_labels) > index:
-                    xlabel.text = self.x_tick_labels[index]
-                else:
-                    xlabel.text = ''
-
-                if self.x_ticks_angle > 0:
-                    xlabel.texture_update()
-                    size = xlabel.texture_size
-                    if (size[0]) > maxWidth:
-                        maxWidth = size[0]
-            for xlabel in xlabels:
-                w = xlabel.texture_size[0]
-                xlabel.pos = (xlabel.pos[0], xlabel.pos[1] + maxWidth/2.0 + (maxWidth - w)/2.0)
-
-            if self.x_ticks_angle > 0:
-            #if False:
-                funclog = log10 if self.ylog else identity
-                ypoints = self._ticks_majory
-                x_next = self.padding + self.x
-                ylabel = self._ylabel
-                if ylabel:
-                    x_next += self.padding + ylabel.height
-                y_next = self.padding + self.y + 20
-                for (k, ylabel) in enumerate(ylabels):
-                    y1 = ylabel.texture_size
-                    y_start = y_next + (self.padding + y1[1] if len(xlabels) and self.x_grid_label
-                                    else 0) + (self.padding + y1[1] if not y_next else 0)
-
-                    yextent = self.y + self.height - self.padding - y1[1] / 2. - maxWidth
-                    ymin = funclog(self.ymin)
-
-                    ratio = (yextent - y_start) / float(funclog(self.ymax) - ymin)
-                    y_start -= y1[1] / 2.
-                    y1 = y1[0]
-                    ylabel.pos = (
-                        int(x_next),
-                        int(y_start + (ypoints[k] - ymin) * ratio) + maxWidth)
-
-                ylabel = self._ylabel
-                if ylabel:
-                    ylabel.y = int(ylabel.y + maxWidth/2)
-
-        return (result[0], result[1]+maxWidth, result[2], result[3])
-
-
-
-class LineGraph(_CustomGraph):
+class GardenGraphDemoScreen(CustomScreen):
 
     def __init__(self, *largs, **kwargs):
-        super(LineGraph, self).__init__(*largs, **kwargs)
-        self._plots = list()
-
-    def create(self, data):
-        colors = itertools.cycle([
-            rgb('7dac9f'), rgb('dc7062'), rgb('66a8d4'), rgb('e5b060')])
-
-        self.shape = data.shape
-        numPoints = self.shape[0]
-        self.xmin = 1.0
-        self.xmax = numPoints
-        if self.x_ticks_major == 0:
-            self.x_ticks_major=self.xmax
-
-        for ind1 in xrange(self.shape[1]):
-            plot = LinePlot(color=next(colors))
-            plot.line_width = dp(1)
-            self.add_plot(plot)
-            self._plots.append(plot)
-            plot.points = [(x+self.xmin, data[x,ind1])  for x in xrange(numPoints)]
-
-    def update(self, data):
-        if self.shape != self.shape:
-            self.create(data)
-        for ind1 in xrange(self.shape[1]):
-            plot = self._plots[ind1]
-            plot.points = [(x+self.xmin, data[x,ind1])  for x in xrange(self.shape[0])]
-
-
-class BarGraph(_CustomGraph):
-
-    def __init__(self, *largs, **kwargs):
-        super(BarGraph, self).__init__(*largs, **kwargs)
-        self._plots = list()
-        self._plot_datas = list()
-        self.bind(x_tick_labels=self.update_x_tick_labels)
-
-    def create(self, data):
-        colors = itertools.cycle([
-            rgb('7dac9f'), rgb('dc7062'), rgb('66a8d4'), rgb('e5b060')])
-
-        self.shape = data.shape
-        numPoints = self.shape[0] * (1 + self.shape[1])
-        self.xmin = 0.0
-        self.xmax = self.shape[0] + 1
-        self.x_ticks_minor = 1
-        self.x_ticks_major=1
-        scaling = float(1.0/float(self.shape[1]+1))
-
-        width   = float(1.0/float(self.shape[1]+1))
-
-        ratio = float(self.shape[0])/float(self.shape[1])
-        if numPoints == 2:
-            spacing = 0.9
-        else:
-            if ratio >= 1:
-                spacing = 0.8
-            else:
-                spacing = 0.7
-
-        for ind1 in xrange(self.shape[1]):
-            plot = BarPlot(color=next(colors), bar_spacing=spacing)
-            self.add_plot(plot)
-            plot.bind_to_graph(self)
-            self._plots.append(plot)
-            plot_data = [((x*scaling) + width*(float(self.shape[1])/2.0) + 0.0*(float(self.shape[1])/float(self.shape[1]+1)), 0.0) for x in range(0, numPoints+1)]
-            self._plot_datas.append(plot_data)
-            for ind2 in xrange(self.shape[0]):
-                index = ind1 + 1 + ind2*(self.shape[1]+1)
-                plot_data[index] = (plot_data[index][0], data[ind2,ind1])
-            plot.points = plot_data
-
-    def update(self, data):
-        if self.shape != data.shape:
-            self.create(data)
-        for ind1 in xrange(self.shape[1]):
-            plot = self._plots[ind1]
-            plot_data = self._plot_datas[ind1]
-            for ind2 in xrange(self.shape[0]):
-                index = ind1 + 1 + ind2*(self.shape[1]+1)
-                plot_data[index] = (plot_data[index][0], data[ind2,ind1])
-            plot.points = plot_data
-
-
-
-
-
-class GraphDemoScreen(CustomScreen):
-
-    def __init__(self, *largs, **kwargs):
-        super(GraphDemoScreen, self).__init__(*largs, **kwargs)
+        super(GardenGraphDemoScreen, self).__init__(*largs, **kwargs)
 
         # example of a custom graph theme
         colors = itertools.cycle([
-            rgb('7dac9f'), rgb('dc7062'), rgb('66a8d4'), rgb('e5b060')])
+            rgb('dc7062'),
+            rgb('66a8d4'),
+            rgb('7dac9f'),
+            rgb('e5b060'),
+            ])
         graph_theme = {
             'font_size' : dp(9),
             'label_options': {
                 'color': rgb('444444'),  # color of tick labels and titles
                 'bold': True},
-            # 'background_color': rgb('f8f8f2'),  # back ground color of canvas
+            'background_color': rgb('f8f8f2'),  # back ground color of canvas
             'tick_color': (0, 0, 0, .2), # rgb('808080'),  # ticks and grid
             'border_color': rgb('808080')}  # border drawn around each graph
 
@@ -240,72 +91,6 @@ class GraphDemoScreen(CustomScreen):
 
 
 
-
-        self.barGraph = BarGraph(
-            xlabel='Fruit',
-            ylabel='Amount (%)',
-            y_ticks_major=25,
-            y_grid_label=True,
-            x_grid_label=True,
-            padding=5,
-            xlog=False,
-            ylog=False,
-            x_grid=True,
-            y_grid=True,
-            # These are overriden in the custom BarGraph
-            #xmin=0,
-            #xmax=50,
-            #x_ticks_minor=5,
-            #x_ticks_major=25,
-            ymin=0,
-            ymax=100,
-            _with_stencilbuffer=False,
-            **graph_theme
-            )
-        self.dataShape = (3,4)
-        self.barGraph.create(np.random.random( self.dataShape ) * 100)
-
-        # Override the default labels and label rotation
-        self.barGraph.x_ticks_angle = 270
-        self.barGraph.x_tick_labels = ['', 'apples', 'oranges', 'peaches', '']
-        #self.barGraph.x_tick_labels = ['', 'a', 'o', 'p', '']
-        #self.barGraph.x_tick_labels = ['', 'abc', 'def', '123', 'hij', '3']
-
-        self.barGraph.size_hint_y = None
-        self.barGraph.height = dp(180)
-        self.add_widget(self.barGraph)
-
-
-        self.lineGraph = LineGraph(
-            xlabel='Data',
-            ylabel='Score',
-            y_ticks_major=2,
-            y_grid_label=True,
-            x_grid_label=True,
-            padding=5,
-            xlog=False,
-            ylog=False,
-            x_grid=True,
-            y_grid=True,
-            # These are overriden in the custom BarGraph
-            #xmin=0,
-            #xmax=50,
-            #x_ticks_minor=5,
-            x_ticks_major=2,
-            ymin=-2,
-            ymax=9,
-            _with_stencilbuffer=False,
-            **graph_theme
-            )
-        dataShape = (10,4)
-        self.lineGraph.create(np.random.random(dataShape ) * 10 - 1.5)
-
-        #self.lineGraph.x_ticks_angle = 270
-        #self.lineGraph.x_tick_labels = ['', 'a', 'b', 'c', '']
-
-        self.lineGraph.size_hint_y = None
-        self.lineGraph.height = dp(150)
-        self.add_widget(self.lineGraph)
 
 
         Clock.schedule_interval(self.update_points, 1 / 10.0)
@@ -366,12 +151,6 @@ class GraphDemoScreen(CustomScreen):
 
     def update_points(self, *args):
         self.plot.points = [(x / 10., cos(Clock.get_time() + x / 50.)) for x in range(-500, 501)]
-
-        data = np.random.random( self.dataShape ) * 100
-        self.barGraph.update(data)
-
-        data = np.random.random( (10,4)) * 10 - 1.5
-        self.lineGraph.update(data)
 
 
     def update_contour(self, *args):
