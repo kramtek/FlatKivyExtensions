@@ -26,18 +26,6 @@ from flat_kivy_extensions.uix.customiconbutton import CustomIconButton
 from flat_kivy_extensions.uix.custombutton import CustomButton
 from flat_kivy_extensions.uix.thumbnailwidget import ThumbNailWidget
 
-# import flat_kivy
-# flat_kivy_font_path = os.path.join(os.path.dirname(os.path.abspath(flat_kivy.__file__)), *['data', 'font'])
-# import flat_kivy_extensions
-# extensions_font_path = os.path.join(os.path.dirname(os.path.abspath(flat_kivy_extensions.__file__)), *['data', 'font'])
-#
-# paths = [flat_kivy_font_path, extensions_font_path]
-# common_prefix = os.path.commonprefix(paths)
-# relative_paths = [os.path.relpath(path, common_prefix) for path in paths]
-# components = relative_paths[0].split(os.sep)
-# relative_path_to_extensions  = os.sep.join(['..']*len(components))
-# relative_path_to_fonts  = os.path.join(relative_path_to_extensions, relative_paths[1])
-
 Builder.load_string('''
 #:import NavigationDrawer kivy.garden.navigationdrawer.NavigationDrawer
 #:import NoTransition kivy.uix.screenmanager.NoTransition
@@ -188,8 +176,6 @@ class CustomScreenManager(ScreenManager):
         self._open_screen_index = -1
         self._current_screen = None;
 
-        # self._is_opening = False
-
     def add_widget(self, screen, *largs):
         super(CustomScreenManager, self).add_widget(screen, *largs)
         screen.bind(on_enter=self._on_screen_enter)
@@ -200,7 +186,6 @@ class CustomScreenManager(ScreenManager):
 
     def _on_screen_enter(self, screen):
         if self._open_screen_index >= 0:
-            #screen.do_layout()
             if isinstance(self._thumbnailLut[screen], BlankThumbNail):
                 self._thumbnailLut[screen] = ThumbNailWidget(screen)
             self.pb.value = len(self.screens) - self._open_screen_index
@@ -236,14 +221,6 @@ class CustomScreenManager(ScreenManager):
     def _continue(self, mv):
         self._open_screen_index = len(self.screens) - 1
         self._trigger_next_screen()
-        # threading.Thread(target=self._wait_for_thumbnails).start()
-
-    # def _wait_for_thumbnails(self):
-    #     while self._open_screen_index >= 0:
-    #         time.sleep(0.25)
-    #     self.mv.dismiss()
-    #     if self._callback is not None:
-    #         self._callback()
 
     @mainthread
     def _trigger_next_screen(self):
@@ -329,9 +306,10 @@ class ExtendedFlatApp(FlatApp):
         self._use_coverflow_navigation = use_coverflow_navigation
         self._first_screen = None
         self._first_navigation_label = None
+        self.root = RootWidget()
 
     def build(self):
-        self.root = RootWidget()
+        #self.root = RootWidget()
         self.root.title = self.title
         self._navigationdrawer = self.root.ids.navigationdrawer
         self._side_panel = self.root.ids.side_panel
@@ -351,47 +329,7 @@ class ExtendedFlatApp(FlatApp):
             if isinstance(entry, NavDrawerEntryConfig):
                 self._create_navigation_button(entry)
 
-        # if not self.use_coverflow_navigation:
-        #     return self.root
-
-        # self._screenmanager.get_all_thumbnails()
-
         return self.root
-
-        # self._thumbnails = list()
-        # self._is_opening = True
-        # self._open_screen_index = len(self._screenmanager.screens)-1
-        # self.open_all_screens()
-        #
-        # return self.root
-
-#    @mainthread
-#    def open_all_screens(self):
-#        screen = self._screenmanager.screens[self._open_screen_index]
-#        screen.bind(on_enter=self._local_on_enter)
-#        self._screenmanager.current = screen.name
-#
-#    def _local_on_enter(self, screen):
-#        if not self._is_opening:
-#            return
-#        thumbnail = ThumbNailWidget(screen)
-#        thumbnail.name = screen.name
-#        self._thumbnails.append(thumbnail)
-#        self._open_screen_index -= 1
-#        if self._open_screen_index >= 0:
-#            self.open_all_screens()
-#        else:
-#            self.finalize()
-#
-#    @mainthread
-#    def finalize(self):
-#        self.navigation_popup = CoverFlowPopup(self._thumbnails)
-#        self.navigation_popup.size_hint = (None, None)
-#        self.navigation_popup.size = (0,0)
-#        self.navigation_popup.background_color = (.0, .0, .0, .9)
-#        self._is_opening = False
-#        self._screenmanager.transition = FadeTransition()
-#        # self._menu_button.bind(on_press=lambda j: self.navigation_popup.open())
 
     def setup_themes(self):
 
@@ -433,10 +371,13 @@ class ExtendedFlatApp(FlatApp):
             separator_color=(0,0,0,1),
             background_color=(0,0,0,.25),
             separator_height=dp(1),)
-        busy_content.bind(height=self._update_busy_popup_height)
+
+        busy_content.popup = self.busy_popup
+        busy_content.bind(height=self._update_popup_height)
+        busy_content.label_color_tuple = ('Brown', '800')
+
         self.busy_popup.title_color_tuple = ('Brown', '600')
         self.busy_popup.title_size = dp(13)
-        busy_content.label_color_tuple = ('Brown', '800')
         self.busy_popup.popup_color=(.95, .95, .95, 1.0)
 
         busy_content.busy_text = busy_text
@@ -462,8 +403,8 @@ class ExtendedFlatApp(FlatApp):
             self.busy_popup.bind(on_dismiss=clear_timeout)
         return self.busy_popup
 
-    def _update_busy_popup_height(self, instance, value):
-        self.busy_popup.height = value + dp(33)
+    #def _update_busy_popup_height(self, instance, value):
+    #    instance.popup.height = value + dp(33)
 
     def raise_dialog(self, title, text, auto_dismiss=True, okay_callback=None, timeout=None):
         content = CustomPopupContent()
@@ -477,13 +418,14 @@ class ExtendedFlatApp(FlatApp):
             background_color=(0,0,0,0.25),
             separator_height=dp(1),)
 
+        content.popup = self.popup
+        content.bind(height=self._update_popup_height)
+
         self.popup.title_color_tuple = ('Brown', '600')
         self.popup.popup_color=(.95, .95, .95, 1.0)
         self.popup.title = title
         self.popup.title_size = dp(13)
         self.popup.height = content.minimum_height - dp(10)
-
-        content.bind(height=self._update_popup_height)
 
         cancel_button = content.cancel_button
         cancel_button.bind(on_release=self.popup.dismiss)
@@ -502,7 +444,7 @@ class ExtendedFlatApp(FlatApp):
         return self.popup
 
     def _update_popup_height(self, instance, value):
-        self.popup.height = value + dp(33)
+        instance.popup.height = value + dp(33)
 
     def raise_error(self, error_title, error_text, auto_dismiss=True, timeout=None):
         error_content = CustomPopupContent()
@@ -515,6 +457,7 @@ class ExtendedFlatApp(FlatApp):
             separator_color=(0,0,0,1),
             background_color=(0,0,0,0.25),
             separator_height=dp(1),)
+        error_content.popup = self.error_popup
 
         self.error_popup.title_color_tuple = ('Brown', '600')
         self.error_popup.popup_color=(.95, .95, .95, 1.0)
@@ -522,7 +465,7 @@ class ExtendedFlatApp(FlatApp):
         self.error_popup.title_size = dp(13)
         self.error_popup.height = error_content.minimum_height + dp(50)
 
-        error_content.bind(height=self._update_error_popup_height)
+        error_content.bind(height=self._update_popup_height)
         cancel_button = error_content.cancel_button
         cancel_button.text = 'Ok'
         cancel_button.bind(on_release=self.error_popup.dismiss)
@@ -538,9 +481,9 @@ class ExtendedFlatApp(FlatApp):
 
         return self.error_popup
 
-    def _update_error_popup_height(self, instance, value):
-        self.error_popup.height = value + dp(33)
-
+    #def _update_error_popup_height(self, instance, value):
+    #    instance.popup.height = value + dp(33)
+#
     def _create_navigation_label(self, entry):
         label = FlatLabel(text=entry.get('text', 'None'))
         if 'theme' in entry.keys():
