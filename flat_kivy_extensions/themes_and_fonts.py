@@ -166,7 +166,7 @@ font_styles = {
     },
     'CustomButton1': {
         'font': '%s/proximanova-semibold-webfont.ttf' % relative_path_to_fonts,
-        'sizings': {'mobile': (17, 'sp'), 'desktop': (17, 'sp')},
+        'sizings': {'mobile': (15, 'sp'), 'desktop': (15, 'sp')},
         'alpha': .87,
         'wrap': False,
     },
