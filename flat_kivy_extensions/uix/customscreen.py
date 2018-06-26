@@ -83,8 +83,8 @@ class _WidgetContainerLayout(BoxLayout):
 class _ContentLayout(GridLayout):
     pass
 
-#class _ScrollLayout(GridLayout):
-class _ScrollLayout(ScrollView):
+class _ScrollLayout(GridLayout):
+#class _ScrollLayout(ScrollView):
     pass
 
 class _MainLayout(BoxLayout):
