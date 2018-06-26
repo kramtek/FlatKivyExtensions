@@ -20,7 +20,6 @@ class GraphDemoScreen(CustomScreen):
     def __init__(self, *largs, **kwargs):
         super(GraphDemoScreen, self).__init__(*largs, **kwargs)
 
-
         graph_theme = {
             'font_size' : dp(9),
             'label_options': {
