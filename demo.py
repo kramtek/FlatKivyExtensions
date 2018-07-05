@@ -25,7 +25,7 @@ from screens import FlatKivyDemoScreen, KivyScreen1, KivyScreen2
 from screens2 import (KivyWidgetScreen, CustomButtonDemoScreen,
                      CustomLayoutsScreen, DropShadowScreen, CustomSliderDemoScreen,
                      CustomCheckBoxDemoScreen)
-from screens3 import GraphDemoScreen
+from screens3 import GraphDemoScreen, TestScreen
 from dialog_screen import DialogDemoScreen
 
 #    An application configuration list is used to specify what screens
@@ -49,6 +49,7 @@ from dialog_screen import DialogDemoScreen
 
 app_config_entries = ['Demo Screens',
                       'Kivy Screens',
+                      NavDrawerEntryConfig(TestScreen, 'Test'),
                       NavDrawerEntryConfig(DialogDemoScreen, 'Dialog Demos'),
                       NavDrawerEntryConfig(GraphDemoScreen, 'Custom Graphs'),
                       NavDrawerEntryConfig(KivyScreen1, 'Kivy Screen1'),
