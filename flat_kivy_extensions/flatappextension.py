@@ -108,7 +108,7 @@ Builder.load_string('''
 <-HeaderLayout>:
     header_height: '40dp'
     header_color: 0.2, 0.1, 0.2
-    menu_button_width: '50dp'
+    menu_button_width: '40dp'
     title: 'Header'
     color: .1, .9, .1
 
@@ -119,25 +119,47 @@ Builder.load_string('''
             pos: self.pos
             size: self.size
 
-    CustomIconButton:
-        id: _menu_button
-        theme: ('app', 'header')
-        icon: 'fa-bars'
-        size_hint_x: None
-        width: root.menu_button_width
-        color: root.header_color
 
-    FlatLabel:
-        text: root.title
-        theme: ('app', 'header')
-        #text_size: self.size
-        #halign: 'center'
-        #valign: 'middle'
-        center_x: root.center_x
+    RelativeLayout:
 
-    Widget:
-        size_hint_x: None
-        width: root.menu_button_width
+        BoxLayout:
+            id: _btn_layout
+            padding: [dp(10), 0, 0, 0]
+
+            CustomIconButton:
+                id: _menu_button
+                theme: ('app', 'header')
+                icon: 'fa-bars'
+                size_hint_x: None
+                width: root.menu_button_width
+                color: root.header_color
+
+            ProgressSpinner:
+                id: _busy_indicator
+                size_hint: (None, None)
+                height: root.height
+                width: root.height*0.5
+                color: 0.9, 0.9, .9, 1
+                stroke_width: dp(7.0)*0.5
+                stroke_length: 10
+
+            # Widget:
+
+        FlatLabel:
+            text: root.title
+            theme: ('app', 'header')
+            text_size: self.size
+            halign: 'center'
+            valign: 'middle'
+            #center_x: root.center_x
+
+            canvas.before:
+                Color:
+                    rgba: (.5, .6, .5, .0)
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
 
 
 <-BlankThumbNail>:
@@ -308,6 +330,8 @@ class ExtendedFlatApp(FlatApp):
         self._first_navigation_label = None
         self.root = RootWidget()
 
+        self._busy_counter = 0
+
     def build(self):
         #self.root = RootWidget()
         self.root.title = self.title
@@ -316,6 +340,9 @@ class ExtendedFlatApp(FlatApp):
         self._header = self.root.ids.header
         self._screenmanager = self.root.ids.screenmanager
         self._menu_button = self._header.ids._menu_button
+        self._busy_indicator = self._header.ids._busy_indicator
+        self._header_button_layout = self._header.ids._btn_layout
+        self._header_button_layout.remove_widget(self._busy_indicator)
 
         self._menu_button.bind(on_press=lambda j: self._navigationdrawer.toggle_state())
 
@@ -361,6 +388,24 @@ class ExtendedFlatApp(FlatApp):
             sizings = style['sizings']
             style_manager.add_style(style['font'], each, sizings['mobile'],
                 sizings['desktop'], style['alpha'])
+
+    def show_busy_in_header(self, state=True):
+        if state:
+            if self._busy_indicator not in self._header_button_layout.children:
+                self._header_button_layout.add_widget(self._busy_indicator)
+        else:
+            if self._busy_indicator in self._header_button_layout.children:
+                self._header_button_layout.remove_widget(self._busy_indicator)
+
+    def indicate_busy(self, value):
+        if value:
+            self._busy_counter += 1
+        else:
+            if self._busy_counter == 0:
+                print('Busy counter is already 0 - there should be nothing showing')
+            else:
+                self._busy_counter += -1
+        self.show_busy_in_header(self._busy_counter>0)
 
     def raise_busy(self, busy_title, busy_text, auto_dismiss=True, timeout=None, cancel_callback=None, timeout_callback=None):
         busy_content = CustomBusyContent()

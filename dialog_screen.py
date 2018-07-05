@@ -33,6 +33,14 @@ Builder.load_string('''
         text: 'Show Long Dialog'
         on_release: root.show_long_dialog()
 
+    MyButton:
+        text: 'Show Busy in menu bar'
+        on_release: root.show_busy_indicator()
+
+    MyButton:
+        text: 'Hide Busy in menu bar'
+        on_release: root.hide_busy_indicator()
+
 ''')
 
 class DialogDemoScreen(CustomScreen):
@@ -102,6 +110,14 @@ class DialogDemoScreen(CustomScreen):
     def show_timeout_error(self, *largs):
         message = 'Some detail about the timeout error'
         App.get_running_app().raise_error('Timeout Error', message, auto_dismiss=False)
+
+    def hide_busy_indicator(self, *largs):
+        #App.get_running_app().show_busy_in_header(False)
+        App.get_running_app().indicate_busy(False)
+
+    def show_busy_indicator(self, *largs):
+        #App.get_running_app().show_busy_in_header(True)
+        App.get_running_app().indicate_busy(True)
 
     def canceled(self):
         print 'user canceled process'
