@@ -37,8 +37,9 @@ class CustomDropDownButton(CustomButton):
             label.text_size = btn.size
             label.halign = 'left'
             btn.add_widget(label)
+            btn.label = label
             btn.radius = 0
-            btn.bind(on_release=lambda btn: self.dropdown.select(btn.text))
+            btn.bind(on_release=lambda btn: self.dropdown.select(btn.label.text))
             self.dropdown.add_widget(btn)
             self.buttons.append(btn)
         self.bind(on_release=self.dropdown.open)
