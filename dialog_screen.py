@@ -61,7 +61,9 @@ class DialogDemoScreen(CustomScreen):
         # Set properties applied to all menu buttons
         self.dropdown_button.menubutton_theme = ('app', 'default')
         #self.dropdown_button.menubutton_color = (0.5, 0.5, 0.1, 0.6)
-        self.dropdown_button.dropdown_width = dp(100)
+
+        self.dropdown_button.dropdown_width = dp(150)
+
         self.dropdown_button.bind(selected_item=self.menu_item_selected)
         self.add_widget(self.dropdown_button)
 
@@ -73,6 +75,8 @@ class DialogDemoScreen(CustomScreen):
                                           auto_dismiss=False, timeout=5,
                                           timeout_callback=self.timeout,
                                           cancel_callback=self.canceled,)
+
+        self.busy_popup.content.spinner_color=[.2, .2, .3, .9]
         threading.Thread(target=self._threaded_process).start()
 
     def _threaded_process(self):

@@ -13,9 +13,25 @@ Builder.load_string('''
     text_size: self.size
     halign: 'left'
 
+<_ColoredLabel>:
+    canvas_color: (.8, 0.9, .8, 0.0)
+    text_size: self.size
+    halign: 'left'
+    valign: 'middle'
+
+    canvas.before:
+        Color:
+            rgba: root.canvas_color
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
 ''')
 
 class _MenuButton(CustomButton):
+    pass
+
+class _ColoredLabel(FlatLabel):
     pass
 
 class CustomDropDownButton(CustomButton):
@@ -32,10 +48,11 @@ class CustomDropDownButton(CustomButton):
         for text in items:
             #btn = _MenuButton(text=text, size_hint_y=None, height=dp(35))
             btn = _MenuButton(size_hint_y=None, height=dp(35))
-            label = FlatLabel(text=text)
+            label = _ColoredLabel(text=text)
             label.style = btn.style
+            #label.text_size = [btn.width*0.8, btn.height]
             label.text_size = btn.size
-            label.halign = 'left'
+            btn.padding = dp(10)
             btn.add_widget(label)
             btn.label = label
             btn.radius = 0
@@ -61,8 +78,12 @@ class CustomDropDownButton(CustomButton):
 
     def on_dropdown_width(self, instance, value):
         self.dropdown.auto_width = False
-        #self.dropdown.size_hint_x = None
         self.dropdown.width = value
+        for btn in self.buttons:
+            btn.size_hint_x = None
+            btn.width = value
+            btn.label.size_hint_x = None
+            btn.label.width = value*0.8
 
     def on_select(self, instance, value):
         self.text = value
