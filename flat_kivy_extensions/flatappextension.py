@@ -1,4 +1,4 @@
-import time, threading, os
+import os
 
 #from navigationscreen import CoverFlowPopup
 from flat_kivy_extensions.uix.coverflowpopup import CoverFlowPopup
@@ -8,7 +8,6 @@ from kivy.core.window import Window
 from kivy.clock import mainthread, Clock
 from kivy.uix.widget import Widget
 from kivy.lang import Builder
-from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.screenmanager import FadeTransition, NoTransition, ScreenManager
@@ -35,7 +34,7 @@ Builder.load_string('''
     background_color: 1.0, 1.0, 1.0
     header_height: dp(40)
     header_color: 0.1, 0.3, 0.2
-    side_panel_color: 0.1, 0.1, 0.1
+    side_panel_color: [0.8, 0.9, 0.9, 1.0]
 
     BoxLayout:
         orientation: 'vertical'
@@ -65,6 +64,12 @@ Builder.load_string('''
 
             ScrollView:
                 id: side_panel_container
+                canvas.before:
+                    Color:
+                        rgba: root.side_panel_color
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
 
                 #StackLayout:
                 #    orientation: 'tb-lr'
@@ -76,6 +81,13 @@ Builder.load_string('''
                     #orientation: 'vertical'
                     padding: '2dp'
                     spacing: '2dp'
+
+                    canvas.before:
+                        Color:
+                            rgba: root.side_panel_color
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
 
                 # this will be populated dynamically when the root application is built
 
@@ -296,7 +308,7 @@ class ScreenConfig(object):
 
 class NavDrawerEntryConfig(ScreenConfig):
 
-    def __init__(self, screen_class, button_title=None, button_icon=None, screen_args=[], screen_kwargs={}):
+    def __init__(self, screen_class, button_title=None, button_icon='', screen_args=[], screen_kwargs={}):
         if button_title is None:
             button_title = screen_class.__name__
         self.button_title = button_title
@@ -308,6 +320,8 @@ class NavDrawerEntryConfig(ScreenConfig):
         btn.theme = ('app', 'navigationdrawer')
         btn.config = self
         btn.manager = screenmanager
+        if self.button_icon is not None:
+            btn.icon = self.button_icon
         return btn
 
 
@@ -428,8 +442,10 @@ class ExtendedFlatApp(FlatApp):
         busy_content.busy_text = busy_text
         self.busy_popup.title = busy_title
         cancel_button = busy_content.cancel_button
+        event = None
         def dismiss_popup(*largs):
-            event.cancel()
+            if event is not None:
+                event.cancel()
             self.busy_popup.dismiss()
             if cancel_callback is not None:
                 cancel_callback()
