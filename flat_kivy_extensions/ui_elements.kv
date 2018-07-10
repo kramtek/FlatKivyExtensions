@@ -270,6 +270,9 @@
     spacing: dp(5)
     height: self.minimum_height
     message_alignment: 'center'
+    cancel_text: 'Cancel'
+    cancel_btn_color_tuple: ('Brown', '700')
+    cancel_btn_font_color_tuple: ('Gray', '0000') 
 
     ScrollView:
         size_hint_y: None
@@ -316,13 +319,13 @@
         CustomButton:
             id: cancel_button
             # theme: root.theme
-            color_tuple: ('Brown', '700')
-            text: 'Cancel'
+            color_tuple: root.cancel_btn_color_tuple
+            text: root.cancel_text
             size_hint: (0.6, None)
             height: dp(30)
             style: 'NavigationLabelMainHeading'
             font_size: dp(12)
-            font_color_tuple: ('Gray', '0000') 
+            font_color_tuple: root.cancel_btn_font_color_tuple
 
 
 <CustomBusyContent>:
@@ -334,11 +337,15 @@
     spacing: dp(5) 
     radius: '2dp'
     height: self.minimum_height
+    spinner_color: 0.2, 0.4, .2, 1
+    cancel_text: 'Cancel'
+    cancel_btn_color_tuple: ('Brown', '700')
+    cancel_btn_font_color_tuple: ('Gray', '0000') 
 
     ProgressSpinner:
         size_hint: (1, None)
         height: dp(50)
-        color: 0.2, 0.4, .2, 1
+        color: root.spinner_color
         stroke_width: dp(8.25)
         stroke_length: 10
 
@@ -364,7 +371,7 @@
     CustomButton:
         id: cancel_button
         # theme: root.theme
-        text: 'Cancel'
+        text: root.cancel_text
         size_hint: (0.6, None)
         height: dp(30)
         style: 'NavigationLabelMainHeading'
