@@ -120,7 +120,7 @@ class PackageVersionLayout(GridLayout):
         self.size_hint_y = None
         self.bind(minimum_height=self.setter('height'))
 
-        packages = ['numpy', 'kivy', 'csv', 'flat_kivy', 'flat_kivy_extensions', 'not_there']
+        packages = ['numpy', 'kivy', 'csv', 'flat_kivy', 'flat_kivy_extensions', 'ws4py']
 
         l = BoxLayout(size_hint_y=None, height=dp(label_height), padding=dp(10))
         label = CustomLabel(text='Package', color=(0,0,0.3,1),
