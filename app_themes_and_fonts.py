@@ -83,21 +83,22 @@ navigationdrawer = {
         'size_hint_y' : None,
         'height' : '25dp',
         # 'font_size' : '20dp',
-        'color_tuple' : ('Gray', '0000'),
+        'color_tuple' : ('Gray', '1000'),
         'style' : 'NavigationLabelMainHeading',
     },
 
     'CustomIconButton': {
-        'color_tuple': ('Gray', '1000'),
-        'font_color_tuple': ('Gray', '0000'),
+        #'color_tuple': ('Gray', '1000'),
+        'color': [.9, .9, .8, 1.0],
+        'font_color_tuple': ('Gray', '1000'),
         'size_hint_y' : None,
         'height' : '40dp',
         'icon' : 'fa-chevron-right',
-        'icon_color_tuple': ('Gray', '0000'),
-        'icon_font_size' : '12dp',
+        'icon_color_tuple': ('Gray', '1000'),
+        'icon_font_size' : '15dp',
         'content_padding' : ['3dp', '2dp', '2dp', '0dp'],
         'style': 'NavigationButton',
-        'orientation' : 'tb-rl',
+        'orientation' : 'tb-lr',
     },
 }
 
