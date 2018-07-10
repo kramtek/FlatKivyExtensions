@@ -18,8 +18,10 @@ Builder.load_string('''
         size_hint: (None, None)
         size: (dp(100), dp(100))
         color: 0.2, 0.3, .5, 1
-        # stroke_width: dp(16.5)
-        # stroke_length: 10
+        stroke_width: dp(5)
+        stroke_length: 50.0
+        speed: 1.2
+
 
     CustomButton:
         text: 'Show Progress Dialog'
