@@ -170,4 +170,37 @@ font_styles = {
         'alpha': .87,
         'wrap': False,
     },
+
+    'LabelNormal': {
+        'font': '%s/proximanova-regular-webfont.ttf' % relative_path_to_fonts,
+        'sizings': {'mobile': (15, 'sp'), 'desktop': (15, 'sp')},
+        'alpha': .87,
+        'wrap': False,
+    },
+    'LabelNormalBold': {
+        'font': '%s/proximanova-semibold-webfont.ttf' % relative_path_to_fonts,
+        'sizings': {'mobile': (15, 'sp'), 'desktop': (15, 'sp')},
+        'alpha': .87,
+        'wrap': False,
+    },
+    'LabelSmall': {
+        'font': '%s/proximanova-regular-webfont.ttf' % relative_path_to_fonts,
+        'sizings': {'mobile': (12, 'sp'), 'desktop': (12, 'sp')},
+        'alpha': .87,
+        'wrap': False,
+    },
+    'LabelSmallBold': {
+        'font': '%s/proximanova-semibold-webfont.ttf' % relative_path_to_fonts,
+        'sizings': {'mobile': (12, 'sp'), 'desktop': (12, 'sp')},
+        'alpha': .87,
+        'wrap': False,
+    },
+    'LabelTiny': {
+        'font': '%s/proximanova-regular-webfont.ttf' % relative_path_to_fonts,
+        'sizings': {'mobile': (10, 'sp'), 'desktop': (10, 'sp')},
+        'alpha': .87,
+        'wrap': False,
+    },
+
+
 }
