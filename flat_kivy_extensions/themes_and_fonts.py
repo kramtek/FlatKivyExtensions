@@ -16,7 +16,7 @@ header = {
 navigationdrawer = {
     'FlatLabel': {
         'size_hint_y' : None,
-        'height' : '25dp',
+        'height' : '15dp',
         # 'font_size' : '20dp',
         'color_tuple' : ('Green', '300'),
         'style' : 'NavigationLabelMainHeading',

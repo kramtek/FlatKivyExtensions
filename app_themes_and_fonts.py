@@ -81,7 +81,7 @@ accent = {
 navigationdrawer = {
     'FlatLabel': {
         'size_hint_y' : None,
-        'height' : '25dp',
+        'height' : '15dp',
         # 'font_size' : '20dp',
         'color_tuple' : ('Gray', '1000'),
         'style' : 'NavigationLabelMainHeading',
