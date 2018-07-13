@@ -354,7 +354,7 @@ class ExtendedFlatApp(FlatApp):
         self._header = self.root.ids.header
         self._screenmanager = self.root.ids.screenmanager
         self._menu_button = self._header.ids._menu_button
-        self._busy_indicator = self._header.ids._busy_indicator
+        self._busy_indicator = self._header.ids._busy_indicator.__self__
         self._header_button_layout = self._header.ids._btn_layout
         self._header_button_layout.remove_widget(self._busy_indicator)
 
@@ -554,6 +554,8 @@ class ExtendedFlatApp(FlatApp):
             setattr(label, 'theme', ('app', 'navigationdrawer'))
         for (key,value) in entry.items():
             setattr(label, key, value)
+        if entry != self.app_config_entries[0]:
+            self._side_panel.add_widget(Widget(size_hint_y=None, height=dp(15)))
         self._side_panel.add_widget(label)
         return label
 
