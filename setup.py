@@ -1,6 +1,6 @@
 from distutils.core import setup
 
-from sswclient import __version__
+from flat_kivy_extensions import __version__
 
 spPath = 'lib/python2.7'
 import platform
