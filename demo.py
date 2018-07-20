@@ -49,6 +49,7 @@ from dialog_screen import DialogDemoScreen
 
 app_config_entries = ['Demo Screens',
                       'Kivy Screens',
+                      NavDrawerEntryConfig(CustomCheckBoxDemoScreen, 'Custom CheckBoxes', button_icon='fa-check-square'),
                       NavDrawerEntryConfig(DialogDemoScreen, 'Dialog Demos', button_icon='fa-comment-alt'),
                       NavDrawerEntryConfig(TestScreen, 'Test'),
                       NavDrawerEntryConfig(GraphDemoScreen, 'Custom Graphs', button_icon='fa-bar-chart-o'),
@@ -58,7 +59,6 @@ app_config_entries = ['Demo Screens',
                       'Custom Screens',
                       NavDrawerEntryConfig(KivyWidgetScreen, 'Kivy Widget Demo'),
                       NavDrawerEntryConfig(CustomButtonDemoScreen, 'Custom Buttons'),
-                      NavDrawerEntryConfig(CustomCheckBoxDemoScreen, 'Custom CheckBoxes', button_icon='fa-check-square'),
                       NavDrawerEntryConfig(CustomSliderDemoScreen, 'Custom Sliders', button_icon='fa-sliders'),
                       NavDrawerEntryConfig(CustomLayoutsScreen, 'CustomLayouts'),
                       NavDrawerEntryConfig(DropShadowScreen, 'DropShadow Examples'),
@@ -82,7 +82,7 @@ app_config_entries = ['Demo Screens',
 from app_themes_and_fonts import themes
 
 if __name__ == '__main__':
-    app = ExtendedFlatApp(app_config_entries, title, about, use_coverflow_navigation=True, themes=themes)
+    app = ExtendedFlatApp(app_config_entries, title, about, use_coverflow_navigation=True, themes={})
     app.root.header_color = (.2, .2, .4, 1.0)
     app.root.side_panel_color = (.9, .9, .8, 1.0)
     app.run()

@@ -101,6 +101,13 @@ default = {
         'radius' : '4dp',
         'icon' : 'fa-check',
     },
+    'CustomSwitchListItem': {
+        'style': 'LabelSmallBold',
+        'valign' : 'bottom',
+        'switch_font_size' : '2dp',
+        'height' : '30dp',
+        'scaling' : 1.0,
+    },
 
 }
 
@@ -117,7 +124,7 @@ themes = {
 from flat_kivy_extensions.uix.custombutton import CustomButton
 from flat_kivy_extensions.uix.customiconbutton import CustomIconButton
 from flat_kivy_extensions.uix.customslider import CustomSlider, CustomSliderTouchRippleBehavior, ExtendedSlider
-from flat_kivy_extensions.uix.customcheckbox import CustomCheckBoxListItem
+from flat_kivy_extensions.uix.customcheckbox import CustomCheckBoxListItem, CustomSwitchListItem
 from flat_kivy_extensions.uix import CustomBusyContent
 
 types_to_theme = {
@@ -127,6 +134,7 @@ types_to_theme = {
     'CustomButton' : CustomButton,
     'CustomIconButton' : CustomIconButton,
     'CustomCheckBoxListItem' : CustomCheckBoxListItem,
+    'CustomSwitchListItem' : CustomSwitchListItem,
     'CustomBusyContent' : CustomBusyContent,
     # 'FlatIconButtonLeft' : FlatIconButtonLeft,
 }

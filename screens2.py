@@ -25,7 +25,7 @@ from flat_kivy_extensions.uix.customscreen import CustomScreen
 from flat_kivy_extensions.uix.customlayouts import StyledLayout, GroupedLayout
 from flat_kivy_extensions.uix.dropshadow import DropShadow
 from flat_kivy_extensions.uix.custombutton import CustomButton
-from flat_kivy_extensions.uix.customcheckbox import CustomCheckBoxListItem
+from flat_kivy_extensions.uix.customcheckbox import CustomCheckBoxListItem, CustomSwitchListItem
 
 Builder.load_string('''
 <-KivyWidgetScreen>:
@@ -75,6 +75,7 @@ Builder.load_string('''
     Switch:
         size_hint_y: None
         height: '50dp'
+        theme: ('app', 'default')
 
         on_parent: root.done_building()
 
@@ -121,13 +122,13 @@ Builder.load_string('''
     CustomCheckBoxListItem:
         text: 'Check box'
         theme: ('app', 'default')
-        height: '50dp'
+        height: '45dp'
 
     CustomCheckBoxListItem:
         text: 'Radio Button 1'
         group: 'this-radio'
         theme: ('app', 'default')
-        height: '50dp'
+        height: '45dp'
 
         radius: '12dp'
         check_scale: .25
@@ -145,7 +146,7 @@ Builder.load_string('''
         text: 'Radio Button 2'
         group: 'this-radio'
         theme: ('app', 'default')
-        height: '50dp'
+        height: '45dp'
 
         radius: '12dp'
         check_scale: .25
@@ -165,7 +166,7 @@ Builder.load_string('''
     CustomCheckBoxListItem:
         text: 'Error Indicator'
         theme: ('app', 'default')
-        height: '50dp'
+        height: '45dp'
         icon: 'fa-exclamation'
         check_color_tuple: ('Red', '500')
         outline_color_tuple: ('Gray', '500')
@@ -173,7 +174,7 @@ Builder.load_string('''
     CustomCheckBoxListItem:
         text: 'Warning Indicator'
         theme: ('app', 'default')
-        height: '50dp'
+        height: '45dp'
         icon: 'fa-warning'
         check_color_tuple: ('Yellow', '800')
         outline_color_tuple: ('Gray', '500')
@@ -187,10 +188,18 @@ Builder.load_string('''
     CustomCheckBoxListItem:
         text: 'Exception Indicator'
         theme: ('app', 'default')
-        height: '50dp'
+        height: '45dp'
         icon: 'fa-times'
         check_color_tuple: ('Red', '500')
         outline_color_tuple: ('Gray', '500')
+
+    CustomSwitchListItem:
+        text: 'Some switch'
+        height: '45dp'
+        theme: ('app', 'default')
+        # style: 'Button'
+        on_active: root.switch_changed(self)
+        switch_font_size: '12dp'
 
 <-CustomSliderDemoScreen>:
     title: 'Custom Sliders'
@@ -325,6 +334,9 @@ class CustomButtonDemoScreen(CustomScreen):
 
 class CustomCheckBoxDemoScreen(CustomScreen):
     pass
+
+    def switch_changed(self, instance):
+        print 'screen active value: %s' % str(instance.active)
 
 class CustomSliderDemoScreen(CustomScreen):
     pass

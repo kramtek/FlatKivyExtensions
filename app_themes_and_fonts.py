@@ -123,10 +123,10 @@ default = {
         'radius' : '5dp',
     },
     'CustomCheckBoxListItem': {
-        'font_color_tuple': ('Blue', '800'),
-        'check_color_tuple': ('Green', '600'),
-        'check_color_hue_down': '200',
-        'outline_color_tuple': ('Gray', '500'),
+        #'font_color_tuple': ('Blue', '800'),
+        #'check_color_tuple': ('Green', '600'),
+        #'check_color_hue_down': '200',
+        #'outline_color_tuple': ('Gray', '500'),
         'style': 'Button',
         'valign' : 'middle',
 
@@ -137,6 +137,12 @@ default = {
         'check_scale': .5,
         'radius' : '4dp',
         'icon' : 'fa-check',
+    },
+    'CustomSwitchListItem': {
+        'style': 'LabelNormalBold',
+        'valign' : 'bottom',
+        'font_size' : '20dp',
+        'switch_font_size' : '8dp',
     },
 }
 
