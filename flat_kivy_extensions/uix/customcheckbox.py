@@ -100,7 +100,7 @@ class CustomCheckBox(GrabBehavior, TouchRippleBehavior,
 class CustomSwitch(BoxLayout):
     no_interact = BooleanProperty(False)
     active = BooleanProperty(False)
-    style = StringProperty('', allow_none=True)
+    style = StringProperty(None, allow_none=True)
     font_size = NumericProperty(10)
 
     def __init__(self, *largs, **kwargs):
@@ -154,7 +154,7 @@ class CustomSwitchListItem(BoxLayout, ThemeBehavior):
     flag = BooleanProperty(False)
     active = BooleanProperty(False)
     font_color_tuple = ListProperty(None, allow_none=True)
-    style = StringProperty('', allow_none=True)
+    style = StringProperty(None, allow_none=True)
     switch_font_size = NumericProperty(10)
 
     def __init__(self, *largs, **kwargs):
