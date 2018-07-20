@@ -129,39 +129,29 @@ Builder.load_string('''
         group: 'this-radio'
         theme: ('app', 'default')
         height: '45dp'
-
         radius: '12dp'
         check_scale: .25
         icon: 'fa-circle'
         check_color_tuple: ('Brown', '500')
         check_color_hue_down: '300'
         outline_color_tuple: ('Blue', '500')
-
         size_scaling: 0.5
-
         exclusive: True
-
 
     CustomCheckBoxListItem:
         text: 'Radio Button 2'
         group: 'this-radio'
         theme: ('app', 'default')
         height: '45dp'
-
         radius: '12dp'
         check_scale: .25
         icon: 'fa-circle'
         check_color_tuple: ('Brown', '500')
         check_color_hue_down: '300'
         outline_color_tuple: ('Blue', '500')
-
         size_scaling: 0.5
-
         exclusive: True
-
         current_state: True
-
-
 
     CustomCheckBoxListItem:
         text: 'Error Indicator'
@@ -195,10 +185,11 @@ Builder.load_string('''
 
     CustomSwitchListItem:
         text: 'Some switch'
-        height: '45dp'
         theme: ('app', 'default')
-        # style: 'Button'
+        height: '45dp'
         on_active: root.switch_changed(self)
+        # style: 'LabelNormal'
+        # font_size: dp(15)
         switch_font_size: '12dp'
 
 <-CustomSliderDemoScreen>:

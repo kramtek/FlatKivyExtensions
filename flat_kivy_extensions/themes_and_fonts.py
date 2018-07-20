@@ -102,7 +102,7 @@ default = {
         'icon' : 'fa-check',
     },
     'CustomSwitchListItem': {
-        'style': 'LabelSmallBold',
+        'style': 'LabelNormalBold',
         'valign' : 'bottom',
         'switch_font_size' : '2dp',
         'height' : '30dp',

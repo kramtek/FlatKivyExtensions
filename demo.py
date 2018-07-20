@@ -82,7 +82,7 @@ app_config_entries = ['Demo Screens',
 from app_themes_and_fonts import themes
 
 if __name__ == '__main__':
-    app = ExtendedFlatApp(app_config_entries, title, about, use_coverflow_navigation=True, themes={})
+    app = ExtendedFlatApp(app_config_entries, title, about, use_coverflow_navigation=True, themes=themes)
     app.root.header_color = (.2, .2, .4, 1.0)
     app.root.side_panel_color = (.9, .9, .8, 1.0)
     app.run()
