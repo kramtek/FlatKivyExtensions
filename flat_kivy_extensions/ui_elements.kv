@@ -211,6 +211,71 @@
 
 
 
+<-CustomSwitch>:
+
+    lbl1: _lbl1.__self__
+    lbl2: _lbl2.__self__
+    lbl3: _lbl3.__self__
+    style: ''
+    background_color: (.9,.9,.9, 1.0)
+    switch_color: (.5, .5, .5, 1.0)
+    radius: dp(7)
+    font_size: dp(20)
+    canvas.before:
+        Color:
+            rgba: self.background_color
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [(self.radius, self.radius), (self.radius, self.radius), (self.radius, self.radius), (self.radius, self.radius)]
+        Color:
+            rgba: (.6,.6,.6, 1.0)
+        Line:
+            rounded_rectangle: [self.x, self.y, self.width, self.height, self.radius]
+            width: dp(0.5)
+        
+    FlatLabel:
+        id: _lbl1
+        text: 'On'
+        style: root.style
+        font_size: root.font_size
+        canvas.before:
+            Color:
+                rgba: (.5, .5, .7, 0.0)
+            Rectangle:
+                size: self.size
+                pos: self.pos
+
+        on_parent: root.remove_widget(self)
+        
+    FlatLabel:
+        id: _lbl2
+        text: ''
+        style: root.style
+        scaling: 0.8
+        radius: dp(6)
+        canvas.before:
+            Color:
+                rgba: root.switch_color
+            RoundedRectangle:
+                size: (self.size[0]*self.scaling, self.size[1]*self.scaling)
+                pos: (self.pos[0]+self.size[0]*(1-self.scaling)/2, self.pos[1]+self.size[1]*(1-self.scaling)/2)
+                radius: [(self.radius, self.radius), (self.radius, self.radius), (self.radius, self.radius), (self.radius, self.radius)]
+        
+    FlatLabel:
+        id: _lbl3
+        text: 'Off'
+        style: root.style
+        font_size: root.font_size
+        color: (.2, .2, .2, 1.0)
+        canvas.before:
+            Color:
+                rgba: (.7, .5, .5, 0.0)
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        
+
 <-CustomCheckBox>:
     ripple_color: app.get_color(self.ripple_color_tuple)
     radius: '1dp'
@@ -223,6 +288,45 @@
             width: self.outline_size
 
 
+<-CustomSwitchListItem>:
+    orientation: 'horizontal'
+    active: switch.active
+    spacing: '5dp'
+    text: 'something'
+    font_color_tuple: ('Blue', '900')
+    halign: 'left' 
+    valign: 'bottom' 
+    style: '' 
+    switch: switch.__self__
+    scaling: 0.6
+    font_size: dp(20)
+    switch_font_size: dp(20)
+    #canvas.before:
+    #    Color:
+    #        rgba: (.7, .7, .5, 0.2)
+    #    Rectangle:
+    #        size: self.size
+    #        pos: self.pos
+
+    FlatLabel:
+        id: label
+        text: root.text
+        size_hint: (.8, 1.0)
+        color: app.get_color(root.font_color_tuple)
+        style: root.style
+        halign: root.halign
+        #font_ramp_tuple: root.font_ramp_tuple
+        font_size: root.font_size
+        valign: root.valign
+        text_size: self.size
+    CustomSwitch:
+        id: switch 
+        size_hint: (None, None)
+        size: (root.height*2*root.scaling, root.height*root.scaling)
+        style: root.style
+        font_size: root.switch_font_size
+
+
 <-CustomCheckBoxListItem>:
     orientation: 'horizontal'
     active: checkbox.active
@@ -231,6 +335,7 @@
     icon: 'fa-check'
     radius: 5
     exclusive: False 
+    style: None
     FlatLabel:
         id: label
         text: root.text

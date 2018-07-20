@@ -1,6 +1,7 @@
 
 
 from kivy.uix.widget import Widget
+from kivy.uix.boxlayout import BoxLayout
 
 from kivy.properties import NumericProperty, StringProperty, BooleanProperty, ListProperty, ObjectProperty
 
@@ -95,6 +96,72 @@ class CustomCheckBox(GrabBehavior, TouchRippleBehavior,
             super(CustomCheckBox, self).on_touch_up(touch)
 
 
+
+class CustomSwitch(BoxLayout):
+    no_interact = BooleanProperty(False)
+    active = BooleanProperty(False)
+    style = StringProperty('', allow_none=True)
+    font_size = NumericProperty(10)
+
+    def __init__(self, *largs, **kwargs):
+        super(CustomSwitch, self).__init__(*largs, **kwargs)
+
+    def on_touch_down(self, touch):
+        if self.no_interact:
+            if self.collide_point(touch.x, touch.y):
+                return False
+        else:
+            super(CustomSwitch, self).on_touch_down(touch)
+
+    def on_touch_move(self, touch):
+        if self.no_interact:
+            if self.collide_point(touch.x, touch.y):
+                return False
+        else:
+            super(CustomSwitch, self).on_touch_move(touch)
+
+    def on_touch_up(self, touch):
+        if self.no_interact:
+            if self.collide_point(touch.x, touch.y):
+                return False
+        else:
+            if self.collide_point(touch.x, touch.y):
+                self.active = not self.active
+            super(CustomSwitch, self).on_touch_up(touch)
+
+    def on_active(self, instance, value):
+        # print 'active value: %s' % str(value)
+        if self.lbl1 in self.children:
+            self.remove_widget(self.lbl1)
+        if self.lbl2 in self.children:
+            self.remove_widget(self.lbl2)
+        if self.lbl3 in self.children:
+            self.remove_widget(self.lbl3)
+
+        if value:
+            self.background_color = (.2,.5,.2, 1.0)
+            self.add_widget(self.lbl1)
+            self.add_widget(self.lbl2)
+            self.switch_color = (.9, .9, .9, 1.0)
+        else:
+            self.background_color = (.9,.9,.9, 1.0)
+            self.add_widget(self.lbl2)
+            self.add_widget(self.lbl3)
+            self.switch_color = (.5, .5, .5, 1.0)
+
+
+class CustomSwitchListItem(BoxLayout, ThemeBehavior):
+    flag = BooleanProperty(False)
+    active = BooleanProperty(False)
+    font_color_tuple = ListProperty(None, allow_none=True)
+    style = StringProperty('', allow_none=True)
+    switch_font_size = NumericProperty(10)
+
+    def __init__(self, *largs, **kwargs):
+        super(CustomSwitchListItem, self).__init__(*largs, **kwargs)
+
+    #def on_active(self, instance, value):
+    #    print 'im here...'
 
 
 class CustomCheckBoxListItem(FlatCheckBoxListItem):
