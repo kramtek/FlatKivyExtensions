@@ -139,12 +139,12 @@ class CustomSwitch(BoxLayout):
             self.remove_widget(self.lbl3)
 
         if value:
-            self.background_color = (.2,.5,.2, 1.0)
+            #self.background_color = (.2,.5,.2, 1.0)
             self.add_widget(self.lbl1)
             self.add_widget(self.lbl2)
-            self.switch_color = (.9, .9, .9, 1.0)
+            self.switch_color = (.3, .5, .3, 1.0)
         else:
-            self.background_color = (.9,.9,.9, 1.0)
+            #self.background_color = (.9,.9,.9, 1.0)
             self.add_widget(self.lbl2)
             self.add_widget(self.lbl3)
             self.switch_color = (.5, .5, .5, 1.0)
@@ -163,6 +163,11 @@ class CustomSwitchListItem(BoxLayout, ThemeBehavior):
     #def on_active(self, instance, value):
     #    print 'im here...'
 
+    def on_touch_up(self, touch):
+        if self.collide_point(touch.x, touch.y):
+            if not self.switch.collide_point(touch.x, touch.y):
+                self.switch.active = not self.switch.active
+        super(CustomSwitchListItem, self).on_touch_up(touch)
 
 class CustomCheckBoxListItem(FlatCheckBoxListItem):
     icon = StringProperty('fa-check')
