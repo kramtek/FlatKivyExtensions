@@ -219,7 +219,7 @@
     style: None 
     background_color: (.9,.9,.9, 1.0)
     switch_color: (.5, .5, .5, 1.0)
-    radius: dp(7)
+    radius: dp(5)
     font_size: dp(20)
     canvas.before:
         Color:
@@ -229,14 +229,16 @@
             pos: self.pos
             radius: [(self.radius, self.radius), (self.radius, self.radius), (self.radius, self.radius), (self.radius, self.radius)]
         Color:
-            rgba: (.6,.6,.6, 1.0)
+            rgba: (.4,.4,.4, 1.0)
         Line:
             rounded_rectangle: [self.x, self.y, self.width, self.height, self.radius]
             width: dp(0.5)
         
     FlatLabel:
         id: _lbl1
-        text: 'On'
+        text: ''
+        size_hint_x: None
+        width: root.width/2.5*1.5
         style: root.style
         font_size: root.font_size
         canvas.before:
@@ -252,19 +254,21 @@
         id: _lbl2
         text: ''
         style: root.style
-        scaling: 0.8
-        radius: dp(6)
+        scaling: 1.75
+        radius: dp(15)
         canvas.before:
             Color:
                 rgba: root.switch_color
             RoundedRectangle:
-                size: (self.size[0]*self.scaling, self.size[1]*self.scaling)
+                size: (self.size[1]*self.scaling, self.size[1]*self.scaling)
                 pos: (self.pos[0]+self.size[0]*(1-self.scaling)/2, self.pos[1]+self.size[1]*(1-self.scaling)/2)
                 radius: [(self.radius, self.radius), (self.radius, self.radius), (self.radius, self.radius), (self.radius, self.radius)]
         
     FlatLabel:
         id: _lbl3
-        text: 'Off'
+        text: ''
+        size_hint_x: None
+        width: root.width/2.5*1.5
         style: root.style
         font_size: root.font_size
         color: (.2, .2, .2, 1.0)
@@ -291,14 +295,15 @@
 <-CustomSwitchListItem>:
     orientation: 'horizontal'
     active: switch.active
+    padding: [dp(3), dp(0), dp(15), dp(0)]
     spacing: '5dp'
     text: 'something'
     font_color_tuple: ('Blue', '900')
     halign: 'left' 
-    valign: 'bottom' 
+    valign: 'middle' 
     style: None 
     switch: switch.__self__
-    scaling: 0.6
+    scaling: 0.25
     font_size: dp(20)
     switch_font_size: dp(20)
     #canvas.before:
@@ -319,13 +324,22 @@
         font_size: root.font_size
         valign: root.valign
         text_size: self.size
-    CustomSwitch:
-        id: switch 
-        size_hint: (None, None)
-        size: (root.height*2*root.scaling, root.height*root.scaling)
-        style: root.style
-        font_size: root.switch_font_size
 
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint_x: None
+        width: switch.width
+
+        Widget:
+
+        CustomSwitch:
+            id: switch 
+            size_hint: (None, None)
+            size: (root.height*2.5*root.scaling, root.height*root.scaling)
+            style: root.style
+            font_size: root.switch_font_size
+
+        Widget:
 
 <-CustomCheckBoxListItem>:
     orientation: 'horizontal'

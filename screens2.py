@@ -188,21 +188,21 @@ Builder.load_string('''
         theme: ('app', 'default')
         height: '45dp'
         on_active: root.switch_changed(self)
-        switch_font_size: '12dp'
+        switch_font_size: '8dp'
 
     CustomSwitchListItem:
         text: 'A'
         theme: ('app', 'default')
         height: '45dp'
         on_active: root.switch_changed(self)
-        switch_font_size: '12dp'
+        switch_font_size: '8dp'
 
     CustomSwitchListItem:
         text: 'B'
         theme: ('app', 'default')
         height: '45dp'
         on_active: root.switch_changed(self)
-        switch_font_size: '12dp'
+        switch_font_size: '8dp'
 
 <-CustomSliderDemoScreen>:
     title: 'Custom Sliders'
@@ -339,8 +339,7 @@ class CustomCheckBoxDemoScreen(CustomScreen):
     pass
 
     def switch_changed(self, instance):
-        print 'screen active value: %s' % str(instance.active)
-        print '   for switch with text: %s' % str(instance.text)
+        print('screen:  switch with text "%s" has value: %s' % (instance.text, str(instance.active)))
 
 class CustomSliderDemoScreen(CustomScreen):
     pass

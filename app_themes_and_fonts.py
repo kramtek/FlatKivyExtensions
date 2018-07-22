@@ -139,9 +139,9 @@ default = {
     },
     'CustomSwitchListItem': {
         'style': 'LabelNormalBold',
-        'valign' : 'bottom',
+        'valign' : 'middle',
         # 'font_size' : '20dp',
-        'switch_font_size' : '8dp',
+        'switch_font_size' : '6dp',
     },
 }
 
