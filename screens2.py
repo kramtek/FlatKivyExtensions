@@ -203,6 +203,7 @@ Builder.load_string('''
         height: '45dp'
         on_active: root.switch_changed(self)
         switch_font_size: '8dp'
+        scaling: 0.25
 
 <-CustomSliderDemoScreen>:
     title: 'Custom Sliders'
