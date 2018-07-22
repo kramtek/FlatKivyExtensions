@@ -21,14 +21,14 @@ Builder.load_string('''
     cols: 1
     canvas.before:
         Color:
-            rgba: (4.0, 0.5, 0.4, 0.0)
+            rgba: (0.4, 0.5, 0.4, 0.0)
         Rectangle:
             size: self.size
             pos: self.pos
 
 
 <_ColoredGridLayout>:
-    color: (.8, 0.9, .8, 0.9)
+    color: (.8, 0.9, .8, 0.0)
     canvas.before:
         Color:
             rgba: root.color
@@ -54,20 +54,20 @@ Builder.load_string('''
     orientation: 'vertical'
     canvas.before:
         Color:
-            rgba: (0.4, 0.5, 0.4, 0.9)
+            rgba: (0.2, 0.2, 0.2, 0.3)
         Rectangle:
             size: self.size
             pos: self.pos
 
 ''')
 
-
-
 class _ColoredThumbWheelLabel(FlatLabel):
     pass
 
+
 class _ColoredGridLayout(GridLayout):
     pass
+
 
 class ExtendedThumbWheel(GridLayout):
     label_text = StringProperty('Label')
@@ -89,15 +89,16 @@ class ExtendedThumbWheel(GridLayout):
     def __init__(self, *largs, **kwargs):
         super(ExtendedThumbWheel, self).__init__(*largs, **kwargs)
 
+        self.spacing = dp(3)
         self.label = _ColoredThumbWheelLabel(text='', color_tuple=('Brown', '700'),
-                              size_hint_y=None, height=dp(45),)
+                              size_hint_y=None, height=dp(60),)
         self.label.style = 'NavigationLabelSubHeading'
 
         thumbwheel_container = BoxLayout( size_hint=(None, None),
-                                       size=(dp(200), self.height-self.label.height), )
+                                       size=(self.width, self.height-self.label.height), )
 
         self.thumbwheel = ThumbWheel( size_hint=(None, None),
-                                      size=(dp(150), self.height-self.label.height), )
+                                      size=(self.width-dp(50), self.height-self.label.height - self.spacing[1]), )
 
         self.thumbwheel.value = self.thumbwheel.value_min
 
@@ -113,8 +114,8 @@ class ExtendedThumbWheel(GridLayout):
         thumbwheel_container.add_widget(self.thumbwheel)
         thumbwheel_container.add_widget(Widget())
 
-        self.add_widget(thumbwheel_container)
         self.add_widget(self.label)
+        self.add_widget(thumbwheel_container)
 
         self.thumbwheel.bind(value=self.update_value)
 
@@ -145,7 +146,7 @@ class ThumbWheel(RelativeLayout):
 
     scroll_height_ratio = NumericProperty(4.0)
     rotation_scale = NumericProperty(2.0)
-    num_segments = NumericProperty(30)
+    num_segments = NumericProperty(40)
 
     spinner_width = NumericProperty(dp(40))
 
