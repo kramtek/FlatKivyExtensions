@@ -379,13 +379,23 @@ class ExtendedFlatApp(FlatApp):
         self.add_themes(themes, types_to_theme)
 
         # Add user themes if specified
-        self.add_themes(self._themes, self._types_to_theme)
+        if self._themes is not None:
+            self.add_themes(self._themes, self._types_to_theme)
 
 
     def add_themes(self, themes, types_to_theme={}):
         for (theme, value) in themes.items():
             for (variant, theme_dict) in value.items():
-                self.theme_manager.add_theme(theme, variant, theme_dict)
+                if theme in self.theme_manager.themes.keys():
+                    if variant in self.theme_manager.themes[theme].keys():
+                        _value = self.theme_manager.themes[theme][variant]
+                        for (className, properties) in themes[theme][variant].items():
+                            _value[className] = properties
+                    else:
+                        self.theme_manager.add_theme(theme, variant, theme_dict)
+                else:
+                    self.theme_manager.add_theme(theme, variant, theme_dict)
+
         for (key,value) in types_to_theme.items():
             self.theme_manager.types_to_theme[key] = value
 
