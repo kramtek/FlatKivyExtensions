@@ -8,6 +8,8 @@ from kivy.app import App
 from kivy.metrics import dp
 from kivy.clock import Clock
 from kivy.utils import get_color_from_hex as rgb
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.widget import Widget
 
 from flat_kivy_extensions.uix.customscreen import CustomScreen
 from flat_kivy_extensions.uix.customgraphs import BarGraph, LineGraph
@@ -18,8 +20,8 @@ Builder.load_string('''
     title: 'Graph Screen'
     theme: ('app', 'screen')
 
-<-TestScreen>:
-    title: ''
+<-ThumbwheelScreen>:
+    title: 'Thumb Wheels'
     theme: ('app', 'screen')
 
 ''')
@@ -116,40 +118,46 @@ class GraphDemoScreen(CustomScreen):
 
 
 
-class TestScreen(CustomScreen):
+class ThumbwheelScreen(CustomScreen):
 
     def __init__(self, *largs, **kwargs):
-        super(TestScreen, self).__init__(*largs, **kwargs)
+        super(ThumbwheelScreen, self).__init__(*largs, **kwargs)
 
         self._isRunning = False
         self.event = None
 
-        extended_thumbwheel = ExtendedThumbWheel( size_hint=(None, None), size=(dp(200), dp(200)),)
+        bl = BoxLayout(size_hint_y=None, height=dp(300))
+
+        extended_thumbwheel = ExtendedThumbWheel( size_hint=(None, None), size=(dp(150), dp(300)),)
         extended_thumbwheel.label_text = 'MyValue'
         extended_thumbwheel.label_format = '%2.1f'
         extended_thumbwheel.units = 'Space Credits'
         extended_thumbwheel.value_max = 19
         extended_thumbwheel.value_min = 3
         extended_thumbwheel.bind(value=self.thumbwheel_updated_value)
-        extended_thumbwheel.spinner_width = dp(30)
-        self.add_widget(extended_thumbwheel)
+        extended_thumbwheel.spinner_width = dp(40)
+        #self.add_widget(extended_thumbwheel)
+        bl.add_widget(Widget())
+        bl.add_widget(extended_thumbwheel)
 
         extended_thumbwheel.value = 4.4
         extended_thumbwheel.rotation_scale = 4.0
 
-
-        extended_thumbwheel = ExtendedThumbWheel( size_hint=(None, None), size=(dp(200), dp(200)),)
+        extended_thumbwheel = ExtendedThumbWheel( size_hint=(None, None), size=(dp(150), dp(300)),)
         extended_thumbwheel.label_text = 'MyValue2'
         extended_thumbwheel.label_format = '%2.1f'
         extended_thumbwheel.units = 'Space Credits'
         extended_thumbwheel.value_max = 19
         extended_thumbwheel.value_min = -2
-        self.add_widget(extended_thumbwheel)
 
         extended_thumbwheel.value = 4.4
         extended_thumbwheel.rotation_scale = 0.5
-        extended_thumbwheel.color_max = [.8, .6, .6, 1.0]
-        extended_thumbwheel.color_min = [.1, .1, .5, 1.0]
+        extended_thumbwheel.color_max = [.9, .9, .8, 1.0]
+        extended_thumbwheel.color_min = [.01, .01, .01, 1.0]
+
+        #self.add_widget(extended_thumbwheel)
+        bl.add_widget(extended_thumbwheel)
+        self.add_widget(bl)
 
 
     def thumbwheel_updated_value(self, instance, value):
@@ -177,17 +185,12 @@ class TestScreen(CustomScreen):
         self._stop_process()
         App.get_running_app().indicate_busy(False)
 
-
-
-
-
-
     def on_touch_down(self, touch):
         if touch.is_double_tap:
             print '%s got double tapped' % str(self)
             App.get_running_app().raise_error('Touch input:', 'Double tap received...',
                                           auto_dismiss=False)
-        return super(TestScreen, self).on_touch_down(touch)
+        return super(ThumbwheelScreen, self).on_touch_down(touch)
 
 
 
