@@ -134,17 +134,6 @@ Builder.load_string('''
             disabled: True
             theme: ('green', 'main')
 
-
-''')
-
-class FlatKivyDemoScreen(Screen):
-    pass
-
-class OriginalFlatKivyDemoLayout(BoxLayout):
-    pass
-
-
-Builder.load_string('''
 <-KivyScreen1>:
 
     BoxLayout:
@@ -157,16 +146,29 @@ Builder.load_string('''
         Label:
             text: 'label'
             color: (.1, .1, .1)
+            canvas.before:
+                Color:
+                    rgb: .8,1,.8
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
 
 ''')
 
+class FlatKivyDemoScreen(Screen):
+    pass
+
+class OriginalFlatKivyDemoLayout(BoxLayout):
+    pass
+
 
 class KivyScreen1(Screen):
+    # Example of sdandard kivy screen constructed vi .kv language
     pass
 
 
 class KivyScreen2(Screen):
-
+    # Example of sdandard kivy screen constructed via python
     def __init__(self, *largs, **kwargs):
         super(KivyScreen2, self).__init__(*largs, **kwargs)
 
