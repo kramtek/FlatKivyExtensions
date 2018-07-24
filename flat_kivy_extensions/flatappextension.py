@@ -153,7 +153,8 @@ Builder.load_string('''
                 width: root.height*0.5
                 color: 0.9, 0.9, .9, 1
                 stroke_width: dp(7.0)*0.5
-                stroke_length: 10
+                stroke_length: 20
+                speed: 1.0
 
             # Widget:
 
@@ -357,6 +358,7 @@ class ExtendedFlatApp(FlatApp):
         self._busy_indicator = self._header.ids._busy_indicator.__self__
         self._header_button_layout = self._header.ids._btn_layout
         self._header_button_layout.remove_widget(self._busy_indicator)
+        self._busy_indicator.stop_spinning()
 
         self._menu_button.bind(on_press=lambda j: self._navigationdrawer.toggle_state())
 
@@ -417,9 +419,12 @@ class ExtendedFlatApp(FlatApp):
         if state:
             if self._busy_indicator not in self._header_button_layout.children:
                 self._header_button_layout.add_widget(self._busy_indicator)
+                self._busy_indicator.start_spinning()
+                #Clock.unschedule(self._busy_indicator._update)
         else:
             if self._busy_indicator in self._header_button_layout.children:
                 self._header_button_layout.remove_widget(self._busy_indicator)
+                self._busy_indicator.stop_spinning()
 
     def indicate_busy(self, value):
         if value:
@@ -448,6 +453,9 @@ class ExtendedFlatApp(FlatApp):
         self.busy_popup.title_color_tuple = ('Brown', '600')
         self.busy_popup.title_size = dp(13)
         self.busy_popup.popup_color=(.95, .95, .95, 1.0)
+
+        #Clock.unschedule(busy_content.spinner._update)
+        #Clock.schedule_interval(busy_content.spinner._update, .5)
 
         busy_content.busy_text = busy_text
         self.busy_popup.title = busy_title
