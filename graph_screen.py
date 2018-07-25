@@ -89,11 +89,7 @@ class GardenGraphDemoScreen(CustomScreen):
         graph.height = dp(150)
         self.add_widget(graph)
 
-
-
-
-
-        Clock.schedule_interval(self.update_points, 1 / 10.0)
+        #Clock.schedule_interval(self.update_points, 1 / 10.0)
         # self.update_points(None)
 
         graph2 = Graph(
@@ -129,9 +125,18 @@ class GardenGraphDemoScreen(CustomScreen):
         self.add_widget(graph2)
         self.contourplot = plot
 
-        Clock.schedule_interval(self.update_contour, 1 / 10.)
+        #Clock.schedule_interval(self.update_contour, 1 / 10.)
         self.update_contour(None)
 
+    def on_enter(self, *largs):
+        print 'in on enter...'
+        #Clock.schedule_interval(self.update_points, 1/10.0)
+        #Clock.schedule_interval(self.update_contour, 1 / 10.)
+
+    def on_pre_leave(self, *largs):
+        print 'in on pre leave...'
+        #Clock.unschedule(self.update_points)
+        #Clock.unschedule(self.update_contour)
 
     def make_contour_data(self, ts=0):
         omega = 2 * pi / 30
@@ -150,6 +155,7 @@ class GardenGraphDemoScreen(CustomScreen):
         return ((0, max(position)), (0, max(time)), data)
 
     def update_points(self, *args):
+        print 'updating points'
         self.plot.points = [(x / 10., cos(Clock.get_time() + x / 50.)) for x in range(-500, 501)]
 
 
