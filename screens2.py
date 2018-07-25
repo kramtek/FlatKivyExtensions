@@ -9,8 +9,6 @@ from kivy.app import App
 from kivy.lang import Builder
 from kivy.clock import Clock, mainthread
 from kivy.uix.label import Label
-from kivy.uix.anchorlayout import AnchorLayout
-from kivy.uix.stacklayout import StackLayout
 from kivy.uix.dropdown import DropDown
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
