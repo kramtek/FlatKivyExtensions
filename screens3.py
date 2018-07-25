@@ -106,13 +106,17 @@ class GraphDemoScreen(CustomScreen):
         self.lineGraph.height = dp(150)
         self.add_widget(self.lineGraph)
 
-        Clock.schedule_interval(self.update_points, 1 / 10.0)
+        #Clock.schedule_interval(self.update_points, 1 / 10.0)
+
+    def on_enter(self, *largs):
+        Clock.schedule_interval(self.update_points, 1/10.0)
+
+    def on_pre_leave(self, *largs):
+        Clock.unschedule(self.update_points)
 
     def update_points(self, *args):
-
         data = np.random.random( self.dataShape ) * 100
         self.barGraph.update(data)
-
         data = np.random.random( (50,4)) * 10 - 1.5
         self.lineGraph.update(data)
 
@@ -166,7 +170,7 @@ class ThumbwheelScreen(CustomScreen):
         # stop the thread after 0.5 seconds. If the value is updated
         # within the timeout period the timeout event is rescheduled
         if not self._isRunning:
-            threading.Thread(target=self._threaded_process).start()
+            threading.Thread(target=self._threaded_process, args=(instance, value,)).start()
         if self.event is not None:
             self.event.cancel()
         self.event = Clock.create_trigger(self._stop_process, 0.5)
@@ -176,12 +180,12 @@ class ThumbwheelScreen(CustomScreen):
         self._isRunning = False
         self.event = None
 
-    def _threaded_process(self):
+    def _threaded_process(self, instance, value):
         self._isRunning = True
         App.get_running_app().indicate_busy(True)
         while self._isRunning:
             time.sleep(0.2)
-            #print '  will write to somewhere, current value: %2.2f' % self.thumbwheel.value
+            print '  will write to somewhere, current value: %2.2f' % instance.value
         self._stop_process()
         App.get_running_app().indicate_busy(False)
 
