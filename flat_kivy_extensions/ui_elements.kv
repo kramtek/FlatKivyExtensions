@@ -446,6 +446,27 @@
             font_size: dp(12)
             font_color_tuple: root.cancel_btn_font_color_tuple
 
+<-CustomSpinner>:
+	_size: min(self.height, self.width)
+	_rsize: self._size / 2.
+	_stroke: max(0.1, self._rsize / 20. if self.stroke_width is None else self.stroke_width)
+	_radius: self._rsize - self._stroke * 2.
+    canvas:
+        Color:
+            rgba: self.color
+        Line:
+            circle:
+                (self.center_x, self.center_y, self._radius,
+                self._angle_center + self._angle_start,
+                self._angle_center + self._angle_end)
+            width: self._stroke
+            cap: 'none'
+        Line:
+            circle:
+                (self.center_x, self.center_y, self._radius*2, 0, 360)
+            width: self._radius * 0.2 
+            cap: 'none'
+
 
 <CustomBusyContent>:
     orientation: 'tb-lr'
@@ -456,19 +477,21 @@
     spacing: dp(5) 
     radius: '2dp'
     height: self.minimum_height
-    spinner_color: 0.2, 0.4, .2, 1
+    spinner_color: 0.2, 0.4, .2, 1.0
     cancel_text: 'Cancel'
     cancel_btn_color_tuple: ('Brown', '700')
     cancel_btn_font_color_tuple: ('Gray', '0000') 
     spinner: _spinner.__self__
 
-    ProgressSpinner:
+    #ProgressSpinner:
+    CustomSpinner:
         id: _spinner
         size_hint: (1, None)
         height: dp(50)
         color: root.spinner_color
         stroke_width: dp(8.25)
         stroke_length: 10
+        speed: 2.5 
 
     FlatLabel:
         id: label
@@ -478,7 +501,7 @@
 
         size_hint: (1.0, None)
         text_size: self.width, None
-        height: self.texture_size[1]
+        height: max(self.texture_size[1], dp(50))
 
         # text_size: self.size
         # font_ramp_tuple: ('error_content' + str(randint(1,10000)), '1')

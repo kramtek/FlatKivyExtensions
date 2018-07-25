@@ -146,7 +146,8 @@ Builder.load_string('''
                 width: root.menu_button_width
                 color: root.header_color
 
-            ProgressSpinner:
+            #ProgressSpinner:
+            CustomSpinner:
                 id: _busy_indicator
                 size_hint: (None, None)
                 height: root.height
@@ -154,7 +155,7 @@ Builder.load_string('''
                 color: 0.9, 0.9, .9, 1
                 stroke_width: dp(7.0)*0.5
                 stroke_length: 20
-                speed: 1.0
+                speed: 2.5
 
             # Widget:
 
@@ -456,12 +457,14 @@ class ExtendedFlatApp(FlatApp):
 
         #Clock.unschedule(busy_content.spinner._update)
         #Clock.schedule_interval(busy_content.spinner._update, .5)
+        busy_content.spinner.start_spinning()
 
         busy_content.busy_text = busy_text
         self.busy_popup.title = busy_title
         cancel_button = busy_content.cancel_button
         event = None
         def dismiss_popup(*largs):
+            busy_content.spinner.stop_spinning()
             if event is not None:
                 event.cancel()
             self.busy_popup.dismiss()
@@ -473,6 +476,7 @@ class ExtendedFlatApp(FlatApp):
 
         if timeout is not None:
             def close_popup(dt):
+                busy_content.spinner.stop_spinning()
                 self.busy_popup.dismiss()
                 if timeout_callback is not None:
                     timeout_callback()
