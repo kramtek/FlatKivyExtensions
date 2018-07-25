@@ -21,16 +21,16 @@ navigationdrawer = {
         'color_tuple' : ('Green', '300'),
         'style' : 'NavigationLabelMainHeading',
     },
-#    'FlatIconButtonLeft': {
-#        'color_tuple': ('Brown', '800'),
-#        'font_color_tuple': ('Blue', '300'),
-#        'size_hint_y' : None,
-#        'height' : '35dp',
-#        'icon' : 'fa-chevron-right',
-#        'icon_color_tuple': ('Red', '500'),
-#        'padding' : '3dp',
-#        'style': 'NavigationButton',
-#    },
+    'FlatIconButton': {
+        #'color_tuple': ('Brown', '800'),
+        #'font_color_tuple': ('Blue', '300'),
+        #'size_hint_y' : None,
+        #'height' : '35dp',
+        #'icon' : 'fa-chevron-right',
+        #'icon_color_tuple': ('Red', '500'),
+        #'padding' : '3dp',
+        #'style': 'NavigationButton',
+    },
     'CustomIconButton': {
         'color_tuple': ('Brown', '800'),
         'font_color_tuple': ('Blue', '300'),
@@ -109,6 +109,8 @@ default = {
         'scaling' : 1.0,
     },
 
+    'FlatCheckBoxListItem': {
+    },
 }
 
 themes = {
