@@ -21,7 +21,7 @@ about = 'Something to describe the purpose of the application.'
 #    the screenmanger and how they should be referenced
 #    in the navigation panel for switching
 
-from screens import FlatKivyDemoScreen, KivyScreen1, KivyScreen2
+from standard_screens import FlatKivyDemoScreen, KivyScreen1, KivyScreen2
 from screens2 import (KivyWidgetScreen, CustomButtonDemoScreen,
                      CustomLayoutsScreen, DropShadowScreen, CustomSliderDemoScreen,
                      CustomCheckBoxDemoScreen)
@@ -49,9 +49,9 @@ from dialog_screen import DialogDemoScreen
 
 app_config_entries = ['Demo Screens',
                       'Kivy Screens',
+                      NavDrawerEntryConfig(DialogDemoScreen, 'Dialog Demos', button_icon='fa-comment-alt'),
                       NavDrawerEntryConfig(ThumbwheelScreen, 'Thumb Wheels'),
                       NavDrawerEntryConfig(CustomCheckBoxDemoScreen, 'Custom CheckBoxes', button_icon='fa-check-square'),
-                      NavDrawerEntryConfig(DialogDemoScreen, 'Dialog Demos', button_icon='fa-comment-alt'),
                       NavDrawerEntryConfig(GraphDemoScreen, 'Custom Graphs', button_icon='fa-bar-chart-o'),
                       NavDrawerEntryConfig(KivyScreen1, 'Kivy Screen1'),
                       NavDrawerEntryConfig(KivyScreen2, 'Kivy Screen2'),
