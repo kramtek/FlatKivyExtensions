@@ -61,8 +61,8 @@ class GraphDemoScreen(CustomScreen):
             _with_stencilbuffer=False,
             **graph_theme
             )
-        self.dataShape = (3,6)
-        self.barGraph.create(np.random.random( self.dataShape ) * 100)
+#        self.dataShape = (3,6)
+#        self.barGraph.create(np.random.random( self.dataShape ) * 100)
 
         # Override the default labels and label rotation
         self.barGraph.x_ticks_angle = 270
@@ -94,10 +94,11 @@ class GraphDemoScreen(CustomScreen):
             ymin=-2,
             ymax=9,
             _with_stencilbuffer=False,
+            line_width=dp(1.25),
             **graph_theme
             )
-        dataShape = (50,4)
-        self.lineGraph.create(np.random.random(dataShape ) * 10 - 1.5)
+#        dataShape = (50,4)
+#        self.lineGraph.create(np.random.random(dataShape ) * 10 - 1.5)
 
         #self.lineGraph.x_ticks_angle = 270
         #self.lineGraph.x_tick_labels = ['', 'a', 'b', 'c', '']
@@ -108,6 +109,11 @@ class GraphDemoScreen(CustomScreen):
 
         #Clock.schedule_interval(self.update_points, 1 / 10.0)
 
+        App.get_running_app().register_stop_callback(self.app_stopping)
+
+    def app_stopping(self):
+        print('App is stopping - should sut down any open threads...')
+
     def on_enter(self, *largs):
         Clock.schedule_interval(self.update_points, 1/10.0)
 
@@ -115,9 +121,9 @@ class GraphDemoScreen(CustomScreen):
         Clock.unschedule(self.update_points)
 
     def update_points(self, *args):
-        data = np.random.random( self.dataShape ) * 100
+        data = np.random.random( (3,6) ) * 100
         self.barGraph.update(data)
-        data = np.random.random( (50,4)) * 10 - 1.5
+        data = np.random.random( (50,4) ) * 10 - 1.5
         self.lineGraph.update(data)
 
 
