@@ -27,7 +27,7 @@ def clean():
     for filename in matches:
         os.remove( filename )
 
-    directoryRemoveList = ['.git', '.kivy', '.idea']
+    directoryRemoveList = ['.git', '.kivy', '.idea', 'flat_kivy_extensions']
     for directory in directoryRemoveList:
         try:
             shutil.rmtree(directory)
