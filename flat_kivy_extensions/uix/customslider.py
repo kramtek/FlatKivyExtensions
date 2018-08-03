@@ -154,6 +154,7 @@ class CustomSlider(GrabBehavior, CustomSliderTouchRippleBehavior, ThemeBehavior,
     color_tuple = ListProperty(['Blue', '500'])
     slider_color_tuple = ListProperty(['Orange', '300'])
     outline_color_tuple = ListProperty(['Blue', '600'])
+    outline_width = NumericProperty(dp(2))
     slider_outline_color_tuple = ListProperty(['Orange', '500'])
     ripple_color_tuple = ListProperty(['Grey', '0000'])
     released_value = NumericProperty(0.0)
@@ -181,6 +182,7 @@ class ExtendedSlider(BoxLayout, ThemeBehavior):
     units = StringProperty('-')
     min = NumericProperty(0)
     max = NumericProperty(100)
+    height = NumericProperty(dp(100))
 
     def __init__(self, **kwargs):
         super(ExtendedSlider, self).__init__(**kwargs)
@@ -203,6 +205,10 @@ class ExtendedSlider(BoxLayout, ThemeBehavior):
         else:
             self.widget = ExtendedSliderVertical()
         self.add_widget(self.widget)
+        self.bind(height=self.widget.setter('height'))
+
+    def on_height(self, instance, value):
+        self.widget.height = value
 
     def on_units(self, instance, value):
         if self.widget is not None:
