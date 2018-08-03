@@ -72,7 +72,7 @@ class DialogDemoScreen(CustomScreen):
 
     def start_background_process(self, *largs):
         self.busy_popup = App.get_running_app().raise_busy('Currently Busy:', '',
-                                          auto_dismiss=False, timeout=5,
+                                          auto_dismiss=False, timeout=8,
                                           timeout_callback=self.timeout,
                                           cancel_callback=self.canceled,)
 
