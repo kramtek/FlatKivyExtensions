@@ -90,7 +90,7 @@
         # draw the line around the slider handle
         Line:
             ellipse: [self.value_pos[0] - self.slider_handle_radius, self.center_y - self.slider_handle_radius, self.slider_handle_radius*2, self.slider_handle_radius*2] if self.orientation == 'horizontal' else [self.center_x - self.slider_handle_radius, self.value_pos[1] - self.slider_handle_radius, self.slider_handle_radius*2, self.slider_handle_radius*2]
-            width: sp(1.0)
+            width: self.outline_width
 
 
 <-ExtendedSliderHorizontal>:
@@ -154,7 +154,7 @@
 <-ExtendedSliderVertical>:
     orientation: 'vertical'
     size_hint_y: None
-    height: '200dp'
+    height: '100dp'
     label_text: 'something'
     label_format: '%2.3f'
     units: 'dB'
@@ -179,7 +179,7 @@
         id: slider
         orientation: 'vertical'
         size_hint_y: None
-        height: root.height - dp(80)
+        height: root.height - dp(70)
         min: root.min
         max: root.max
         theme: root.theme
@@ -201,7 +201,7 @@
         id: label
         text: root.label_text
         size_hint_y: None
-        height: '50dp'
+        height: '40dp'
         color_tuple: root.font_color_tuple
         text_size: self.size
         halign: 'center' 
@@ -378,6 +378,7 @@
         exclusive: root.exclusive
         on_active: root.on_checkbox_active(self, self.active)
         #root.setter('touch_down_active')
+        no_interact: root.disabled
 
 <CustomPopupContent>:
     orientation: 'tb-lr'
@@ -464,7 +465,7 @@
         Line:
             circle:
                 (self.center_x, self.center_y, self._radius*2, 0, 360)
-            width: self._radius * 0.2 
+            width: self._radius * 0.125
             cap: 'none'
 
 
@@ -489,9 +490,9 @@
         size_hint: (1, None)
         height: dp(50)
         color: root.spinner_color
-        stroke_width: dp(8.25)
+        stroke_width: dp(8.25)*1.0
         stroke_length: 10
-        speed: 2.5 
+        speed: 4.0 
 
     FlatLabel:
         id: label

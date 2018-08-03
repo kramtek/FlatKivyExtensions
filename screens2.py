@@ -135,6 +135,7 @@ Builder.load_string('''
         outline_color_tuple: ('Blue', '500')
         size_scaling: 0.5
         exclusive: True
+        #disabled: True
 
     CustomCheckBoxListItem:
         text: 'Radio Button 2'
@@ -150,6 +151,7 @@ Builder.load_string('''
         size_scaling: 0.5
         exclusive: True
         current_state: True
+        #disabled: True
 
     CustomCheckBoxListItem:
         text: 'Error Indicator'
@@ -158,6 +160,7 @@ Builder.load_string('''
         icon: 'fa-exclamation'
         check_color_tuple: ('Red', '500')
         outline_color_tuple: ('Gray', '500')
+        #disabled: True
 
     CustomCheckBoxListItem:
         text: 'Warning Indicator'
@@ -211,7 +214,7 @@ Builder.load_string('''
         orientation: 'horizontal'
         min: 10
         max: 110
-        theme: ('green', 'main')
+        #theme: ('green', 'main')
         size_hint_y: None
         height: '50dp'
 
@@ -219,43 +222,42 @@ Builder.load_string('''
         orientation: 'vertical'
         min: 10
         max: 110
-        theme: ('green', 'main')
-        height: '200dp'
+        theme: ('app', 'default')
+        height: '100dp'
         size_hint_y: None
 
     ExtendedSlider:
         orientation: 'horizontal'
         size_hint_y: None
-        height: '100dp'
+        height: '70dp'
         label_text: 'Value'
-        theme: ('green', 'main')
-
+        #theme: ('green', 'main')
 
     BoxLayout:
         size_hint_y: None
-        height: '200dp'
+        height: '180dp'
 
         ExtendedSlider:
             orientation: 'vertical'
+            theme: ('app', 'default')
             size_hint_y: None
-            height: '280dp'
+            height: '180dp'
             label_text: 'VertValue1'
             units: 'ms'
             max: 30
             min: 20
             label_format: '%1.1f'
-            theme: ('green', 'main')
 
         ExtendedSlider:
             orientation: 'vertical'
+            theme: ('app', 'default')
             size_hint_y: None
-            height: '280dp'
+            height: '180dp'
             label_text: 'VertValue2'
             units: 'volts'
             max: 60
             min: 40
             label_format: '%1.2f'
-            theme: ('green', 'main')
 
 
 <-CustomLayoutsScreen>:
