@@ -46,7 +46,7 @@ class CustomSpinner(Widget):
     def _update(self, dt):
         angle_speed = 90. * self.speed
         angle_advance_speed = 90. * self.advance_speed
-        self._angle_center += 0.25*(dt * angle_advance_speed)
+        self._angle_center += 1.0*(dt * angle_advance_speed)
 
         if self._opening_state:
             self._angle_end = (self._angle_end + dt * angle_speed)
