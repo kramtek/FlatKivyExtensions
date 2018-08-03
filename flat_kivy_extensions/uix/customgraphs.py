@@ -1,11 +1,12 @@
 
 
+import numpy as np
 import itertools
 from math import log10
 
 from kivy.metrics import dp
 from kivy.utils import get_color_from_hex as rgb
-from kivy.properties import ListProperty
+from kivy.properties import ListProperty, NumericProperty
 from kivy.garden.graph import Graph, BarPlot, LinePlot
 
 
@@ -73,10 +74,12 @@ class _CustomGraph(Graph):
 
 
 class LineGraph(_CustomGraph):
+    line_width = NumericProperty(dp(1.25))
 
     def __init__(self, *largs, **kwargs):
         super(LineGraph, self).__init__(*largs, **kwargs)
         self._plots = list()
+        self.shape = None
 
     def create(self, data):
         colors = itertools.cycle([
@@ -87,6 +90,8 @@ class LineGraph(_CustomGraph):
             ])
 
         self.shape = data.shape
+        if len(self.shape) == 1:
+            self.shape = (self.shape[0], 1)
         numPoints = self.shape[0]
         self.xmin = 1.0
         self.xmax = numPoints
@@ -95,12 +100,15 @@ class LineGraph(_CustomGraph):
 
         for ind1 in xrange(self.shape[1]):
             plot = LinePlot(color=next(colors))
-            plot.line_width = dp(1)
+            plot.line_width = self.line_width
+            #self.bind(line_width=plot.setter('line_width'))
             self.add_plot(plot)
             self._plots.append(plot)
             plot.points = [(x+self.xmin, data[x,ind1])  for x in xrange(numPoints)]
 
     def update(self, data):
+        if self.shape is None:
+            self.create(data)
         if self.shape != self.shape:
             self.create(data)
         for ind1 in xrange(self.shape[1]):
@@ -115,6 +123,7 @@ class BarGraph(_CustomGraph):
         self._plots = list()
         self._plot_datas = list()
         self.bind(x_tick_labels=self.update_x_tick_labels)
+        self.shape = None
 
     def create(self, data, colors=None):
         if colors is None:
@@ -126,11 +135,17 @@ class BarGraph(_CustomGraph):
                 ])
 
         self.shape = data.shape
-        numPoints = self.shape[0] * (1 + self.shape[1])
+        if len(self.shape) == 1:
+            numPoints = self.shape[0] * (1 + 1)
+        else:
+            numPoints = self.shape[0] * (1 + self.shape[1])
+        if len(self.shape) == 1:
+            self.shape = (self.shape[0], 1)
         self.xmin = 0.0
         self.xmax = self.shape[0] + 1
         self.x_ticks_minor = 1
         self.x_ticks_major=1
+
         scaling = float(1.0/float(self.shape[1]+1))
 
         width   = float(1.0/float(self.shape[1]+1))
@@ -157,8 +172,14 @@ class BarGraph(_CustomGraph):
             plot.points = plot_data
 
     def update(self, data):
+        if len(data.shape) == 1:
+            data = np.reshape(data, (data.shape[0],1))
+
+        if self.shape is None:
+            self.create(data)
         if self.shape != data.shape:
             self.create(data)
+
         for ind1 in xrange(self.shape[1]):
             plot = self._plots[ind1]
             plot_data = self._plot_datas[ind1]
