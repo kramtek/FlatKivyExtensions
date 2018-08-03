@@ -155,7 +155,7 @@ Builder.load_string('''
                 color: 0.9, 0.9, .9, 1
                 stroke_width: dp(7.0)*0.5
                 stroke_length: 20
-                speed: 2.5
+                speed: 4.0
 
             # Widget:
 
@@ -347,6 +347,9 @@ class ExtendedFlatApp(FlatApp):
         self.root = RootWidget()
 
         self._busy_counter = 0
+
+        self.stop_callbacks = list()
+        self.start_callbacks = list()
 
     def build(self):
         #self.root = RootWidget()
@@ -601,4 +604,31 @@ class ExtendedFlatApp(FlatApp):
     def on_pause(self):
         print("Pausing application.")
         return True
+
+    def register_stop_callback(self, callback):
+        ''' Register a function or method that should be called
+        as the application is shutting down.
+        '''
+        self.stop_callbacks.append(callback)
+
+    def on_stop(self):
+        print('Stopping application')
+        for callback in self.stop_callbacks:
+            callback()
+        return False
+
+
+    def register_start_callback(self, callback):
+        ''' Register a function or method that should be called
+        as the application is shutting down.
+        '''
+        self.start_callbacks.append(callback)
+
+    def on_start(self):
+        print('Starting application')
+        for callback in self.start_callbacks:
+            callback()
+        return False
+
+
 
