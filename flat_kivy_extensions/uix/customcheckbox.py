@@ -56,6 +56,7 @@ class CustomCheckBox(GrabBehavior, TouchRippleBehavior,
     radius = NumericProperty(5)
     size_scaling = NumericProperty(1)
     icon = StringProperty('fa-check')
+    disable = BooleanProperty(False)
 
     def __init__(self, **kwargs):
         super(CustomCheckBox, self).__init__(**kwargs)
@@ -95,6 +96,8 @@ class CustomCheckBox(GrabBehavior, TouchRippleBehavior,
         else:
             super(CustomCheckBox, self).on_touch_up(touch)
 
+    def on_no_interact(self, instance, value):
+        self.check.no_interact = value
 
 
 class CustomSwitch(BoxLayout):
@@ -180,6 +183,8 @@ class CustomCheckBoxListItem(FlatCheckBoxListItem):
 
     exclusive = BooleanProperty(True)
 
+    disable = BooleanProperty(False)
+
     def __init__(self, *largs, **kwargs):
         self.checkbox_active = BooleanProperty(False)
         self.up_color_tuple = ('Gray', '500')
@@ -187,6 +192,9 @@ class CustomCheckBoxListItem(FlatCheckBoxListItem):
         super(CustomCheckBoxListItem, self).__init__(*largs, **kwargs)
 
     def on_touch_down(self, touch):
+        if self.disabled:
+            if self.collide_point(touch.x, touch.y):
+                return False
         if self.collide_point(touch.x, touch.y):
             self.up_color_tuple = self.check_color_tuple
             if self.check_color_tuple_down is not None:
@@ -198,6 +206,9 @@ class CustomCheckBoxListItem(FlatCheckBoxListItem):
         super(FlatCheckBoxListItem, self).on_touch_down(touch)
 
     def on_touch_up(self, touch):
+        if self.disabled:
+            if self.collide_point(touch.x, touch.y):
+                return False
         if self.collide_point(touch.x, touch.y):
             self.active = self.checkbox_active
             self.check_color_tuple = self.up_color_tuple
