@@ -33,6 +33,7 @@ Builder.load_string('''
 <_ScrollLayout>:
     do_scroll_y: True
     cols: 1
+    scroll_timeout: 100
 
 <_ContentLayout>:
     size_hint_y: None
@@ -83,8 +84,10 @@ class _WidgetContainerLayout(BoxLayout):
 class _ContentLayout(GridLayout):
     pass
 
-class _ScrollLayout(GridLayout):
-#class _ScrollLayout(ScrollView):
+class _GridLayout(GridLayout):
+    pass
+
+class _ScrollLayout(ScrollView):
     pass
 
 class _MainLayout(BoxLayout):
@@ -121,7 +124,13 @@ class CustomScreen(Screen):
         #self._main_layout.add_widget(self._content_layout)
 
         #self._scroll_layout = _ScrollLayout(orientation='vertical', cols=1, padding=dp(1))
-        self._scroll_layout = _ScrollLayout()
+        if kwargs.get('use_scrollview', False):
+            self._scroll_layout = _ScrollLayout()
+        else:
+            self._scroll_layout = _GridLayout(orientation='vertical', cols=1, padding=dp(1))
+        if 'use_scroll' in kwargs.keys():
+            del kwargs['use_scroll']
+
         self._scroll_layout.add_widget(self._content_layout)
 
         self.bind(content_spacing=self._content_layout.setter('spacing'))
