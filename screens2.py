@@ -117,6 +117,8 @@ Builder.load_string('''
     title: 'Custom Checkboxes'
     theme: ('app', 'screen')
 
+    disabled_switch: disabled_switch.__self__
+
     CustomCheckBoxListItem:
         text: 'Check box'
         theme: ('app', 'default')
@@ -190,21 +192,25 @@ Builder.load_string('''
         height: '45dp'
         on_active: root.switch_changed(self)
         switch_font_size: '8dp'
+        active: True
 
     CustomSwitchListItem:
-        text: 'A'
+        id: disabled_switch
+        text: 'Disabled Switch'
         theme: ('app', 'default')
         height: '45dp'
         on_active: root.switch_changed(self)
         switch_font_size: '8dp'
+        disabled: True
 
     CustomSwitchListItem:
-        text: 'B'
+        text: 'Disable control'
         theme: ('app', 'default')
         height: '45dp'
-        on_active: root.switch_changed(self)
+        on_active: root.disabled_switch.disabled = self.active
+        #on_active: root.switch_changed(self)
         switch_font_size: '8dp'
-        scaling: 0.25
+        scaling: 0.45
 
 <-CustomSliderDemoScreen>:
     title: 'Custom Sliders'
@@ -212,7 +218,7 @@ Builder.load_string('''
 
     CustomSlider:
         orientation: 'horizontal'
-        min: 10
+        min: -10
         max: 110
         #theme: ('green', 'main')
         size_hint_y: None
@@ -231,6 +237,8 @@ Builder.load_string('''
         size_hint_y: None
         height: '70dp'
         label_text: 'Value'
+        min: -2
+        max: 20
         #theme: ('green', 'main')
 
     BoxLayout:
@@ -241,12 +249,13 @@ Builder.load_string('''
             orientation: 'vertical'
             theme: ('app', 'default')
             size_hint_y: None
-            height: '180dp'
+            height: '150dp'
             label_text: 'VertValue1'
             units: 'ms'
             max: 30
             min: 20
             label_format: '%1.1f'
+            on_released_value: print(self.label_text + ' released')
 
         ExtendedSlider:
             orientation: 'vertical'
@@ -256,8 +265,9 @@ Builder.load_string('''
             label_text: 'VertValue2'
             units: 'volts'
             max: 60
-            min: 40
+            min: -40
             label_format: '%1.2f'
+            on_released_value: print(self.label_text + ' released')
 
 
 <-CustomLayoutsScreen>:
@@ -343,7 +353,9 @@ class CustomCheckBoxDemoScreen(CustomScreen):
         print('screen:  switch with text "%s" has value: %s' % (instance.text, str(instance.active)))
 
 class CustomSliderDemoScreen(CustomScreen):
-    pass
+
+    def on_value(self, instance, value):
+        print 'value: %s' % str(value)
 
 class CustomLayoutsScreen(CustomScreen):
     def __init__(self, *largs, **kwargs):
@@ -438,6 +450,16 @@ class DropShadowScreen(CustomScreen):
         btn.bind(on_press=self._btn_med_pressed)
 
         btn = Button(text='Low', size_hint_y=None, height=dp(50))
+        self.layout.add_widget(btn)
+        btn.bind(on_release=self._layout_btn_released)
+        btn.bind(on_press=self._btn_low_pressed)
+
+        btn = Button(text='Off', size_hint_y=None, height=dp(50))
+        self.layout.add_widget(btn)
+        btn.bind(on_release=self._layout_btn_released)
+        btn.bind(on_press=self._btn_low_pressed)
+
+        btn = Button(text='Worse', size_hint_y=None, height=dp(50))
         self.layout.add_widget(btn)
         btn.bind(on_release=self._layout_btn_released)
         btn.bind(on_press=self._btn_low_pressed)

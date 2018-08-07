@@ -103,6 +103,7 @@
     font_color_tuple: ('Gray', '800')
     min: 0
     max: 20 
+    slider: slider.__self__
     FlatLabel:
         id: label
         text: root.label_text
@@ -301,11 +302,12 @@
     font_color_tuple: ('Blue', '900')
     halign: 'left' 
     valign: 'middle' 
-    style: None 
+    #style: None 
     switch: switch.__self__
     scaling: 0.3
-    font_size: dp(20)
-    switch_font_size: dp(20)
+    label: label.__self__
+    #font_size: dp(15)
+    #switch_font_size: dp(20)
     #canvas.before:
     #    Color:
     #        rgba: (.7, .7, .5, 0.2)
