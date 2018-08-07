@@ -169,6 +169,7 @@ class ThumbwheelScreen(CustomScreen):
         bl.add_widget(extended_thumbwheel)
         self.add_widget(bl)
 
+        App.get_running_app().register_stop_callback(self.app_stopping)
 
     def thumbwheel_updated_value(self, instance, value):
         # If it is not already running then start a thread in the background
@@ -201,6 +202,10 @@ class ThumbwheelScreen(CustomScreen):
             App.get_running_app().raise_error('Touch input:', 'Double tap received...',
                                           auto_dismiss=False)
         return super(ThumbwheelScreen, self).on_touch_down(touch)
+
+    def app_stopping(self):
+        print('Application stopping - stop back ground process(es)')
+        self._stop_process()
 
 
 
