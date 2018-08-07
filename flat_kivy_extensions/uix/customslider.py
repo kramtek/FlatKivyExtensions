@@ -184,14 +184,16 @@ class ExtendedSlider(BoxLayout, ThemeBehavior):
     max = NumericProperty(100)
     height = NumericProperty(dp(100))
 
+    released_value = NumericProperty(0)
+
     def __init__(self, **kwargs):
+        self.widget = None
         super(ExtendedSlider, self).__init__(**kwargs)
         orientation = kwargs.get('orientation', 'horizontal')
         if orientation == 'horizontal':
             self.orientation = 'horizontal'
         else:
             self.orientation = 'vertical'
-        self.widget = None
         self._create_widget()
 
     def on_theme(self, instance, value):
@@ -202,13 +204,16 @@ class ExtendedSlider(BoxLayout, ThemeBehavior):
             self.remove_widget(self.widget)
         if self.orientation == 'horizontal':
             self.widget = ExtendedSliderHorizontal()
+            self.widget.theme = self.theme
         else:
             self.widget = ExtendedSliderVertical()
-        self.add_widget(self.widget)
         self.bind(height=self.widget.setter('height'))
+        self.widget.bind(released_value=self.setter('released_value'))
+        self.add_widget(self.widget)
 
     def on_height(self, instance, value):
-        self.widget.height = value
+        if self.widget is not None:
+            self.widget.height = value
 
     def on_units(self, instance, value):
         if self.widget is not None:
@@ -245,6 +250,7 @@ class _BaseExtendedSlider(BoxLayout, ThemeBehavior):
 
     label_text = StringProperty('')
     units = StringProperty('-')
+    released_value = NumericProperty(0)
 
     def _on_done_building(self):
         self.slider = self.ids.slider
@@ -254,7 +260,7 @@ class _BaseExtendedSlider(BoxLayout, ThemeBehavior):
         self._update_label(self.slider, self.slider.value)
 
     def _slider_released(self, instance, value):
-        print 'slider relased: value: %s' % str(self.slider.released_value)
+        self.released_value = value
 
     def _update_label(self, instance, value):
         a = self.label_format % value
@@ -263,10 +269,19 @@ class _BaseExtendedSlider(BoxLayout, ThemeBehavior):
         else:
             self.info_label.text = self.label_text + ': ' + a + ' ' + self.units
 
+
 class ExtendedSliderHorizontal(_BaseExtendedSlider):
-    pass
+    label_text = StringProperty('')
+    label_format = StringProperty('')
+    units = StringProperty('-')
+    min = NumericProperty(0)
+    max = NumericProperty(100)
 
 class ExtendedSliderVertical(_BaseExtendedSlider):
-    pass
+    label_text = StringProperty('')
+    label_format = StringProperty('')
+    units = StringProperty('-')
+    min = NumericProperty(0)
+    max = NumericProperty(100)
 
 
