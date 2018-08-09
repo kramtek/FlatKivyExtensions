@@ -1,5 +1,7 @@
 import os
 
+import traceback, sys
+
 #from navigationscreen import CoverFlowPopup
 from flat_kivy_extensions.uix.coverflowpopup import CoverFlowPopup
 
@@ -584,6 +586,9 @@ class ExtendedFlatApp(FlatApp):
         error_content.ok_button.width = 0
 
         _modError(error_text)
+        print(traceback.format_exc())
+        print(sys.exc_info())
+        print( traceback.print_stack()  )
         self.error_popup.open()
         if timeout is not None:
             def close_popup(dt):
