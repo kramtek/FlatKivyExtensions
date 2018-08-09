@@ -174,7 +174,7 @@
         style: 'CustomButton1'
         size_hint_y: None
         height: '12dp'
-        font_size: '12dp'
+        font_size: '11dp'
 
     CustomSlider:
         id: slider
@@ -196,17 +196,18 @@
         style: 'CustomButton1'
         size_hint_y: None
         height: '12dp'
-        font_size: '12dp'
+        font_size: '11dp'
 
     FlatLabel:
         id: label
         text: root.label_text
         size_hint_y: None
-        height: '40dp'
+        height: '35dp'
         color_tuple: root.font_color_tuple
         text_size: self.size
         halign: 'center' 
         style: 'CustomButton1'
+        font_size: '14dp'
 
         on_parent: root._on_done_building()
 
