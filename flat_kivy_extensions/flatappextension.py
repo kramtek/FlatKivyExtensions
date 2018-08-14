@@ -557,6 +557,10 @@ class ExtendedFlatApp(FlatApp):
 
     def _update_popup_height(self, instance, value):
         instance.popup.height = value + dp(33)
+        print(' window center y: %s' % str(Window.height))
+        print(' popup pos : %s' % str(instance.popup.pos))
+        instance.popup.pos = (instance.popup.pos[0],  0)
+
 
     def raise_error(self, error_title, error_text, auto_dismiss=True, timeout=None):
         error_content = CustomPopupContent()

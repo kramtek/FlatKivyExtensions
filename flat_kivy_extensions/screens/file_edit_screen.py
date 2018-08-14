@@ -6,11 +6,21 @@ from kivy.core.window import Window
 from kivy.clock import Clock
 from kivy.metrics import dp
 from kivy.lang import Builder
+from kivy.properties import StringProperty
 
 from flat_kivy_extensions.uix.customscreen import CustomScreen
 
+try:
+    from launcher_utils import LauncherUtils
+    utils = LauncherUtils.getInstance()
+    rootDir = utils.getRootDir()
+except Exception as e:
+    print('Exception: %s' % str(e))
+    rootDir = './'
+
+
 Builder.load_string('''
-<-FileChooserScreen>:
+<-FileEditScreen>:
     title: 'File Editor'
     theme: ('app', 'screen')
     codeinput_layout: codeinput_layout.__self__
@@ -29,7 +39,7 @@ Builder.load_string('''
 
         FileChooserListView:
             id: filechooser
-            rootpath: './.'
+            rootpath: root.root_path
             filters: ['*.py', '*.txt']
             #size_hint_y: None
             #height: root.container_height
@@ -99,12 +109,13 @@ Builder.load_string('''
 
 ''')
 
-class FileChooserScreen(CustomScreen):
+class FileEditScreen(CustomScreen):
+    root_path = StringProperty(rootDir)
 
     def __init__(self, *largs, **kwargs):
         self._built = False
         self._last_text = None
-        super(FileChooserScreen, self).__init__(*largs, **kwargs)
+        super(FileEditScreen, self).__init__(*largs, **kwargs)
 
     def done_building(self):
         if self._built:

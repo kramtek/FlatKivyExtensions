@@ -21,12 +21,12 @@ from graph_screen import GardenGraphDemoScreen
 from pizza_screen import PizzaDemoScreen
 from spinner_screen import SpinnerDemoScreen
 from package_control_screen import PackageManagerScreen
-from code_review_screens import FileChooserScreen
+from flat_kivy_extensions.screens.file_edit_screen import FileEditScreen
 
 app_config_entries = ['Garden Demos',
                       NavDrawerEntryConfig(SpinnerDemoScreen, 'SpinnerDemo'),
                       NavDrawerEntryConfig(GardenGraphDemoScreen, 'Garden Graph Demo'),
-                      NavDrawerEntryConfig(FileChooserScreen, 'File Chooser'),
+                      NavDrawerEntryConfig(FileEditScreen, 'File Chooser'),
                       NavDrawerEntryConfig(PizzaDemoScreen, 'Pizza Demo'),
                       'Extra',
                       NavDrawerEntryConfig(PackageManagerScreen, 'Package Manager'),
