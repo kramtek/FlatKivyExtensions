@@ -221,6 +221,7 @@ Builder.load_string('''
         min: -10
         max: 110
         #theme: ('green', 'main')
+        #theme: ('app', 'default')
         size_hint_y: None
         height: '50dp'
 
@@ -229,6 +230,7 @@ Builder.load_string('''
         min: 10
         max: 110
         theme: ('app', 'default')
+        #theme: ('green', 'main')
         height: '100dp'
         size_hint_y: None
 
@@ -239,7 +241,7 @@ Builder.load_string('''
         label_text: 'Value'
         min: -2
         max: 20
-        #theme: ('green', 'main')
+        theme: ('green', 'main')
 
     BoxLayout:
         size_hint_y: None

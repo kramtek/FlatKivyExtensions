@@ -35,7 +35,7 @@ class CustomSliderTouchRippleBehavior(ThemeBehavior):
     # slider_bar_width = NumericProperty(14)
     # slider_handle_radius = NumericProperty(16)
 
-    slider_bar_width = NumericProperty(dp(2))
+    slider_bar_width = NumericProperty(dp(9))
     slider_handle_radius = NumericProperty(dp(10))
 
     def __init__(self, **kwargs):
@@ -46,6 +46,7 @@ class CustomSliderTouchRippleBehavior(ThemeBehavior):
         self.slider_line_stencil_unuse = None
 
     def on_touch_down(self, touch):
+#        print('slider ripple touch down....')
         if self in touch.ud:
             self.anim_complete(self, self)
             self.ripple_pos = ripple_pos = (touch.x, touch.y)
@@ -160,6 +161,10 @@ class CustomSlider(GrabBehavior, CustomSliderTouchRippleBehavior, ThemeBehavior,
     released_value = NumericProperty(0.0)
 
     def on_touch_up(self, touch):
+#        print('slider with value: %s  on touch up...' % str(self.value))
+        if not self.collide_point(touch.x, touch.y):
+#            print('  outside of region - do not propogate')
+            return False
         now = time.time()
         if not hasattr(self, '_last_time'):
             self._last_time = 0.0
@@ -251,6 +256,7 @@ class _BaseExtendedSlider(BoxLayout, ThemeBehavior):
     label_text = StringProperty('')
     units = StringProperty('-')
     released_value = NumericProperty(0)
+    value = NumericProperty(0)
 
     def _on_done_building(self):
         self.slider = self.ids.slider
@@ -263,6 +269,7 @@ class _BaseExtendedSlider(BoxLayout, ThemeBehavior):
         self.released_value = value
 
     def _update_label(self, instance, value):
+        self.value = value
         a = self.label_format % value
         if isinstance(self, ExtendedSliderVertical):
             self.info_label.text = self.label_text + ':\n' + a + ' ' + self.units

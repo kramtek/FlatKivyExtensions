@@ -67,27 +67,29 @@
 <-CustomSlider>:
     ripple_color: app.get_color(self.ripple_color_tuple)
     canvas:
+        # draw the slider background
         Color:
             rgba: app.get_color(self.color_tuple)
-        # draw the slider background
         Rectangle:
             pos: (self.x + self.padding, self.center_y - self.slider_bar_width/2) if self.orientation == 'horizontal' else (self.center_x - self.slider_bar_width/2, self.y + self.padding)
             size: (self.width - self.padding * 2, self.slider_bar_width) if self.orientation == 'horizontal' else (self.slider_bar_width, self.height - self.padding * 2)
+            #size: (self.value_pos[0]-self.slider_handle_radius*2, self.slider_bar_width) if self.orientation == 'horizontal' else (self.slider_bar_width, self.height - self.padding * 2)
+        # draw the line around the slider background
         Color:
             rgba: app.get_color(self.outline_color_tuple)
-        # draw the line around the slider background
         Line:
             rounded_rectangle: [self.x + self.padding, self.center_y - self.slider_bar_width/2, self.width - self.padding * 2, self.slider_bar_width, dp(1)] if self.orientation == 'horizontal' else [self.center_x - self.slider_bar_width/2, self.y + self.padding, self.slider_bar_width, self.height - self.padding * 2, dp(1)]
             width: sp(0.5)
+
+        # draw the main slider handle
         Color:
             rgba: app.get_color(self.slider_color_tuple)
-        # draw the main slider handle
         Ellipse:
             pos: (self.value_pos[0] - self.slider_handle_radius, self.center_y - self.slider_handle_radius) if self.orientation == 'horizontal' else (self.center_x - self.slider_handle_radius, self.value_pos[1] - self.slider_handle_radius)
             size: (self.slider_handle_radius*2, self.slider_handle_radius*2)
+        # draw the line around the slider handle
         Color:
             rgba: app.get_color(self.slider_outline_color_tuple)
-        # draw the line around the slider handle
         Line:
             ellipse: [self.value_pos[0] - self.slider_handle_radius, self.center_y - self.slider_handle_radius, self.slider_handle_radius*2, self.slider_handle_radius*2] if self.orientation == 'horizontal' else [self.center_x - self.slider_handle_radius, self.value_pos[1] - self.slider_handle_radius, self.slider_handle_radius*2, self.slider_handle_radius*2]
             width: self.outline_width
@@ -354,20 +356,63 @@
     radius: 5
     exclusive: False 
     style: None
-    FlatLabel:
-        id: label
-        text: root.text
-        size_hint: (.8, 1.0)
-        color: app.get_color(root.font_color_tuple)
-        style: root.style
-        halign: root.halign
-        font_ramp_tuple: root.font_ramp_tuple
-        valign: root.valign
-        text_size: self.size
+    detail_font_size: 0
+    checkbox: checkbox.__self__
+
+    RelativeLayout:
+        orientation: 'vertical'
+        size_hint: (0.8, None)
+        height: root.height
+
+        FlatLabel:
+            id: label
+            text: root.text
+            size_hint: (None, None)
+            size: self.parent.size
+            color: app.get_color(root.font_color_tuple)
+            style: root.style
+            halign: root.halign
+            font_ramp_tuple: root.font_ramp_tuple
+            valign: root.valign
+            text_size: self.size
+            #height: self.texture_size[1]
+            theme: root.theme
+
+#            canvas.before:
+#                Color:
+#                    rgba: (0.5, 1.0, 1.0, 0.5)
+#                Rectangle:
+#                    size: self.size
+#                    pos: self.pos
+            
+        FlatLabel:
+            id: detail_label
+            text: '    ' + root.detail_text
+            theme: root.theme
+            #font_ramp_tuple: root.font_ramp_tuple
+            size_hint: (None, None)
+            height: root.height * 0.3
+            width: self.parent.width
+            color: app.get_color(root.font_color_tuple)
+            style: root.style
+            halign: root.halign
+            valign: 'top'
+            font_size: root.detail_font_size
+            text_size: self.size
+            #pos: [0, ]
+            #pos: [self.parent.pos[0], self.parent.pos[1] + dp(10)]
+
+#            canvas.before:
+#                Color:
+#                    rgba: (1.0, 0.5, 1.0, 0.5)
+#                Rectangle:
+#                    size: self.size
+#                    pos: self.pos
+
     CustomCheckBox:
         group: root.group
         id: checkbox
-        no_interact: True
+        no_interact: False 
         size_hint: (None, 1.0)
         width: self.height
         alpha: root.alpha
@@ -382,7 +427,7 @@
         exclusive: root.exclusive
         on_active: root.on_checkbox_active(self, self.active)
         #root.setter('touch_down_active')
-        no_interact: root.disabled
+        no_interact: root.disabled or root.no_interact
 
 <CustomPopupContent>:
     orientation: 'tb-lr'

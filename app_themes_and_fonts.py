@@ -130,17 +130,20 @@ default = {
         'switch_font_size' : '6dp',
     },
     'CustomSliderTouchRippleBehavior': {
-        'slider_bar_width' : '2dp',
+        'slider_bar_width' : '5dp',
         'slider_handle_radius' : '10dp',
     },
     'CustomSlider': {
-        'color_tuple': ('Brown', '600'),
-        'outline_color_tuple': ('Green', '900'),
-        'slider_color_tuple': ('Brown', '100'),
-        'slider_outline_color_tuple': ('Brown', '700'),
-        'ripple_color_tuple': ('Brown', '200'),
-        'slider_bar_width' : '0.1dp',
-        'outline_width' : '0.5dp',
+        ##'color_tuple': ('Brown', '600'),
+        'color_tuple': ('Red', '300'),
+        ##'outline_color_tuple': ('Green', '900'),
+        #'outline_color_tuple': ('Gray', '200'),
+        #'slider_color_tuple': ('Brown', '100'),
+        #'slider_outline_color_tuple': ('Brown', '700'),
+        #'ripple_color_tuple': ('Brown', '200'),
+        ##'slider_bar_width' : '0.1dp',
+        ##'slider_bar_width' : '2.1dp',
+        #'outline_width' : '0.5dp',
     },
 }
 
