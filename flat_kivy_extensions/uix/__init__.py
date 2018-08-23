@@ -18,6 +18,7 @@ class CustomBusyContent(GridLayout, ThemeBehavior):
 
     def __init__(self, cancel_callback=None, **kwargs):
         super(CustomBusyContent, self).__init__(**kwargs)
+        self.cols = 1
 
 
 class CustomSpinner(Widget):

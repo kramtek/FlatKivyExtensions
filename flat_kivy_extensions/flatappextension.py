@@ -559,7 +559,8 @@ class ExtendedFlatApp(FlatApp):
         instance.popup.height = value + dp(33)
         print(' window center y: %s' % str(Window.height))
         print(' popup pos : %s' % str(instance.popup.pos))
-        instance.popup.pos = (instance.popup.pos[0],  0)
+        y_pos = Window.height/2 - instance.popup.height/2
+        instance.popup.pos = (instance.popup.pos[0],  y_pos)
 
 
     def raise_error(self, error_title, error_text, auto_dismiss=True, timeout=None):
@@ -572,7 +573,8 @@ class ExtendedFlatApp(FlatApp):
             auto_dismiss=auto_dismiss,
             separator_color=(0,0,0,1),
             background_color=(0,0,0,0.25),
-            separator_height=dp(1),)
+            separator_height=dp(1),
+            cols=1,)
         error_content.popup = self.error_popup
 
         self.error_popup.title_color_tuple = ('Brown', '600')
