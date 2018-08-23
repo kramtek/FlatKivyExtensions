@@ -123,21 +123,33 @@ Builder.load_string('''
         text: 'Check box'
         theme: ('app', 'default')
         height: '45dp'
+        size_hint_x: None
+        width: '200dp'
 
     CustomCheckBoxListItem:
         text: 'Radio Button 1'
         group: 'this-radio'
         theme: ('app', 'default')
+        #height: '75dp'
         height: '45dp'
-        radius: '12dp'
-        check_scale: .25
+        radius: self.height * 0.25
         icon: 'fa-circle'
         check_color_tuple: ('Brown', '500')
         check_color_hue_down: '300'
         outline_color_tuple: ('Blue', '500')
         size_scaling: 0.5
+        check_scale: .5 * self.size_scaling
+        radius: self.height * 0.5 * self.size_scaling
         exclusive: True
         #disabled: True
+        #detail_font_size: '10dp'
+        detail_text: ''
+        size_hint_x: None
+        width: '200dp'
+        #detail_font_size: 0
+        detail_text: '1 of 2'
+        detail_font_size: '8dp'
+
 
     CustomCheckBoxListItem:
         text: 'Radio Button 2'
@@ -154,6 +166,10 @@ Builder.load_string('''
         exclusive: True
         current_state: True
         #disabled: True
+        size_hint_x: None
+        width: '200dp'
+        detail_text: 'Hi There... Some Detail'
+        detail_font_size: '10dp'
 
     CustomCheckBoxListItem:
         text: 'Error Indicator'

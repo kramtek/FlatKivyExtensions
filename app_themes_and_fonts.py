@@ -122,6 +122,9 @@ default = {
         'check_scale': .5,
         'radius' : '4dp',
         'icon' : 'fa-check',
+
+        #'detail_font_size' : '12dp',
+
     },
     'CustomSwitchListItem': {
         'style': 'LabelNormalBold',

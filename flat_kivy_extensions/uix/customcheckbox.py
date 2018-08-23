@@ -1,5 +1,6 @@
 
 
+from kivy.metrics import dp
 from kivy.uix.widget import Widget
 from kivy.uix.boxlayout import BoxLayout
 
@@ -70,31 +71,40 @@ class CustomCheckBox(GrabBehavior, TouchRippleBehavior,
 
     def on_active(self, instance, value):
         check = self.check
+        print('on active...: %s' % str(value))
         if value and check not in self.children:
+            print('adding widget...')
             self.add_widget(check)
         elif not value and check in self.children:
+            print('removing widget...')
             self.remove_widget(check)
 
     def on_touch_down(self, touch):
+        print('checkbox on touch down...')
         if self.no_interact:
             if self.collide_point(touch.x, touch.y):
                 return False
         else:
-            super(CustomCheckBox, self).on_touch_down(touch)
+            return super(CustomCheckBox, self).on_touch_down(touch)
 
     def on_touch_move(self, touch):
         if self.no_interact:
             if self.collide_point(touch.x, touch.y):
                 return False
         else:
-            super(CustomCheckBox, self).on_touch_move(touch)
+            return super(CustomCheckBox, self).on_touch_move(touch)
 
     def on_touch_up(self, touch):
+        print('check box on touch up...')
         if self.no_interact:
             if self.collide_point(touch.x, touch.y):
                 return False
         else:
-            super(CustomCheckBox, self).on_touch_up(touch)
+            if self.collide_point(touch.x, touch.y):
+                print('toggling active... was: %s' % str(self.active))
+                self.active = not self.active
+                print('   now: %s' % str(self.active))
+            return super(CustomCheckBox, self).on_touch_up(touch)
 
     def on_no_interact(self, instance, value):
         self.check.no_interact = value
@@ -220,11 +230,19 @@ class CustomCheckBoxListItem(FlatCheckBoxListItem):
 
     disabled = BooleanProperty(False)
 
+    font_size = NumericProperty( dp(15) )
+
+    detail_text = StringProperty('', allow_none=True )
+    detail_font_size = NumericProperty(dp(1))
+
+    no_interact = BooleanProperty(False)
+
     def __init__(self, *largs, **kwargs):
         self.checkbox_active = BooleanProperty(False)
         self.up_color_tuple = ('Gray', '500')
 
         super(CustomCheckBoxListItem, self).__init__(*largs, **kwargs)
+        #self.bind(no_interace=self.checkbox.no_interact)
 
     def on_touch_down(self, touch):
         if self.disabled:
@@ -238,16 +256,25 @@ class CustomCheckBoxListItem(FlatCheckBoxListItem):
             if self.check_color_hue_down is not None:
                 self.check_color_tuple = (self.check_color_tuple[0], self.check_color_hue_down)
             self.toggle_checkbox()
-        super(FlatCheckBoxListItem, self).on_touch_down(touch)
+        super(CustomCheckBoxListItem, self).on_touch_down(touch)
 
     def on_touch_up(self, touch):
         if self.disabled:
             if self.collide_point(touch.x, touch.y):
                 return False
         if self.collide_point(touch.x, touch.y):
+            print('collided point in check box list item: %s' % str(self))
             self.active = self.checkbox_active
+            if not self.checkbox.collide_point(touch.x, touch.y):
+                print('  not in actual checkbox...')
+                #self.checkbox.active = not self.checkbox.active
+                return False
+            else:
+                print(' in actual checkbox...')
+                #self.toggle_checkbox()
             self.check_color_tuple = self.up_color_tuple
-            super(FlatCheckBoxListItem, self).on_touch_up(touch)
+            super(CustomCheckBoxListItem, self).on_touch_up(touch)
+
 
     def on_checkbox_active(self, instance, active):
         self.checkbox_active = active
