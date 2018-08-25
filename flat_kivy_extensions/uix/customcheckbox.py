@@ -108,7 +108,7 @@ class CustomCheckBox(GrabBehavior, TouchRippleBehavior,
             return super(CustomCheckBox, self).on_touch_up(touch)
 
     def on_no_interact(self, instance, value):
-        print('setting check no interact to: %s' % str(value))
+#        print('setting check no interact to: %s' % str(value))
         self.check.no_interact = value
 
 
@@ -210,7 +210,7 @@ class CustomSwitchListItem(BoxLayout, ThemeBehavior):
         if self.collide_point(touch.x, touch.y):
             if not self.switch.collide_point(touch.x, touch.y):
                 if not self.disabled:
-                    print('should toggle switch...')
+#                    print('should toggle switch...')
                     self.switch.active = not self.switch.active
             else:
                 return super(CustomSwitchListItem, self).on_touch_up(touch)
@@ -252,13 +252,13 @@ class CustomCheckBoxListItem(FlatCheckBoxListItem):
         if not self.collide_point(touch.x, touch.y):
             return False
         if (self.disabled or self.no_interact):
-            print('disabled: %s' % str(self.disabled))
-            print('no_interact: %s' % str(self.no_interact))
+#            print('disabled: %s' % str(self.disabled))
+#            print('no_interact: %s' % str(self.no_interact))
             return False
         return super(CustomCheckBoxListItem, self).on_touch_down(touch)
 
     def on_disabled(self, instance, value):
-        print('largs: %s' % str((instance, value)))
+#        print('largs: %s' % str((instance, value)))
 #        if not value:
 #            self.no_interact = value
 #        else:
