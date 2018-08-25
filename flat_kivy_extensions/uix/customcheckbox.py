@@ -57,7 +57,7 @@ class CustomCheckBox(GrabBehavior, TouchRippleBehavior,
     radius = NumericProperty(5)
     size_scaling = NumericProperty(1)
     icon = StringProperty('fa-check')
-    disable = BooleanProperty(False)
+    disabled = BooleanProperty(False)
 
     def __init__(self, **kwargs):
         super(CustomCheckBox, self).__init__(**kwargs)
@@ -71,16 +71,16 @@ class CustomCheckBox(GrabBehavior, TouchRippleBehavior,
 
     def on_active(self, instance, value):
         check = self.check
-        print('on active...: %s' % str(value))
+#        print('on active...: %s' % str(value))
         if value and check not in self.children:
-            print('adding widget...')
+#            print('adding widget...')
             self.add_widget(check)
         elif not value and check in self.children:
-            print('removing widget...')
+#            print('removing widget...')
             self.remove_widget(check)
 
     def on_touch_down(self, touch):
-        print('checkbox on touch down...')
+#        print('checkbox on touch down...')
         if self.no_interact:
             if self.collide_point(touch.x, touch.y):
                 return False
@@ -95,18 +95,20 @@ class CustomCheckBox(GrabBehavior, TouchRippleBehavior,
             return super(CustomCheckBox, self).on_touch_move(touch)
 
     def on_touch_up(self, touch):
-        print('check box on touch up...')
+#        print('check box on touch up...')
         if self.no_interact:
             if self.collide_point(touch.x, touch.y):
                 return False
         else:
-            if self.collide_point(touch.x, touch.y):
-                print('toggling active... was: %s' % str(self.active))
-                self.active = not self.active
-                print('   now: %s' % str(self.active))
+            #if self.collide_point(touch.x, touch.y):
+            #    print('toggling active... was: %s' % str(self.active))
+            #    #self.active = not self.active
+            #    #self.checkbox.toggle_checkbox()
+            #    print('   now: %s' % str(self.active))
             return super(CustomCheckBox, self).on_touch_up(touch)
 
     def on_no_interact(self, instance, value):
+        print('setting check no interact to: %s' % str(value))
         self.check.no_interact = value
 
 
@@ -203,9 +205,12 @@ class CustomSwitchListItem(BoxLayout, ThemeBehavior):
         self.switch.active = value
 
     def on_touch_up(self, touch):
+        #return super(CustomSwitchListItem, self).on_touch_up(touch)
+
         if self.collide_point(touch.x, touch.y):
             if not self.switch.collide_point(touch.x, touch.y):
                 if not self.disabled:
+                    print('should toggle switch...')
                     self.switch.active = not self.switch.active
             else:
                 return super(CustomSwitchListItem, self).on_touch_up(touch)
@@ -238,42 +243,73 @@ class CustomCheckBoxListItem(FlatCheckBoxListItem):
         self.up_color_tuple = ('Gray', '500')
 
         super(CustomCheckBoxListItem, self).__init__(*largs, **kwargs)
-        #self.bind(no_interace=self.checkbox.no_interact)
+
+#    def on_no_interact(self, instance, value):
+#        print('setting checkbox no interact to: %s' % str(value))
+#        self.checkbox.no_interact = value
 
     def on_touch_down(self, touch):
-        if self.disabled:
-            if self.collide_point(touch.x, touch.y):
-                return False
-        if self.collide_point(touch.x, touch.y):
-            self.up_color_tuple = self.check_color_tuple
-            if self.check_color_tuple_down is not None:
-                if len(self.check_color_tuple_down) > 0:
-                    self.check_color_tuple = self.check_color_tuple_down
-            if self.check_color_hue_down is not None:
-                self.check_color_tuple = (self.check_color_tuple[0], self.check_color_hue_down)
-            self.toggle_checkbox()
-        super(CustomCheckBoxListItem, self).on_touch_down(touch)
+        if not self.collide_point(touch.x, touch.y):
+            return False
+        if (self.disabled or self.no_interact):
+            print('disabled: %s' % str(self.disabled))
+            print('no_interact: %s' % str(self.no_interact))
+            return False
+        return super(CustomCheckBoxListItem, self).on_touch_down(touch)
+
+    def on_disabled(self, instance, value):
+        print('largs: %s' % str((instance, value)))
+#        if not value:
+#            self.no_interact = value
+#        else:
+#            self.no_interact = value
+        return super(CustomCheckBoxListItem, self).on_disabled(instance, value)
+#        return super(CustomCheckBoxListItem, self).on_disabled(*largs)
+#        print('on disabled: %s' % str(value))
+
+#        self.no_interact = value
+
+#        if self.collide_point(touch.x, touch.y):
+#            self.up_color_tuple = self.check_color_tuple
+#            if self.check_color_tuple_down is not None:
+#                if len(self.check_color_tuple_down) > 0:
+#                    self.check_color_tuple = self.check_color_tuple_down
+#            if self.check_color_hue_down is not None:
+#                self.check_color_tuple = (self.check_color_tuple[0], self.check_color_hue_down)
+#            self.toggle_checkbox()
+#        super(CustomCheckBoxListItem, self).on_touch_down(touch)
 
     def on_touch_up(self, touch):
-        if self.disabled:
-            if self.collide_point(touch.x, touch.y):
-                return False
-        if self.collide_point(touch.x, touch.y):
-            print('collided point in check box list item: %s' % str(self))
-            self.active = self.checkbox_active
-            if not self.checkbox.collide_point(touch.x, touch.y):
-                print('  not in actual checkbox...')
-                #self.checkbox.active = not self.checkbox.active
-                return False
-            else:
-                print(' in actual checkbox...')
-                #self.toggle_checkbox()
-            self.check_color_tuple = self.up_color_tuple
-            super(CustomCheckBoxListItem, self).on_touch_up(touch)
+        #self.checkbox.check_color_tuple = self.check_color_tuple
+#        print('check color tuple: %s' % str(self.checkbox.check.color_tuple))
+        return super(CustomCheckBoxListItem, self).on_touch_up(touch)
 
 
-    def on_checkbox_active(self, instance, active):
-        self.checkbox_active = active
+    def _on_touch_up(self, touch):
+        if self.checkbox.collide_point(touch.x, touch.y):
+            return False
+        return super(CustomCheckBoxListItem, self).on_touch_up(touch)
+#        if self.disabled:
+#            if self.collide_point(touch.x, touch.y):
+#                return False
+#        if self.collide_point(touch.x, touch.y):
+#            print('\n\ncollided point in check box list item: %s' % str(self))
+#            self.active = self.checkbox_active
+#            if not self.checkbox.collide_point(touch.x, touch.y):
+#                print('  not in actual checkbox...')
+#                #self.checkbox.active = not self.checkbox.active
+#                return False
+#            else:
+#                print(' in actual checkbox...')
+#                #self.toggle_checkbox()
+#                return super(CustomCheckBoxListItem, self).on_touch_up(touch)
+#            self.check_color_tuple = self.up_color_tuple
+#            super(CustomCheckBoxListItem, self).on_touch_up(touch)
+
+
+    #def on_checkbox_active(self, instance, active):
+    #    return
+    #    self.checkbox_active = active
 
     def on_current_state(self, instance, state):
         if self.active is not state:
