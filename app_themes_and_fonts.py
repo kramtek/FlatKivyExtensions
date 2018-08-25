@@ -111,7 +111,7 @@ default = {
     'CustomCheckBoxListItem': {
         'font_color_tuple': ('Blue', '800'),
         'check_color_tuple': ('Green', '600'),
-        'check_color_hue_down': '200',
+        #'check_color_hue_down': '200',
         'outline_color_tuple': ('Gray', '500'),
         'style': 'LabelNormalBold',
         'valign' : 'middle',

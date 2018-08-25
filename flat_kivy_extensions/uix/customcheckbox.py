@@ -223,18 +223,14 @@ class CustomCheckBoxListItem(FlatCheckBoxListItem):
     radius = NumericProperty(50)
     active = BooleanProperty(False)
     current_state = BooleanProperty(False)
-    check_color_tuple_down = ListProperty(None, allow_none=True)
-    check_color_hue_down = StringProperty(None, allow_none=True)
+#    check_color_tuple_down = ListProperty(None, allow_none=True)
+#    check_color_hue_down = StringProperty(None, allow_none=True)
 
     exclusive = BooleanProperty(True)
-
     disabled = BooleanProperty(False)
-
     font_size = NumericProperty( dp(15) )
-
     detail_text = StringProperty('', allow_none=True )
     detail_font_size = NumericProperty(dp(1))
-
     no_interact = BooleanProperty(False)
 
     def __init__(self, *largs, **kwargs):
