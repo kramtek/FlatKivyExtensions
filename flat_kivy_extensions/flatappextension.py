@@ -28,27 +28,8 @@ from flat_kivy_extensions.uix.custombutton import CustomButton
 from flat_kivy_extensions.uix.thumbnailwidget import ThumbNailWidget
 
 
-import logging, datetime
-log = logging.getLogger()
-log.setLevel(logging.DEBUG)
-
-def _modDebug(message):
-    now = datetime.datetime.now().strftime('%H:%M:%S:%f')[:-4]
-    log.debug('%s: %s %s' % (__name__, now, message))
-    return
-
-def _modInfo(message):
-    now = datetime.datetime.now().strftime('%H:%M:%S:%f')[:-4]
-    log.info('%s: %s %s' % (__name__, now, message))
-
-def _modError(message):
-    now = datetime.datetime.now().strftime('%H:%M:%S:%f')[:-4]
-    log.error('%s: %s %s' % (__name__, now, message))
-
-def _modWarning(message):
-    now = datetime.datetime.now().strftime('%H:%M:%S:%f')[:-4]
-    log.warning('%s: %s %s' % (__name__, now, message))
-
+from . import PackageLogger
+log = PackageLogger(__name__, moduleDebug=True)
 
 
 Builder.load_string('''
@@ -326,7 +307,7 @@ class ScreenConfig(object):
 
     def _getScreen(self):
         if self._screen is None:
-            _modInfo('Instantiating screen from class: %s' % (str(self.screen_class.__name__)))
+            log.info('Instantiating screen from class: %s' % (str(self.screen_class.__name__)))
             self._screen = self.screen_class(*self.screen_args, **self.screen_kwargs)
             self._screen.name = self.screen_name
         return self._screen
@@ -461,7 +442,7 @@ class ExtendedFlatApp(FlatApp):
             self._busy_counter += 1
         else:
             if self._busy_counter == 0:
-                _modDebug('Busy counter is already 0 - there should be nothing showing')
+                log.debug('Busy counter is already 0 - there should be nothing showing')
             else:
                 self._busy_counter += -1
         self.show_busy_in_header(self._busy_counter>0)
@@ -557,8 +538,8 @@ class ExtendedFlatApp(FlatApp):
 
     def _update_popup_height(self, instance, value):
         instance.popup.height = value + dp(33)
-        print(' window center y: %s' % str(Window.height))
-        print(' popup pos : %s' % str(instance.popup.pos))
+#        print(' window center y: %s' % str(Window.height))
+#        print(' popup pos : %s' % str(instance.popup.pos))
         y_pos = Window.height/2 - instance.popup.height/2
         instance.popup.pos = (instance.popup.pos[0],  y_pos)
 
@@ -591,7 +572,7 @@ class ExtendedFlatApp(FlatApp):
         error_content.ok_button.size_hint_x = None
         error_content.ok_button.width = 0
 
-        _modError(error_text)
+        log.error(error_text)
         print(traceback.format_exc())
         print(sys.exc_info())
         print( traceback.print_stack()  )
@@ -638,7 +619,7 @@ class ExtendedFlatApp(FlatApp):
         self._navigationdrawer.toggle_state()
 
     def on_pause(self):
-        _modInfo("Pausing application.")
+        log.info("Pausing application.")
         return True
 
     def register_stop_callback(self, callback):
@@ -648,7 +629,7 @@ class ExtendedFlatApp(FlatApp):
         self.stop_callbacks.append(callback)
 
     def on_stop(self):
-        _modInfo('Stopping application')
+        log.info('Stopping application')
         for callback in self.stop_callbacks:
             callback()
         return False
@@ -661,7 +642,7 @@ class ExtendedFlatApp(FlatApp):
         self.start_callbacks.append(callback)
 
     def on_start(self):
-        _modInfo('Starting application')
+        log.info('Starting application')
         for callback in self.start_callbacks:
             callback()
         return False
