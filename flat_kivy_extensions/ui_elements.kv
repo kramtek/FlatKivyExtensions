@@ -425,9 +425,9 @@
         size_scaling: root.size_scaling
         radius: root.radius
         exclusive: root.exclusive
-        on_active: root.on_checkbox_active(self, self.active)
+        #on_active: root.on_checkbox_active(self, self.active)
         #root.setter('touch_down_active')
-        no_interact: root.disabled or root.no_interact
+        no_interact: True # root.disabled or root.no_interact
 
 <CustomPopupContent>:
     orientation: 'tb-lr'
