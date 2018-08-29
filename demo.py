@@ -1,7 +1,4 @@
 
-import sys
-sys.path.append('flat_kivy_extensions/submodules')
-
 #import os
 #os.environ['KIVY_METRICS_DENSITY'] = '2.0'
 #os.environ['KIVY_WINDOW'] = 'sdl2'

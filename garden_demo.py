@@ -1,5 +1,3 @@
-import sys
-sys.path.append('flat_kivy_extensions/submodules')
 
 #import os
 #os.environ['KIVY_DPI'] = '2.0'
