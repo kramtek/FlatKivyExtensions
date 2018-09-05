@@ -459,9 +459,10 @@ class ExtendedFlatApp(FlatApp):
 
         busy_content.popup = self.busy_popup
         busy_content.bind(height=self._update_popup_height)
-        busy_content.label_color_tuple = ('Brown', '800')
+        busy_content.label_color_tuple = ('BlueGray', '800')
+        busy_content.cancel_btn_color_tuple = ('BlueGray', '700')
 
-        self.busy_popup.title_color_tuple = ('Brown', '600')
+        self.busy_popup.title_color_tuple = ('BlueGray', '700')
         self.busy_popup.title_size = dp(13)
         self.busy_popup.popup_color=(.95, .95, .95, 1.0)
 
@@ -502,7 +503,7 @@ class ExtendedFlatApp(FlatApp):
     def raise_dialog(self, title, text, auto_dismiss=True, okay_callback=None, timeout=None):
         content = CustomPopupContent()
         content.text = text
-        content.label_color_tuple = ('Brown', '800')
+        content.label_color_tuple = ('BlueGray', '800')
 
         self.popup = CustomPopup(
             content=content, size_hint=(None, None), width=dp(200),
@@ -511,10 +512,13 @@ class ExtendedFlatApp(FlatApp):
             background_color=(0,0,0,0.25),
             separator_height=dp(1),)
 
+        content.cancel_btn_color_tuple = ('BlueGray', '700')
+        content.ok_btn_color_tuple = ('BlueGray', '700')
+
         content.popup = self.popup
         content.bind(height=self._update_popup_height)
 
-        self.popup.title_color_tuple = ('Brown', '600')
+        self.popup.title_color_tuple = ('BlueGray', '700')
         self.popup.popup_color=(.95, .95, .95, 1.0)
         self.popup.title = title
         self.popup.title_size = dp(13)
@@ -547,7 +551,7 @@ class ExtendedFlatApp(FlatApp):
     def raise_error(self, error_title, error_text, auto_dismiss=True, timeout=None):
         error_content = CustomPopupContent()
         error_content.text = error_text
-        error_content.label_color_tuple = ('Brown', '800')
+        error_content.label_color_tuple = ('BlueGray', '800')
 
         self.error_popup = CustomPopup(
             content=error_content, size_hint=(None, None), width=dp(200),
@@ -557,8 +561,9 @@ class ExtendedFlatApp(FlatApp):
             separator_height=dp(1),
             cols=1,)
         error_content.popup = self.error_popup
+        error_content.cancel_btn_color_tuple = ('BlueGray', '700')
 
-        self.error_popup.title_color_tuple = ('Brown', '600')
+        self.error_popup.title_color_tuple = ('BlueGray', '700')
         self.error_popup.popup_color=(.95, .95, .95, 1.0)
         self.error_popup.title = error_title
         self.error_popup.title_size = dp(13)

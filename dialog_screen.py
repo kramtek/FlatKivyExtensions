@@ -76,7 +76,7 @@ class DialogDemoScreen(CustomScreen):
                                           timeout_callback=self.timeout,
                                           cancel_callback=self.canceled,)
 
-        self.busy_popup.content.spinner_color=[.2, .2, .3, .9]
+        #self.busy_popup.content.spinner_color=[.2, .2, .3, .9]
         threading.Thread(target=self._threaded_process).start()
 
     def _threaded_process(self):

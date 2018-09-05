@@ -375,6 +375,7 @@
             font_ramp_tuple: root.font_ramp_tuple
             valign: root.valign
             text_size: self.size
+            disabled_color: (.5, .5, .5, .5)
             #height: self.texture_size[1]
             #theme: root.theme
 
@@ -399,6 +400,7 @@
             valign: 'top'
             font_size: root.detail_font_size
             text_size: self.size
+            disabled_color: (.5, .5, .5, .5)
             #pos: [0, ]
             #pos: [self.parent.pos[0], self.parent.pos[1] + dp(10)]
 
@@ -442,6 +444,9 @@
     cancel_text: 'Cancel'
     cancel_btn_color_tuple: ('Brown', '700')
     cancel_btn_font_color_tuple: ('Gray', '0000') 
+    ok_text: 'Ok'
+    ok_btn_color_tuple: ('Brown', '700')
+    ok_btn_font_color_tuple: ('Gray', '0000') 
 
     ScrollView:
         size_hint_y: None
@@ -477,13 +482,13 @@
         CustomButton:
             id: ok_button
             # theme: root.theme
-            color_tuple: ('Brown', '700')
-            text: 'Ok'
+            color_tuple: root.ok_btn_color_tuple
+            text: root.ok_text
             size_hint: (0.6, None)
             height: dp(30)
             style: 'NavigationLabelMainHeading'
             font_size: dp(12)
-            font_color_tuple: ('Gray', '0000') 
+            font_color_tuple: root.ok_btn_font_color_tuple
 
         CustomButton:
             id: cancel_button
@@ -495,6 +500,7 @@
             style: 'NavigationLabelMainHeading'
             font_size: dp(12)
             font_color_tuple: root.cancel_btn_font_color_tuple
+            radius: dp(3)
 
 <-CustomSpinner>:
 	_size: min(self.height, self.width)
@@ -533,6 +539,7 @@
     cancel_btn_font_color_tuple: ('Gray', '0000') 
     spinner: _spinner.__self__
     cancel_button: cancel_button.__self__
+    label: label.__self__
 
     #ProgressSpinner:
     CustomSpinner:
@@ -570,10 +577,11 @@
         size_hint: (0.6, None)
         height: dp(30)
         style: 'NavigationLabelMainHeading'
-        color_tuple: ('Brown', '700')
+        color_tuple: root.cancel_btn_color_tuple
         radius: root.radius
         font_size: dp(12)
         font_color_tuple: ('Gray', '0000') 
+        radius: dp(3)
 
 
 <-CustomPopup>:
