@@ -258,6 +258,14 @@ class _BaseExtendedSlider(BoxLayout, ThemeBehavior):
     released_value = NumericProperty(0)
     value = NumericProperty(0)
 
+    def __init__(self, *largs, **kwargs):
+        super(_BaseExtendedSlider, self).__init__(*largs, **kwargs)
+
+    def on_size(self, instance, value):
+        if hasattr(self, 'slider'):
+            if self.slider is not None:
+                self._update_label(self.slider, self.slider.value)
+
     def _on_done_building(self):
         self.slider = self.ids.slider
         self.info_label = self.ids.label
