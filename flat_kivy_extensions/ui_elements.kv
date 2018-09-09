@@ -27,7 +27,9 @@
     color: app.get_color(self.color_tuple) 
     ripple_color: app.get_color(self.ripple_color_tuple)
     icon_font_size: dp(5) 
-    orientation: 'tb-lr'
+    _icon: icon.__self__
+    _label: label.__self__
+    _layout: label_space.__self__
     canvas.before:
         Color:
             rgb: root.color_down if root.state == 'down' or root.disabled else root.color
@@ -35,31 +37,31 @@
             size: self.size
             pos: self.pos
     StackLayout:
-        orientation: root.orientation
         id: label_space
+        orientation: root.orientation
         padding: root.content_padding
         spacing: root.content_spacing
         FlatIcon:
             id: icon
-            size_hint: (None, 1.0)
+            size_hint: (None, 1.0) 
             width: self.texture_size[0]
             icon: root.icon
             valign: 'middle'
-            halign: 'right'
+            halign: 'right' 
             opacity: label.color[3]
             color_tuple: root.icon_color_tuple
             text_size: self.size
             font_size: root.icon_font_size
         FlatLabel:
-            width: root.size[0] - icon.size[0] - root.content_padding[0] - root.content_padding[2]
-            size_hint: (None, 1.0)
+            id: label
+            size_hint: (None, 1.0) 
+            width: root.size[0] - icon.size[0] - root.content_padding[0] - root.content_padding[2] 
             text: root.text
             style: root.style
-            id: label
             color_tuple: root.font_color_tuple
             font_ramp_tuple: root.font_ramp_tuple
             valign: 'middle'
-            halign: 'left'
+            halign: 'left' 
             text_size: self.size
             font_size: root.font_size
 
@@ -101,7 +103,7 @@
     height: '90dp'
     label_text: 'something'
     label_format: '%2.3f'
-    units: 'dB'
+    units: ''
     font_color_tuple: ('Gray', '800')
     min: 0
     max: 20 
@@ -122,6 +124,7 @@
         height: '40dp'
         min: root.min
         max: root.max
+        step: root.step
     BoxLayout:
         orientation: 'horizontal'
         size_hint_y: None
@@ -434,8 +437,8 @@
 <CustomPopupContent>:
     orientation: 'tb-lr'
     size_hint: (1.0, None)
-    cancel_button: cancel_button
-    ok_button: ok_button
+    cancel_button: cancel_button.__self__
+    ok_button: ok_button.__self__
     cols: 1
     padding: dp(5)
     spacing: dp(5)
@@ -447,6 +450,7 @@
     ok_text: 'Ok'
     ok_btn_color_tuple: ('Brown', '700')
     ok_btn_font_color_tuple: ('Gray', '0000') 
+    btn_layout: btn_layout.__self__
 
     ScrollView:
         size_hint_y: None
@@ -474,6 +478,7 @@
                 font_size: dp(12)
 
     BoxLayout:
+        id: btn_layout
         orientation: 'horizontal'
         size_hint_y: None
         height: dp(32)
@@ -522,6 +527,87 @@
                 (self.center_x, self.center_y, self._radius*2, 0, 360)
             width: self._radius * 0.125
             cap: 'none'
+
+
+<CustomErrorContent>:
+    orientation: 'tb-lr'
+    size_hint: (1.0, None)
+    cancel_button: cancel_button
+    cols: 1
+    padding: dp(5)
+    spacing: dp(5) 
+    radius: '2dp'
+    height: self.minimum_height
+    cancel_text: 'Cancel'
+    cancel_btn_color_tuple: ('Brown', '700')
+    cancel_btn_font_color_tuple: ('Gray', '0000') 
+    cancel_button: cancel_button.__self__
+    label: label.__self__
+    message_alignment: 'center'
+
+    FlatIcon:
+        size_hint: (1, None)
+        height: dp(15)
+        font_size: dp(25)
+        icon: 'fa-exclamation'
+        color_tuple: ('Red', '500')
+
+    ScrollView:
+        size_hint_y: None
+        label_layout: label_layout.__self__
+        height: min(dp(200), label_layout.minimum_height)
+
+        GridLayout:
+            id: label_layout
+            cols: 1
+            size_hint_y: None
+            height: self.minimum_height
+
+            FlatLabel:
+                id: label
+                size_hint: (1.0, None)
+                text_size: self.width, None
+                height: self.texture_size[1]
+                #height: dp(50)
+                # font_ramp_tuple: ('error_content' + str(randint(1,10000)), '1')
+                style: 'NavigationLabelMainHeading'
+                valign: 'top'
+                halign: root.message_alignment
+                text: root.error_text
+                color_tuple: root.label_color_tuple
+
+
+#    FlatLabel:
+#        id: label
+#        size_hint: (1.0, None)
+#        #height: dp(30)
+#        # size: self.texture_size
+#
+#        size_hint: (1.0, None)
+#        text_size: self.width, None
+#        height: max(self.texture_size[1], dp(20))
+#
+#        # text_size: self.size
+#        # font_ramp_tuple: ('error_content' + str(randint(1,10000)), '1')
+#        style: 'NavigationLabelMainHeading'
+#        valign: 'top'
+#        halign: 'center'
+#        text: root.error_text
+#        color_tuple: root.label_color_tuple
+#        font_size: dp(12)
+
+    CustomButton:
+        id: cancel_button
+        # theme: root.theme
+        text: root.cancel_text
+        size_hint: (0.6, None)
+        height: dp(30)
+        style: 'NavigationLabelMainHeading'
+        color_tuple: root.cancel_btn_color_tuple
+        radius: root.radius
+        font_size: dp(12)
+        font_color_tuple: ('Gray', '0000') 
+        radius: dp(3)
 
 
 <CustomBusyContent>:
@@ -584,8 +670,14 @@
         radius: dp(3)
 
 
+
+
+
+
 <-CustomPopup>:
-    _container: container
+    _container: container.__self__
+    #_title_icon: None
+    #_title_icon_color: None
 
     canvas.before:
         Color:
@@ -604,6 +696,7 @@
         size_hint: None, None
         pos: root.pos
         size: root.size
+
 
         FlatLabel:
             text: root.title
