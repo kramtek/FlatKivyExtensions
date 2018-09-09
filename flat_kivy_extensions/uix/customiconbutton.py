@@ -7,7 +7,6 @@ from flat_kivy.uix.flaticonbutton import FlatIconButton
 class CustomIconButton(FlatIconButton):
     icon_font_size = NumericProperty(5)
     orientation = StringProperty('lr-tb')
-    pass
 
     def on_orientation(self, instance, value):
         if value.startswith('rl') or value.startswith('lr'):
