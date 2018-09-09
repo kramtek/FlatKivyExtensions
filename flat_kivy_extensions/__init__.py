@@ -1,10 +1,18 @@
 __version__ = '0.0.1'
 
-import logging, datetime, threading
+import logging, datetime, threading, platform, sys
 from kivy.app import App
 
 log = logging.getLogger()
 log.setLevel(logging.DEBUG)
+
+if platform.machine().lower().startswith('iphone') or platform.machine().lower().startswith('ipod'):
+    #log.handlers = []
+    ch = logging.StreamHandler(sys.stdout)
+    ch.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('[%(levelname)s] %(message)s')
+    ch.setFormatter(formatter)
+    log.addHandler(ch)
 
 class PackageLogger(object):
 
