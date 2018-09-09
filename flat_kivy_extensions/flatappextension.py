@@ -199,14 +199,6 @@ Builder.load_string('''
         color_tuple: ('Green', '900')
 
 
-<-TabButtonLayout>:
-    canvas.before:
-        Color:
-            rgba: (.5, .5, .5, 1.0)
-        Rectangle:
-            size: self.size
-            pos: self.pos
-
 ''')
 
 
@@ -344,60 +336,6 @@ class NavDrawerEntryConfig(ScreenConfig):
             btn.icon = self.button_icon
         return btn
 
-
-class CustomTabScreen(Screen):
-
-    def __init__(self, screen_config_entries, **kwargs):
-        super(CustomTabScreen, self).__init__(**kwargs)
-        self._screenmanager = CustomScreenManager()
-        self.add_widget(self._screenmanager)
-        self.title = ''
-
-        self.btns = list()
-        for entry in screen_config_entries:
-            if isinstance(entry, NavDrawerEntryConfig):
-                self._create_navigation_button(entry)
-
-        self.tabButtonLayout = TabButtonLayout(self.btns)
-
-        self.add_widget(self.tabButtonLayout)
-        self.tabButtonLayout._btn_pressed(self.btns[0])
-
-    def _create_navigation_button(self, entry):
-        btn = entry.create_button(self._screenmanager)
-        btn.theme = ('app', 'tabbarbutton')
-        if entry.button_icon is not None:
-            btn.icon = entry.button_icon
-        btn.bind(on_release=self._switch_to_screen)
-        self._screenmanager.add_widget(btn.config.screen)
-        self.btns.append(btn)
-
-    def _switch_to_screen(self, instance):
-        screen = instance.config.screen
-        if screen not in self._screenmanager.screens:
-            self._screenmanager.add_widget(screen)
-        self._screenmanager.current = screen.name
-
-
-class TabButtonLayout(BoxLayout):
-
-    def __init__(self, btns, **kwargs):
-        super(TabButtonLayout, self).__init__(**kwargs)
-        self.spacing = dp(1)
-        self.padding = dp(1)
-        self.size_hint_y = None
-        self.height = dp(55)
-        self.btns = btns
-
-        for btn in btns:
-            self.add_widget(btn)
-            btn.height = self.height - 2*self.padding[0]
-            btn.bind(on_release=self._btn_pressed)
-
-    def _btn_pressed(self, instance):
-        for btn in self.btns:
-            btn.theme = ('app', 'tabbarbutton')
-        instance.theme = ('app', 'tabbarbutton_highlighted')
 
 
 class ExtendedFlatApp(FlatApp):

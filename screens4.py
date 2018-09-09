@@ -3,7 +3,8 @@
 
 from kivy.lang import Builder
 
-from flat_kivy_extensions.flatappextension import CustomTabScreen, NavDrawerEntryConfig
+from flat_kivy_extensions.flatappextension import ScreenNavigationEntry
+from flat_kivy_extensions.uix.customscreenmanagers import CustomTabScreen
 from flat_kivy_extensions.uix.customscreen import CustomScreen
 
 
