@@ -20,6 +20,14 @@ class CustomBusyContent(GridLayout, ThemeBehavior):
         super(CustomBusyContent, self).__init__(**kwargs)
         self.cols = 1
 
+class CustomErrorContent(GridLayout, ThemeBehavior):
+    error_text = StringProperty('Default error Text')
+    label_color_tuple = ListProperty( ['Blue', '800'] )
+
+    def __init__(self, cancel_callback=None, **kwargs):
+        super(CustomErrorContent, self).__init__(**kwargs)
+        self.cols = 1
+
 
 class CustomSpinner(Widget):
     color = ListProperty([.1, 1, 1, 1])
