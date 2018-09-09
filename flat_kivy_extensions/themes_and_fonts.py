@@ -193,7 +193,8 @@ themes = {
 from flat_kivy_extensions.uix.custombutton import CustomButton
 from flat_kivy_extensions.uix.customiconbutton import CustomIconButton
 from flat_kivy_extensions.uix.customslider import CustomSlider, CustomSliderTouchRippleBehavior, ExtendedSlider, ExtendedSliderVertical, ExtendedSliderHorizontal
-from flat_kivy_extensions.uix.customcheckbox import CustomCheckBoxListItem, CustomSwitchListItem
+from flat_kivy_extensions.uix.customcheckbox import CustomCheckBoxListItem
+from flat_kivy_extensions.uix.customswitch import CustomSwitchListItem
 from flat_kivy_extensions.uix import CustomBusyContent
 
 types_to_theme = {

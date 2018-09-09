@@ -23,7 +23,8 @@ from flat_kivy_extensions.uix.customscreen import CustomScreen
 from flat_kivy_extensions.uix.customlayouts import StyledLayout, GroupedLayout
 from flat_kivy_extensions.uix.dropshadow import DropShadow
 from flat_kivy_extensions.uix.custombutton import CustomButton
-from flat_kivy_extensions.uix.customcheckbox import CustomCheckBoxListItem, CustomSwitchListItem
+from flat_kivy_extensions.uix.customswitch import CustomSwitchListItem
+from flat_kivy_extensions.uix.customcheckbox import CustomCheckBoxListItem
 
 Builder.load_string('''
 <-KivyWidgetScreen>:
