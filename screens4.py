@@ -58,10 +58,10 @@ class TabDemoScreen(CustomTabScreen):
     def __init__(self, *largs, **kwargs):
 
         screen_config_entries = [
-                                NavDrawerEntryConfig(SomeScreen1, 'Screen 1', button_icon='fa-gears'),
-                                NavDrawerEntryConfig(SomeScreen2, 'Screen 2', button_icon='fa-comment-o'),
-                                NavDrawerEntryConfig(SomeScreen3, 'Some Other Screen', button_icon='fa-gear'),
-                                NavDrawerEntryConfig(SomeScreen4, 'Screen 4', button_icon='fa-wrench'),
+                                ScreenNavigationEntry(SomeScreen1, 'Screen 1', button_icon='fa-gears'),
+                                ScreenNavigationEntry(SomeScreen2, 'Screen 2', button_icon='fa-comment-o'),
+                                ScreenNavigationEntry(SomeScreen3, 'Some Other Screen', button_icon='fa-gear'),
+                                ScreenNavigationEntry(SomeScreen4, 'Screen 4', button_icon='fa-wrench'),
                                 ]
 
         super(TabDemoScreen, self).__init__(screen_config_entries, **kwargs)

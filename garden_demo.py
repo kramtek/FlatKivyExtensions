@@ -10,7 +10,7 @@ print('Garden system dir: %s\n\n\n' % str(garden_system_dir))
 #from kivy.core.window import Window
 #Window.rotation = 90
 
-from flat_kivy_extensions.flatappextension import ExtendedFlatApp, NavDrawerEntryConfig
+from flat_kivy_extensions.flatappextension import ExtendedFlatApp, ScreenNavigationEntry
 
 title = 'Garden Demos'
 about = 'Demonstration of some kivy garden elements.'
@@ -22,12 +22,12 @@ from package_control_screen import PackageManagerScreen
 from flat_kivy_extensions.screens.file_edit_screen import FileEditScreen
 
 app_config_entries = ['Garden Demos',
-                      NavDrawerEntryConfig(SpinnerDemoScreen, 'SpinnerDemo'),
-                      NavDrawerEntryConfig(GardenGraphDemoScreen, 'Garden Graph Demo'),
-                      NavDrawerEntryConfig(FileEditScreen, 'File Chooser'),
-                      NavDrawerEntryConfig(PizzaDemoScreen, 'Pizza Demo'),
+                      ScreenNavigationEntry(SpinnerDemoScreen, 'SpinnerDemo'),
+                      ScreenNavigationEntry(GardenGraphDemoScreen, 'Garden Graph Demo'),
+                      ScreenNavigationEntry(FileEditScreen, 'File Chooser'),
+                      ScreenNavigationEntry(PizzaDemoScreen, 'Pizza Demo'),
                       'Extra',
-                      NavDrawerEntryConfig(PackageManagerScreen, 'Package Manager'),
+                      ScreenNavigationEntry(PackageManagerScreen, 'Package Manager'),
 
                      ]
 

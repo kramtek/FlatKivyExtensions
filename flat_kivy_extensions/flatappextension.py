@@ -1,8 +1,5 @@
 import os
 
-import traceback, sys
-
-#from navigationscreen import CoverFlowPopup
 from flat_kivy_extensions.uix.coverflowpopup import CoverFlowPopup
 
 from kivy.metrics import dp
@@ -318,14 +315,14 @@ class ScreenConfig(object):
     screen = property(_getScreen)
 
 
-class NavDrawerEntryConfig(ScreenConfig):
+class ScreenNavigationEntry(ScreenConfig):
 
     def __init__(self, screen_class, button_title=None, button_icon='', screen_args=[], screen_kwargs={}):
         if button_title is None:
             button_title = screen_class.__name__
         self.button_title = button_title
         self.button_icon = button_icon
-        super(NavDrawerEntryConfig, self).__init__(screen_class, screen_args=screen_args, screen_kwargs=screen_kwargs, screen_name=button_title)
+        super(ScreenNavigationEntry, self).__init__(screen_class, screen_args=screen_args, screen_kwargs=screen_kwargs, screen_name=button_title)
 
     def create_button(self, screenmanager):
         btn = CustomIconButton(text=self.button_title)
@@ -378,13 +375,13 @@ class ExtendedFlatApp(FlatApp):
         self._menu_button.bind(on_press=lambda j: self._navigationdrawer.toggle_state())
 
         for entry in self.app_config_entries:
-            if type(entry) not in [type(str()), type(dict())] and not isinstance(entry, NavDrawerEntryConfig):
-                raise Exception('Each item in the application config entries list must either be a string, dict, or instance of NavDrawerEntryConfig')
+            if type(entry) not in [type(str()), type(dict())] and not isinstance(entry, ScreenNavigationEntry):
+                raise Exception('Each item in the application config entries list must either be a string, dict, or instance of ScreenNavigationEntry')
             if type(entry) == type(str()):
                 entry = {'text' : entry, 'theme' : ('app', 'navigationdrawer')}
             if type(entry) == type(dict()):
                 self._create_navigation_label(entry)
-            if isinstance(entry, NavDrawerEntryConfig):
+            if isinstance(entry, ScreenNavigationEntry):
                 self._create_navigation_button(entry)
 
         return self.root

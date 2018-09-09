@@ -6,7 +6,7 @@
 from kivy .garden import garden_system_dir
 print('Garden system dir: %s\n\n\n' % str(garden_system_dir))
 
-from flat_kivy_extensions.flatappextension import ExtendedFlatApp, NavDrawerEntryConfig
+from flat_kivy_extensions.flatappextension import ExtendedFlatApp, ScreenNavigationEntry
 
 # 1) Developer specifies application title and a string to describe
 #    the application
@@ -41,39 +41,39 @@ from screens4 import TabDemoScreen
 #       a navigation panel header.
 #
 #     - NavigationDrawerEntry config each Screen to include.
-#       Contsruction of a NavDrawerEntryConfig instance
+#       Contsruction of a ScreenNavigationEntry instance
 #       requires at least a screen class, nd usually a string
 #       that is used for navigation button title.  See xyz for details.
 #
 
 app_config_entries = ['Demo Screens',
                       'Kivy Screens',
-                      NavDrawerEntryConfig(TabDemoScreen, 'Tabbed Screen Manager', button_icon='fa-comment-alt'),
-                      NavDrawerEntryConfig(DialogDemoScreen, 'Dialog Demos', button_icon='fa-comment-alt'),
-                      NavDrawerEntryConfig(CustomCheckBoxDemoScreen, 'Custom CheckBoxes', button_icon='fa-check-square'),
-                      NavDrawerEntryConfig(CustomSliderDemoScreen, 'Custom Sliders', button_icon='fa-sliders'),
-                      NavDrawerEntryConfig(ThumbwheelScreen, 'Thumb Wheels'),
-                      NavDrawerEntryConfig(GraphDemoScreen, 'Custom Graphs', button_icon='fa-bar-chart-o'),
-                      NavDrawerEntryConfig(KivyScreen1, 'Kivy Screen1'),
-                      NavDrawerEntryConfig(KivyScreen2, 'Kivy Screen2'),
-                      NavDrawerEntryConfig(FlatKivyDemoScreen, 'FlatKivy Demo'),
+                      ScreenNavigationEntry(TabDemoScreen, 'Tabbed Screen Manager', button_icon='fa-comment-alt'),
+                      ScreenNavigationEntry(DialogDemoScreen, 'Dialog Demos', button_icon='fa-comment-alt'),
+                      ScreenNavigationEntry(CustomCheckBoxDemoScreen, 'Custom CheckBoxes', button_icon='fa-check-square'),
+                      ScreenNavigationEntry(CustomSliderDemoScreen, 'Custom Sliders', button_icon='fa-sliders'),
+                      ScreenNavigationEntry(ThumbwheelScreen, 'Thumb Wheels'),
+                      ScreenNavigationEntry(GraphDemoScreen, 'Custom Graphs', button_icon='fa-bar-chart-o'),
+                      ScreenNavigationEntry(KivyScreen1, 'Kivy Screen1'),
+                      ScreenNavigationEntry(KivyScreen2, 'Kivy Screen2'),
+                      ScreenNavigationEntry(FlatKivyDemoScreen, 'FlatKivy Demo'),
                       'Custom Screens',
-                      NavDrawerEntryConfig(KivyWidgetScreen, 'Kivy Widget Demo'),
-                      NavDrawerEntryConfig(CustomButtonDemoScreen, 'Custom Buttons'),
-                      NavDrawerEntryConfig(CustomLayoutsScreen, 'CustomLayouts'),
-                      NavDrawerEntryConfig(DropShadowScreen, 'DropShadow Examples', screen_kwargs={'use_scrollview' : True}),
+                      ScreenNavigationEntry(KivyWidgetScreen, 'Kivy Widget Demo'),
+                      ScreenNavigationEntry(CustomButtonDemoScreen, 'Custom Buttons'),
+                      ScreenNavigationEntry(CustomLayoutsScreen, 'CustomLayouts'),
+                      ScreenNavigationEntry(DropShadowScreen, 'DropShadow Examples', screen_kwargs={'use_scrollview' : True}),
 
                       {'text':'Custom Heading Label',
                        'style':'Button',
                        'color_tuple' : ('Blue', '500')},
-                      NavDrawerEntryConfig(KivyScreen1, 'Kivy Screen1'),
-                      NavDrawerEntryConfig(KivyScreen1, 'Kivy Screen1'),
-                      NavDrawerEntryConfig(KivyScreen1, 'Kivy Screen1'),
+                      ScreenNavigationEntry(KivyScreen1, 'Kivy Screen1'),
+                      ScreenNavigationEntry(KivyScreen1, 'Kivy Screen1'),
+                      ScreenNavigationEntry(KivyScreen1, 'Kivy Screen1'),
                       'Testing',
-                      NavDrawerEntryConfig(KivyScreen1, 'Kivy Screen1'),
-                      NavDrawerEntryConfig(KivyScreen1, 'Kivy Screen1'),
-                      NavDrawerEntryConfig(KivyScreen1, 'Kivy Screen1'),
-                      NavDrawerEntryConfig(KivyScreen1, 'Kivy Screen1'),
+                      ScreenNavigationEntry(KivyScreen1, 'Kivy Screen1'),
+                      ScreenNavigationEntry(KivyScreen1, 'Kivy Screen1'),
+                      ScreenNavigationEntry(KivyScreen1, 'Kivy Screen1'),
+                      ScreenNavigationEntry(KivyScreen1, 'Kivy Screen1'),
                      ]
 
 #
