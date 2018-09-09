@@ -84,7 +84,7 @@ navigationdrawer = {
         'icon_font_size' : '15dp',
         'content_padding' : ['3dp', '2dp', '2dp', '0dp'],
         'style': 'NavigationButton',
-        'orientation' : 'tb-lr',
+        'orientation' : 'lr-tb',
     },
 }
 
