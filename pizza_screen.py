@@ -1,7 +1,8 @@
 
-import threading, time
+import time
 import numpy as np
 
+from flat_kivy_extensions import AppAwareThread
 from flat_kivy_extensions.uix.customscreen import CustomScreen
 from flat_kivy_extensions.uix.custombutton import CustomButton
 from kivy.garden.pizza import Pizza
@@ -62,7 +63,7 @@ class PizzaDemoScreen(CustomScreen):
             return
         self.running = True
         self.button.text = 'Stop'
-        threading.Thread(target=self.update_points).start()
+        AppAwareThread(target=self.update_points).start()
 
     def update_points(self, *args):
         alpha = 0.95

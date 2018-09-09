@@ -15,13 +15,15 @@ from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.screenmanager import FadeTransition, NoTransition, ScreenManager
 from kivy.uix.modalview import ModalView
 from kivy.uix.progressbar import ProgressBar
+from kivy.uix.screenmanager import Screen
 
 from flat_kivy.flatapp import FlatApp
 from flat_kivy.uix.flatlabel import FlatLabel
 from flat_kivy.font_definitions import style_manager
 
-from flat_kivy_extensions.uix import CustomPopupContent, CustomBusyContent
+from flat_kivy_extensions.uix import CustomPopupContent, CustomBusyContent, CustomErrorContent
 from flat_kivy_extensions.uix.custompopup import CustomPopup
+from flat_kivy_extensions.uix.customscreen import CustomScreen
 
 from flat_kivy_extensions.uix.customiconbutton import CustomIconButton
 from flat_kivy_extensions.uix.custombutton import CustomButton
@@ -196,6 +198,15 @@ Builder.load_string('''
         text: root.text
         color_tuple: ('Green', '900')
 
+
+<-TabButtonLayout>:
+    canvas.before:
+        Color:
+            rgba: (.5, .5, .5, 1.0)
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
 ''')
 
 
@@ -334,6 +345,61 @@ class NavDrawerEntryConfig(ScreenConfig):
         return btn
 
 
+class CustomTabScreen(Screen):
+
+    def __init__(self, screen_config_entries, **kwargs):
+        super(CustomTabScreen, self).__init__(**kwargs)
+        self._screenmanager = CustomScreenManager()
+        self.add_widget(self._screenmanager)
+        self.title = ''
+
+        self.btns = list()
+        for entry in screen_config_entries:
+            if isinstance(entry, NavDrawerEntryConfig):
+                self._create_navigation_button(entry)
+
+        self.tabButtonLayout = TabButtonLayout(self.btns)
+
+        self.add_widget(self.tabButtonLayout)
+        self.tabButtonLayout._btn_pressed(self.btns[0])
+
+    def _create_navigation_button(self, entry):
+        btn = entry.create_button(self._screenmanager)
+        btn.theme = ('app', 'tabbarbutton')
+        if entry.button_icon is not None:
+            btn.icon = entry.button_icon
+        btn.bind(on_release=self._switch_to_screen)
+        self._screenmanager.add_widget(btn.config.screen)
+        self.btns.append(btn)
+
+    def _switch_to_screen(self, instance):
+        screen = instance.config.screen
+        if screen not in self._screenmanager.screens:
+            self._screenmanager.add_widget(screen)
+        self._screenmanager.current = screen.name
+
+
+class TabButtonLayout(BoxLayout):
+
+    def __init__(self, btns, **kwargs):
+        super(TabButtonLayout, self).__init__(**kwargs)
+        self.spacing = dp(1)
+        self.padding = dp(1)
+        self.size_hint_y = None
+        self.height = dp(55)
+        self.btns = btns
+
+        for btn in btns:
+            self.add_widget(btn)
+            btn.height = self.height - 2*self.padding[0]
+            btn.bind(on_release=self._btn_pressed)
+
+    def _btn_pressed(self, instance):
+        for btn in self.btns:
+            btn.theme = ('app', 'tabbarbutton')
+        instance.theme = ('app', 'tabbarbutton_highlighted')
+
+
 class ExtendedFlatApp(FlatApp):
     def __init__(self, app_config_entries, title, about,
                  use_coverflow_navigation=True,
@@ -447,7 +513,7 @@ class ExtendedFlatApp(FlatApp):
                 self._busy_counter += -1
         self.show_busy_in_header(self._busy_counter>0)
 
-    def raise_busy(self, busy_title, busy_text, auto_dismiss=True, timeout=None, cancel_callback=None, timeout_callback=None):
+    def raise_busy(self, busy_title, busy_text, auto_dismiss=False, timeout=None, cancel_callback=None, timeout_callback=None):
         busy_content = CustomBusyContent()
         busy_content.theme=('app', 'shit')
         self.busy_popup = CustomPopup(
@@ -500,10 +566,16 @@ class ExtendedFlatApp(FlatApp):
     #def _update_busy_popup_height(self, instance, value):
     #    instance.popup.height = value + dp(33)
 
-    def raise_dialog(self, title, text, auto_dismiss=True, okay_callback=None, timeout=None):
+    def raise_dialog(self, title, text, auto_dismiss=False, okay_callback=None, cancel_callback=None, timeout=None):
         content = CustomPopupContent()
         content.text = text
         content.label_color_tuple = ('BlueGray', '800')
+        content.cancel_text = 'Dismiss'
+        content.ok_text = 'Sure'
+
+        if okay_callback is None and cancel_callback is None:
+            content.btn_layout.remove_widget(content.cancel_button)
+            content.ok_text = 'Okay'
 
         self.popup = CustomPopup(
             content=content, size_hint=(None, None), width=dp(200),
@@ -532,9 +604,16 @@ class ExtendedFlatApp(FlatApp):
             if okay_callback is not None:
                 okay_callback()
 
+        def receivedCancel(*largs):
+            self.popup.dismiss()
+            if cancel_callback is not None:
+                cancel_callback()
 
         ok_button = content.ok_button
         ok_button.bind(on_release=receivedOkay)
+
+        cancel_button = content.cancel_button
+        cancel_button.bind(on_release=receivedCancel)
 
         self.popup.open()
 
@@ -548,9 +627,9 @@ class ExtendedFlatApp(FlatApp):
         instance.popup.pos = (instance.popup.pos[0],  y_pos)
 
 
-    def raise_error(self, error_title, error_text, auto_dismiss=True, timeout=None):
-        error_content = CustomPopupContent()
-        error_content.text = error_text
+    def raise_error(self, error_title, error_text, auto_dismiss=False, timeout=None):
+        error_content = CustomErrorContent()
+        error_content.error_text = error_text
         error_content.label_color_tuple = ('BlueGray', '800')
 
         self.error_popup = CustomPopup(
@@ -574,13 +653,11 @@ class ExtendedFlatApp(FlatApp):
         cancel_button.text = 'Ok'
         cancel_button.bind(on_release=self.error_popup.dismiss)
         error_content.theme=('app', 'shit')
-        error_content.ok_button.size_hint_x = None
-        error_content.ok_button.width = 0
 
         log.error(error_text)
-        print(traceback.format_exc())
-        print(sys.exc_info())
-        print( traceback.print_stack()  )
+        #print(traceback.format_exc())
+        #print(sys.exc_info())
+        #print( traceback.print_stack()  )
         self.error_popup.open()
         if timeout is not None:
             def close_popup(dt):

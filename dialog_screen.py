@@ -1,14 +1,14 @@
 
-import threading, time
+import time
 
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.metrics import dp
 from kivy.clock import Clock, mainthread
 
+from flat_kivy_extensions import AppAwareThread
 from flat_kivy_extensions.uix.customscreen import CustomScreen
 from flat_kivy_extensions.uix.customdropdown import CustomDropDownButton
-from kivy.garden.progressspinner import ProgressSpinner
 
 Builder.load_string('''
 <MyButton@CustomButton>:
@@ -28,6 +28,10 @@ Builder.load_string('''
     MyButton:
         text: 'Show Error Dialog'
         on_release: root.show_error_dialog()
+
+    MyButton:
+        text: 'Show Simple Dialog'
+        on_release: root.show_simple_dialog()
 
     MyButton:
         text: 'Show Long Dialog'
@@ -58,9 +62,10 @@ class DialogDemoScreen(CustomScreen):
         self.dropdown_button.size_hint = (None, None)
         self.dropdown_button.size = (dp(200), dp(40))
         self.dropdown_button.radius = 0
+        self.dropdown_button.color_tuple = ('Brown', '500')
         # Set properties applied to all menu buttons
         self.dropdown_button.menubutton_theme = ('app', 'default')
-        #self.dropdown_button.menubutton_color = (0.5, 0.5, 0.1, 0.6)
+        self.dropdown_button.menubutton_color = (0.5, 0.5, 0.1, 0.6)
 
         self.dropdown_button.dropdown_width = dp(150)
 
@@ -72,12 +77,12 @@ class DialogDemoScreen(CustomScreen):
 
     def start_background_process(self, *largs):
         self.busy_popup = App.get_running_app().raise_busy('Currently Busy:', '',
-                                          auto_dismiss=False, timeout=8,
+                                          timeout=8,
                                           timeout_callback=self.timeout,
                                           cancel_callback=self.canceled,)
 
         #self.busy_popup.content.spinner_color=[.2, .2, .3, .9]
-        threading.Thread(target=self._threaded_process).start()
+        AppAwareThread(target=self._threaded_process).start()
 
     def _threaded_process(self):
         self.process_running = True
@@ -94,16 +99,22 @@ class DialogDemoScreen(CustomScreen):
         self.busy_popup.content.busy_text = self.busy_text
 
     def show_error_dialog(self, *largs):
-        App.get_running_app().raise_error('Some Error', 'Some error detail...',
-                                          auto_dismiss=False)
+        App.get_running_app().raise_error('Some Error', 'Some error detail...',)
+
+    def show_simple_dialog(self, *largs):
+        App.get_running_app().raise_dialog('Some Information', 'Some basic message...',)
+
 
     def show_long_dialog(self, *largs):
         popup = App.get_running_app().raise_dialog('Some Information', ''.join(['Some error detail...']*40),
-                                          auto_dismiss=False, okay_callback=self.allOkay)
+                                          okay_callback=self.allOkay, cancel_callback=self.dismissed)
         popup.content.message_alignment = 'right'
 
     def allOkay(self):
-        print('Everything is okay..')
+        print('Everything is okay to proceed..')
+
+    def dismissed(self):
+        print('User did not elect to proceed - their loss')
 
     def timeout(self):
         print 'Error - something timed out'
@@ -113,7 +124,7 @@ class DialogDemoScreen(CustomScreen):
 
     def show_timeout_error(self, *largs):
         message = 'Some detail about the timeout error'
-        App.get_running_app().raise_error('Timeout Error', message, auto_dismiss=False)
+        App.get_running_app().raise_error('Timeout Error', message)
 
     def hide_busy_indicator(self, *largs):
         #App.get_running_app().show_busy_in_header(False)

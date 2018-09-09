@@ -25,6 +25,8 @@ from screens2 import (KivyWidgetScreen, CustomButtonDemoScreen,
 from screens3 import GraphDemoScreen, ThumbwheelScreen
 from dialog_screen import DialogDemoScreen
 
+from screens4 import TabDemoScreen
+
 #    An application configuration list is used to specify what screens
 #    should be included and how to navigate to them.
 #
@@ -46,9 +48,10 @@ from dialog_screen import DialogDemoScreen
 
 app_config_entries = ['Demo Screens',
                       'Kivy Screens',
+                      NavDrawerEntryConfig(TabDemoScreen, 'Tabbed Screen Manager', button_icon='fa-comment-alt'),
+                      NavDrawerEntryConfig(DialogDemoScreen, 'Dialog Demos', button_icon='fa-comment-alt'),
                       NavDrawerEntryConfig(CustomCheckBoxDemoScreen, 'Custom CheckBoxes', button_icon='fa-check-square'),
                       NavDrawerEntryConfig(CustomSliderDemoScreen, 'Custom Sliders', button_icon='fa-sliders'),
-                      NavDrawerEntryConfig(DialogDemoScreen, 'Dialog Demos', button_icon='fa-comment-alt'),
                       NavDrawerEntryConfig(ThumbwheelScreen, 'Thumb Wheels'),
                       NavDrawerEntryConfig(GraphDemoScreen, 'Custom Graphs', button_icon='fa-bar-chart-o'),
                       NavDrawerEntryConfig(KivyScreen1, 'Kivy Screen1'),

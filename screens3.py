@@ -1,5 +1,5 @@
 
-import time, threading
+import time
 
 import numpy as np
 
@@ -11,6 +11,7 @@ from kivy.utils import get_color_from_hex as rgb
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.widget import Widget
 
+from flat_kivy_extensions import AppAwareThread
 from flat_kivy_extensions.uix.customscreen import CustomScreen
 from flat_kivy_extensions.uix.customgraphs import BarGraph, LineGraph
 from flat_kivy_extensions.uix.thumbwheel import ExtendedThumbWheel
@@ -177,7 +178,7 @@ class ThumbwheelScreen(CustomScreen):
         # stop the thread after 0.5 seconds. If the value is updated
         # within the timeout period the timeout event is rescheduled
         if not self._isRunning:
-            threading.Thread(target=self._threaded_process, args=(instance, value,)).start()
+            AppAwareThread(target=self._threaded_process, args=(instance, value,)).start()
         if self.event is not None:
             self.event.cancel()
         self.event = Clock.create_trigger(self._stop_process, 0.5)
