@@ -13,6 +13,31 @@ header = {
     },
 }
 
+tabbarbutton = {
+    'CustomIconButton': {
+        'color_tuple': ('Brown', '50'),
+        'font_color_tuple': ('Brown', '900'),
+        'icon_color_tuple': ('BlueGray', '800'),
+        'content_padding' : ['3dp', '2dp', '2dp', '0dp'],
+        'style': 'NavigationButton',
+        'font_size' : '11dp',
+        'icon_font_size' : '12dp',
+        'orientation' : 'tb-rl',
+    },
+}
+tabbarbutton_highlighted = {
+    'CustomIconButton': {
+        'color_tuple': ('BlueGray', '800'),
+        'font_color_tuple': ('Brown', '50'),
+        'icon_color_tuple': ('BlueGray', '200'),
+        'content_padding' : ['3dp', '2dp', '2dp', '0dp'],
+        'style': 'NavigationButton',
+        'font_size' : '11dp',
+        'icon_font_size' : '18dp',
+        'orientation' : 'tb-rl',
+    },
+}
+
 navigationdrawer = {
     'FlatLabel': {
         'size_hint_y' : None,
@@ -41,7 +66,7 @@ navigationdrawer = {
         'icon_font_size' : '15dp',
         'content_padding' : ['3dp', '2dp', '2dp', '0dp'],
         'style': 'NavigationButton',
-        'orientation' : 'tb-rl',
+        'orientation' : 'rl-tb',
     },
 }
 
@@ -116,6 +141,8 @@ default = {
 themes = {
     'app' : {'header' : header,
              'navigationdrawer' : navigationdrawer,
+             'tabbarbutton' : tabbarbutton,
+             'tabbarbutton_highlighted' : tabbarbutton_highlighted,
              'screen' : screen,
              'grouped_layout' : grouped_layout,
              'default' : default,
