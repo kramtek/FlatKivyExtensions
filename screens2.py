@@ -236,8 +236,7 @@ Builder.load_string('''
         orientation: 'horizontal'
         min: -10
         max: 110
-        #theme: ('green', 'main')
-        #theme: ('app', 'default')
+        theme: ('app', 'default')
         size_hint_y: None
         height: '50dp'
 
@@ -246,25 +245,22 @@ Builder.load_string('''
         min: 10
         max: 110
         theme: ('app', 'default')
-        #theme: ('green', 'main')
         height: '100dp'
         size_hint_y: None
 
-    ExtendedSlider:
-        orientation: 'horizontal'
+    ExtendedSliderHorizontal:
         size_hint_y: None
         height: '70dp'
         label_text: 'Value'
         min: -2
         max: 20
-        theme: ('green', 'main')
+        theme: ('app', 'default')
 
     BoxLayout:
         size_hint_y: None
         height: '180dp'
 
-        ExtendedSlider:
-            orientation: 'vertical'
+        ExtendedSliderVertical:
             theme: ('app', 'default')
             size_hint_y: None
             height: '150dp'
@@ -275,8 +271,8 @@ Builder.load_string('''
             label_format: '%1.1f'
             on_released_value: print(self.label_text + ' released')
 
-        ExtendedSlider:
-            orientation: 'vertical'
+        ExtendedSliderVertical:
+            #orientation: 'vertical'
             theme: ('app', 'default')
             size_hint_y: None
             height: '180dp'
