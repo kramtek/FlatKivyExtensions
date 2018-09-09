@@ -148,6 +148,19 @@ default = {
         ##'slider_bar_width' : '2.1dp',
         #'outline_width' : '0.5dp',
     },
+    'CustomSliderTouchRippleBehavior': {
+        'slider_bar_width' : '2dp',
+        'slider_handle_radius' : '10dp',
+    },
+    'CustomSlider': {
+        'color_tuple': ('Green', '600'),
+        'outline_color_tuple': ('Red', '900'),
+        'slider_color_tuple': ('Purple', '100'),
+        'slider_outline_color_tuple': ('Brown', '700'),
+        'ripple_color_tuple': ('Orange', '200'),
+        'slider_bar_width' : '0.1dp',
+        'outline_width' : '1.5dp',
+    },
 }
 
 themes = {

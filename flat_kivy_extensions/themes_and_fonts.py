@@ -14,6 +14,8 @@ header = {
 }
 
 tabbarbutton = {
+    'FlatIconButton': {
+     },
     'CustomIconButton': {
         'color_tuple': ('Brown', '50'),
         'font_color_tuple': ('Brown', '900'),
@@ -26,6 +28,8 @@ tabbarbutton = {
     },
 }
 tabbarbutton_highlighted = {
+    'FlatIconButton': {
+     },
     'CustomIconButton': {
         'color_tuple': ('BlueGray', '800'),
         'font_color_tuple': ('Brown', '50'),
@@ -136,6 +140,42 @@ default = {
 
     'FlatCheckBoxListItem': {
     },
+
+    'ExtendedSliderHorizontal': {
+        #'color_tuple': ('Green', '600'),
+        #'outline_color_tuple': ('Blue', '500'),
+        #'slider_color_tuple': ('Red', '100'),
+        #'slider_outline_color_tuple': ('Yellow', '700'),
+        #'ripple_color_tuple': ('Orange', '200'),
+        #'slider_bar_width' : '0.1dp',
+        #'outline_width' : '0.5dp',
+        'font_color_tuple' : ('Purple', '800'),
+    },
+    'ExtendedSliderVertical': {
+        #'color_tuple': ('Brown', '600'),
+        #'outline_color_tuple': ('Green', '900'),
+        #'slider_color_tuple': ('Blue', '200'),
+        #'slider_outline_color_tuple': ('Gray', '700'),
+        #'ripple_color_tuple': ('Pink', '200'),
+        #'slider_bar_width' : '0.1dp',
+        #'outline_width' : '0.5dp',
+        'font_color_tuple' : ('Blue', '500'),
+    },
+
+    'CustomSliderTouchRippleBehavior': {
+        'slider_bar_width' : '2dp',
+        'slider_handle_radius' : '10dp',
+    },
+    'CustomSlider': {
+        'color_tuple': ('Brown', '600'),
+        'outline_color_tuple': ('Green', '900'),
+        'slider_color_tuple': ('Brown', '100'),
+        'slider_outline_color_tuple': ('Brown', '700'),
+        'ripple_color_tuple': ('Brown', '200'),
+        'slider_bar_width' : '0.1dp',
+        'outline_width' : '0.5dp',
+    },
+
 }
 
 themes = {
