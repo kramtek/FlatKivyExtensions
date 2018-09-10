@@ -59,6 +59,19 @@ class CustomTabScreen(Screen):
         self._screenmanager.current = screen.name
 
 
+    def on_pre_enter(self):
+        self._screenmanager.current_screen.on_pre_enter()
+
+    def on_enter(self):
+        self._screenmanager.current_screen.on_enter()
+
+    def on_pre_leave(self):
+        self._screenmanager.current_screen.on_pre_leave()
+
+    def on_leave(self):
+        self._screenmanager.current_screen.on_leave()
+
+
 class TabButtonLayout(BoxLayout):
 
     def __init__(self, btns, **kwargs):
