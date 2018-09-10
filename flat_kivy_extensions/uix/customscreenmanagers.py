@@ -21,13 +21,19 @@ Builder.load_string('''
 class CustomTabScreen(Screen):
 
     def __init__(self, screen_config_entries, **kwargs):
+        self._isSetup = False
         super(CustomTabScreen, self).__init__(**kwargs)
+        self._screen_config_entries = screen_config_entries
+
+#    def on_enter(self):
+        if self._isSetup:
+            return
         self._screenmanager = CustomScreenManager()
         self.add_widget(self._screenmanager)
         self.title = ''
 
         self.btns = list()
-        for entry in screen_config_entries:
+        for entry in self._screen_config_entries:
             if isinstance(entry, ScreenNavigationEntry):
                 self._create_navigation_button(entry)
 
@@ -35,6 +41,7 @@ class CustomTabScreen(Screen):
 
         self.add_widget(self.tabButtonLayout)
         self.tabButtonLayout._btn_pressed(self.btns[0])
+        self._isSetup = True
 
     def _create_navigation_button(self, entry):
         btn = entry.create_button(self._screenmanager)
