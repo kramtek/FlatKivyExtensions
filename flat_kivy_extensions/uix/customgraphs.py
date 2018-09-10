@@ -82,12 +82,20 @@ class LineGraph(_CustomGraph):
         self.shape = None
 
     def create(self, data):
-        colors = itertools.cycle([
+        for plot in self._plots:
+            self.remove_plot(plot)
+        self._plots = list()
+        #colors = itertools.cycle([
+        #    rgb('66a8d4'),
+        #    rgb('dc7062'),
+        #    rgb('7dac9f'),
+        #    rgb('e5b060'),
+        colors = [
             rgb('66a8d4'),
             rgb('dc7062'),
             rgb('7dac9f'),
             rgb('e5b060'),
-            ])
+            ]
 
         self.shape = data.shape
         if len(self.shape) == 1:
@@ -99,7 +107,7 @@ class LineGraph(_CustomGraph):
             self.x_ticks_major=self.xmax
 
         for ind1 in xrange(self.shape[1]):
-            plot = LinePlot(color=next(colors))
+            plot = LinePlot(color=colors[ind1])
             plot.line_width = self.line_width
             #self.bind(line_width=plot.setter('line_width'))
             self.add_plot(plot)
@@ -109,7 +117,7 @@ class LineGraph(_CustomGraph):
     def update(self, data):
         if self.shape is None:
             self.create(data)
-        if self.shape != self.shape:
+        if self.shape != data.shape:
             self.create(data)
         for ind1 in xrange(self.shape[1]):
             plot = self._plots[ind1]
@@ -127,13 +135,22 @@ class BarGraph(_CustomGraph):
 
     def create(self, data, colors=None):
         self._plot_datas = list()
+        for plot in self._plots:
+            self.remove_plot(plot)
+        self._plots = list()
         if colors is None:
-            colors = itertools.cycle([
+            #colors = itertools.cycle([
+            #    rgb('66a8d4'),
+            #    rgb('dc7062'),
+            #    rgb('e5b060'),
+            #    rgb('7dac9f'),
+            #    ])
+            colors = [
                 rgb('66a8d4'),
                 rgb('dc7062'),
                 rgb('e5b060'),
                 rgb('7dac9f'),
-                ])
+                ]
 
         self.shape = data.shape
         if len(self.shape) == 1:
@@ -161,7 +178,7 @@ class BarGraph(_CustomGraph):
                 spacing = 0.7
 
         for ind1 in xrange(self.shape[1]):
-            plot = BarPlot(color=next(colors), bar_spacing=spacing)
+            plot = BarPlot(color=colors[ind1], bar_spacing=spacing)
             self.add_plot(plot)
             plot.bind_to_graph(self)
             self._plots.append(plot)
