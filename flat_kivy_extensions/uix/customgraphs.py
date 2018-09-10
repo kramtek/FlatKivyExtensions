@@ -126,6 +126,7 @@ class BarGraph(_CustomGraph):
         self.shape = None
 
     def create(self, data, colors=None):
+        self._plot_datas = list()
         if colors is None:
             colors = itertools.cycle([
                 rgb('66a8d4'),
