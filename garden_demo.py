@@ -12,6 +12,9 @@ print('Garden system dir: %s\n\n\n' % str(garden_system_dir))
 
 from flat_kivy_extensions.flatappextension import ExtendedFlatApp, ScreenNavigationEntry
 
+
+from flat_kivy_extensions.uix.customicon import CustomIcon
+
 title = 'Garden Demos'
 about = 'Demonstration of some kivy garden elements.'
 
@@ -21,7 +24,10 @@ from spinner_screen import SpinnerDemoScreen
 from package_control_screen import PackageManagerScreen
 from flat_kivy_extensions.screens.file_edit_screen import FileEditScreen
 
+from icon_screen import IconDemoScreen
+
 app_config_entries = ['Garden Demos',
+                      ScreenNavigationEntry(IconDemoScreen, 'Icons...', screen_kwargs={'use_scrollview' : True}),
                       ScreenNavigationEntry(SpinnerDemoScreen, 'SpinnerDemo'),
                       ScreenNavigationEntry(GardenGraphDemoScreen, 'Garden Graph Demo'),
                       ScreenNavigationEntry(FileEditScreen, 'File Chooser'),
