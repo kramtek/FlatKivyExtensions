@@ -1,5 +1,8 @@
 
 #:import ProgressSpinner kivy.garden.progressspinner.ProgressSpinner
+#:import icon__ kivy.garden.iconfonts.icon
+#:import CustomIcon flat_kivy_extensions.uix.customicon.CustomIcon
+
 <-CustomButtonBase>:
     color: app.get_color(self.color_tuple)
     ripple_color: app.get_color(self.ripple_color_tuple)
@@ -23,6 +26,25 @@
         font_size: root.font_size
 
 
+<CustomIcon>:
+
+    valign: 'middle'
+    #font_name: app.get_font('data/font/fontawesome-webfont.ttf')
+    halign: 'center'
+    padding: ('5dp', '5dp')
+    color: app.get_color(root.color_tuple)
+
+
+    #text: "%s" app.get_icon(self.icon)
+    markup: True
+    #text: "%s"%(icon__(self.icon, size=None, color='ff3333')) if self.icon != '' else ''
+    #text: "%s"%(icon__(self.icon, size=None, color=None)) if self.icon != '' else ''
+    
+
+    #color: (0,0,0,1)
+    #font_size: '12dp'
+    #text: '?'
+
 <-CustomIconButton>:
     color: app.get_color(self.color_tuple) 
     ripple_color: app.get_color(self.ripple_color_tuple)
@@ -41,7 +63,8 @@
         orientation: root.orientation
         padding: root.content_padding
         spacing: root.content_spacing
-        FlatIcon:
+        #FlatIcon:
+        CustomIcon:
             id: icon
             size_hint: (None, 1.0) 
             width: self.texture_size[0]

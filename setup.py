@@ -25,6 +25,9 @@ setup(name='FlatKivyExtensions', version=__version__, author='53mkramer',
             [ 'flat_kivy_extensions/data/font/proximanova-bold-webfont.ttf',
              'flat_kivy_extensions/data/font/proximanova-regular-webfont.ttf',
              'flat_kivy_extensions/data/font/proximanova-semibold-webfont.ttf',
+             'flat_kivy_extensions/data/font/fa-solid-900.ttf',
+             'flat_kivy_extensions/data/font/fontawesome.fontd',
+             'flat_kivy_extensions/data/font/fontawesome_old.fontd',
              ])],
       )
 
