@@ -19,7 +19,7 @@ tabbarbutton = {
     'CustomIconButton': {
         'color_tuple': ('Brown', '50'),
         'font_color_tuple': ('Brown', '900'),
-        'icon_color_tuple': ('BlueGray', '800'),
+        'icon_color_tuple': ('Purple', '800'),
         'content_padding' : ['3dp', '2dp', '2dp', '0dp'],
         'style': 'NavigationButton',
         'font_size' : '11dp',
