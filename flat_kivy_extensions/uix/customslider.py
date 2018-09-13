@@ -254,6 +254,7 @@ class _BaseExtendedSlider(BoxLayout, ThemeBehavior):
     units = StringProperty('-')
     released_value = NumericProperty(0)
     value = NumericProperty(0)
+    font_size = NumericProperty(15)
 
     def __init__(self, *largs, **kwargs):
         if 'font_color_tuple' in kwargs:
