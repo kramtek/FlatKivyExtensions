@@ -68,9 +68,10 @@
             id: icon
             size_hint: (None, 1.0) 
             width: self.texture_size[0]
+            #width: self.height
             icon: root.icon
             valign: 'middle'
-            halign: 'right' 
+            halign: 'left' 
             opacity: label.color[3]
             color_tuple: root.icon_color_tuple
             text_size: self.size
@@ -140,6 +141,7 @@
         text_size: self.size
         halign: 'left' 
         style: 'CustomButton1'
+        font_size: root.font_size
     CustomSlider:
         id: slider
         theme: root.theme
@@ -195,7 +197,7 @@
     FlatLabel:
         id: max_label
         color: app.get_color(root.font_color_tuple)
-        text: '%s %s' % (str(root.max), root.units)
+        text: '%.1f %s' % (root.max, root.units)
         text_size: self.size
         color_tuple: root.font_color_tuple
         halign: 'center'
@@ -218,7 +220,7 @@
         id: min_label
         color: app.get_color(root.font_color_tuple)
         text_size: self.size
-        text: '%s %s' % (str(root.min), root.units)
+        text: '%.1f %s' % (float(root.min), root.units)
         color_tuple: root.font_color_tuple
         halign: 'center'
         valign: 'bottom'
@@ -236,7 +238,7 @@
         text_size: self.size
         halign: 'center' 
         style: 'CustomButton1'
-        font_size: '14dp'
+        font_size: '13dp'
 
         on_parent: root._on_done_building()
 
