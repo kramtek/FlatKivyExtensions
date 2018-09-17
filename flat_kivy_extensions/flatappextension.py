@@ -563,6 +563,7 @@ class ExtendedFlatApp(FlatApp):
 
 
     def raise_error(self, error_title, error_text, auto_dismiss=False, timeout=None):
+        log.error(error_text)
         error_content = CustomErrorContent()
         error_content.error_text = error_text
         error_content.label_color_tuple = ('BlueGray', '800')
@@ -589,7 +590,6 @@ class ExtendedFlatApp(FlatApp):
         cancel_button.bind(on_release=self.error_popup.dismiss)
         error_content.theme=('app', 'shit')
 
-        log.error(error_text)
         #print(traceback.format_exc())
         #print(sys.exc_info())
         #print( traceback.print_stack()  )
