@@ -7,6 +7,9 @@ from kivy.properties import StringProperty, ListProperty
 from flat_kivy.uix.behaviors import ThemeBehavior
 from kivy.properties import NumericProperty, BoundedNumericProperty, BooleanProperty
 
+from flat_kivy_extensions import PackageLogger
+log = PackageLogger(__name__, moduleDebug=False)
+
 class CustomPopupContent(GridLayout, ThemeBehavior):
     text = StringProperty('Default Error Text')
     label_color_tuple = ListProperty( ['Blue', '800'] )
@@ -53,6 +56,7 @@ class CustomSpinner(Widget):
         Clock.unschedule(self._update)
 
     def _update(self, dt):
+        log.debug('updating spinner...')
         angle_speed = 90. * self.speed
         angle_advance_speed = 90. * self.advance_speed
         self._angle_center += 1.0*(dt * angle_advance_speed)
