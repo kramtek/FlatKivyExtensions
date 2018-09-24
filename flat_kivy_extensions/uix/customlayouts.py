@@ -108,7 +108,7 @@ class StyledLayout(StackLayout):
         widget.bind(pos=self._center)
         container.add_widget(widget)
 
-        super(StyledLayout, self).add_widget(container)
+        super(StyledLayout, self).add_widget(container, **kwargs)
         self._calculate_minimum_height()
 
         widget.bind(height=self._calculate_minimum_height)
