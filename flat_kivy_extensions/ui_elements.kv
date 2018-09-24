@@ -1,7 +1,7 @@
 
-#:import ProgressSpinner kivy.garden.progressspinner.ProgressSpinner
-#:import icon__ kivy.garden.iconfonts.icon
-#:import CustomIcon flat_kivy_extensions.uix.customicon.CustomIcon
+## #:import ProgressSpinner kivy.garden.progressspinner.ProgressSpinner
+## #:import icon__ kivy.garden.iconfonts.icon
+## #:import CustomIcon flat_kivy_extensions.uix.customicon.CustomIcon
 
 <-CustomButtonBase>:
     color: app.get_color(self.color_tuple)
@@ -702,6 +702,7 @@
     _container: container.__self__
     #_title_icon: None
     #_title_icon_color: None
+    label: label.__self__
 
     canvas.before:
         Color:
@@ -721,8 +722,8 @@
         pos: root.pos
         size: root.size
 
-
         FlatLabel:
+            id: label
             text: root.title
             color: app.get_color(root.title_color_tuple)
             size_hint_y: None
@@ -730,6 +731,7 @@
             text_size: self.width - 16, None
             font_size: root.title_size
             style: 'NavigationLabelMainHeading'
+            halign: 'left'
 
         Widget:
             size_hint_y: None

@@ -1,13 +1,17 @@
 
 
-import numpy as np
-import itertools
+import itertools, os
 from math import log10
+import numpy as np
 
 from kivy.metrics import dp
 from kivy.utils import get_color_from_hex as rgb
 from kivy.properties import ListProperty, NumericProperty
-from kivy.garden.graph import Graph, BarPlot, LinePlot
+
+if 'KIVY_DOC' in os.environ:
+    from graph import Graph, BarPlot, LinePlot
+else:
+    from kivy.garden.graph import Graph, BarPlot, LinePlot
 
 
 def identity(x):
@@ -146,6 +150,11 @@ class BarGraph(_CustomGraph):
             #    rgb('7dac9f'),
             #    ])
             colors = [
+                rgb('66a8d4'),
+                rgb('dc7062'),
+                rgb('e5b060'),
+                rgb('7dac9f'),
+
                 rgb('66a8d4'),
                 rgb('dc7062'),
                 rgb('e5b060'),

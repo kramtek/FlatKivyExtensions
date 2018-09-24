@@ -26,13 +26,19 @@ from flat_kivy_extensions.uix.customiconbutton import CustomIconButton
 from flat_kivy_extensions.uix.custombutton import CustomButton
 from flat_kivy_extensions.uix.thumbnailwidget import ThumbNailWidget
 
+if 'KIVY_DOC' in os.environ:
+    from navigationdrawer import NavigationDrawer
+    from pizza import Pizza
+else:
+    from kivy.garden.navigationdrawer import NavigationDrawer
+    from flat_kivy_extensions.uix.customicon import CustomIcon
 
 from . import PackageLogger
 log = PackageLogger(__name__, moduleDebug=True)
 
 
 Builder.load_string('''
-#:import NavigationDrawer kivy.garden.navigationdrawer.NavigationDrawer
+## #:import NavigationDrawer kivy.garden.navigationdrawer.NavigationDrawer
 #:import NoTransition kivy.uix.screenmanager.NoTransition
 #:import FadeTransition kivy.uix.screenmanager.FadeTransition
 <RootWidget>:
@@ -336,6 +342,8 @@ class ScreenNavigationEntry(ScreenConfig):
 
 
 class ExtendedFlatApp(FlatApp):
+    ''' Extension of FlatApp
+    '''
     def __init__(self, app_config_entries, title, about,
                  use_coverflow_navigation=True,
                  lazy_loading=False,
@@ -448,7 +456,7 @@ class ExtendedFlatApp(FlatApp):
                 self._busy_counter += -1
         self.show_busy_in_header(self._busy_counter>0)
 
-    def raise_busy(self, busy_title, busy_text, auto_dismiss=False, timeout=None, cancel_callback=None, timeout_callback=None):
+    def raise_busy(self, busy_title, busy_text, auto_dismiss=False, timeout=None, cancel_callback=None, timeout_callback=None, auto_open=True):
         busy_content = CustomBusyContent()
         busy_content.theme=('app', 'shit')
         self.busy_popup = CustomPopup(
@@ -484,7 +492,8 @@ class ExtendedFlatApp(FlatApp):
                 cancel_callback()
         #dismiss_button.bind(on_release=self.busy_popup.dismiss)
         cancel_button.bind(on_release=dismiss_popup)
-        self.busy_popup.open()
+        if auto_open:
+            self.busy_popup.open()
 
         if timeout is not None:
             def close_popup(dt):
@@ -501,7 +510,7 @@ class ExtendedFlatApp(FlatApp):
     #def _update_busy_popup_height(self, instance, value):
     #    instance.popup.height = value + dp(33)
 
-    def raise_dialog(self, title, text, auto_dismiss=False, okay_callback=None, cancel_callback=None, timeout=None):
+    def raise_dialog(self, title, text, auto_dismiss=False, okay_callback=None, cancel_callback=None, timeout=None, auto_open=True):
         content = CustomPopupContent()
         content.text = text
         content.label_color_tuple = ('BlueGray', '800')
@@ -550,7 +559,8 @@ class ExtendedFlatApp(FlatApp):
         cancel_button = content.cancel_button
         cancel_button.bind(on_release=receivedCancel)
 
-        self.popup.open()
+        if auto_open:
+            self.popup.open()
 
         return self.popup
 
@@ -562,7 +572,7 @@ class ExtendedFlatApp(FlatApp):
         instance.popup.pos = (instance.popup.pos[0],  y_pos)
 
 
-    def raise_error(self, error_title, error_text, auto_dismiss=False, timeout=None):
+    def raise_error(self, error_title, error_text, auto_dismiss=False, timeout=None, auto_open=True):
         log.error(error_text)
         error_content = CustomErrorContent()
         error_content.error_text = error_text
@@ -593,7 +603,8 @@ class ExtendedFlatApp(FlatApp):
         #print(traceback.format_exc())
         #print(sys.exc_info())
         #print( traceback.print_stack()  )
-        self.error_popup.open()
+        if auto_open:
+            self.error_popup.open()
         if timeout is not None:
             def close_popup(dt):
                 self.error_popup.dismiss()

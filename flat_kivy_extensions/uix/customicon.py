@@ -1,8 +1,14 @@
 
+import os
+
 from os.path import join, dirname
 
-from kivy.garden.iconfonts import register
-from kivy.garden.iconfonts import icon as icon__
+if 'KIVY_DOC' in os.environ:
+    from iconfonts import register
+    from iconfonts import icon as icon__
+else:
+    from kivy.garden.iconfonts import register
+    from kivy.garden.iconfonts import icon as icon__
 
 from kivy.properties import ListProperty, StringProperty
 
