@@ -3,10 +3,11 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Documentation for HiUi Package 
-==============================
+Documentation for FlatKivyExtenions Package 
+===========================================
 
-The HiUi package consists of UI widgets that are attached to HiSysteModel memory objects.
+The FlatKivyExtensions package provides an extension of the FlatApp, and customized UI Widgets
+built on top of widgets from the FlatKivy project.
 
 Version: __ver__
 

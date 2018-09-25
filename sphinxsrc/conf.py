@@ -57,7 +57,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'HiUi Package'
+project = u'FlatKivyExtensions Package'
 copyright = u'2018, Michael Kramer'
 author = u'Michael Kramer'
 
