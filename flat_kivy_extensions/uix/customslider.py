@@ -160,8 +160,8 @@ class CustomSlider(GrabBehavior, CustomSliderTouchRippleBehavior, ThemeBehavior,
     released_value = NumericProperty(0.0)
 
     def on_touch_up(self, touch):
-        if not self.collide_point(touch.x, touch.y):
-            return False
+        #if not self.collide_point(touch.x, touch.y):
+        #    return False
         now = time.time()
         if not hasattr(self, '_last_time'):
             self._last_time = 0.0
