@@ -81,7 +81,7 @@ class _ContentLayout(StackLayout):
 
 class StyledLayout(StackLayout):
 
-    min_height_required = NumericProperty(5)
+    _min_height_required = NumericProperty(5)
 
     def __init__(self, *largs, **kwargs):
         self._forward_call = None
@@ -91,8 +91,8 @@ class StyledLayout(StackLayout):
         mn = 2*self.padding[0]
         for child in self.children:
             mn += child.height + self.spacing[0]
-        self.min_height_required = mn
-        self.height = self.min_height_required
+        self._min_height_required = mn
+        self.height = self._min_height_required
 
     def _center(self, instance, value):
         if instance.parent is not None:
@@ -100,6 +100,9 @@ class StyledLayout(StackLayout):
                 instance.center_x = instance.parent.center_x
 
     def add_widget(self, widget, **kwargs):
+        ''' Overriden method to have widget added to content container layout
+        rather than directly to this (Stack) Layout
+        '''
         container = _WidgetContainerLayout()
         container.size_hint_y = None
         widget.container = container
@@ -115,18 +118,26 @@ class StyledLayout(StackLayout):
         widget.bind(width=self._calculate_minimum_height)
 
     def remove_widget(self, widget):
+        ''' Overriden method to have widget removed from content container layout
+        rather than directly from this (Stack) Layout
+        '''
         container = widget.container
         container.remove_widget(widget)
         super(StyledLayout, self).remove_widget(container)
         self._calculate_minimum_height()
-        self.height = self.min_height_required
+        self.height = self._min_height_required
 
 
 class GroupedLayout(StyledLayout):
     title = StringProperty('SomeScreen')
+    ''' String used for the layout title
+    '''
     theme = ListProperty()
+    ''' Theme applied to the layout title.
+    '''
     style = StringProperty()
-    # min_height = NumericProperty(0)
+    ''' Font style applied to the layout title.
+    '''
 
     def __init__(self, *largs, **kwargs):
 
@@ -164,7 +175,11 @@ class GroupedLayout(StyledLayout):
             ht += (len(self._content_layout.children)-1)*self._content_layout.spacing[0]
         return ht
 
-    def add_widget(self, widget):
+    def add_widget(self, widget, *kwargs):
+        ''' Overriden method to have widget added to content container layout
+        rather than directly to this (Stack) Layout
+        '''
+        container = _WidgetContainerLayout()
         # Put each widget into a box layout so that  whatever is actually added
         # to GridLayout does not have a fixed width
         container = _WidgetContainerLayout()
@@ -172,12 +187,16 @@ class GroupedLayout(StyledLayout):
         widget.bind(height=container.setter('height'))
         container.height = widget.height
         widget.bind(pos=self._center)
-        container.add_widget(widget)
+        container.add_widget(widget, *kwargs)
         self._content_layout.add_widget(container)
         ht = self._calc_height();
         self._content_layout.height = ht
 
     def remove_widget(self, widget):
+        ''' Overriden method to have widget removed from content container layout
+        rather than directly from this (Stack) Layout
+        '''
+        container = widget.container
         widget.container.remove_widget(widget)
         self._content_layout.remove_widget(widget.container)
         ht = self._calc_height();
