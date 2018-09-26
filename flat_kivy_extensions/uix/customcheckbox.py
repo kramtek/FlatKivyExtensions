@@ -7,7 +7,7 @@ from kivy.properties import NumericProperty, StringProperty, BooleanProperty, Li
 
 from flat_kivy.uix.flatcheckbox import FlatCheckBoxListItem, Check
 
-from flat_kivy_extensions.uix.custombehaviors import CustomToggleButtonBehavior
+from flat_kivy_extensions.uix._custombehaviors import CustomToggleButtonBehavior
 from flat_kivy.uix.behaviors import (GrabBehavior, ThemeBehavior, TouchRippleBehavior,
                                      LogBehavior)
 
