@@ -2,7 +2,7 @@
 import time
 
 from kivy.properties import (ObjectProperty, OptionProperty, NumericProperty,
-                             ListProperty, StringProperty)
+                             ListProperty, StringProperty, BooleanProperty)
 
 from kivy.animation import Animation
 
@@ -255,6 +255,7 @@ class _BaseExtendedSlider(BoxLayout, ThemeBehavior):
     released_value = NumericProperty(0)
     value = NumericProperty(0)
     font_size = NumericProperty(15)
+    disabled = BooleanProperty(False)
 
     def __init__(self, *largs, **kwargs):
         if 'font_color_tuple' in kwargs:
@@ -299,5 +300,6 @@ class ExtendedSliderVertical(_BaseExtendedSlider):
     units = StringProperty('-')
     min = NumericProperty(0)
     max = NumericProperty(100)
+    step = NumericProperty(.0001)
 
 
