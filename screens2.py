@@ -119,6 +119,7 @@ Builder.load_string('''
     theme: ('app', 'screen')
 
     disabled_switch: disabled_switch.__self__
+    disabled_checkbox: disabled_checkbox.__self__
 
     CustomCheckBoxListItem:
         text: 'Check box'
@@ -196,6 +197,7 @@ Builder.load_string('''
         outline_size: '0.5dp'
 
     CustomCheckBoxListItem:
+        id: disabled_checkbox
         text: 'Exception Indicator'
         theme: ('app', 'default')
         height: '45dp'
@@ -225,6 +227,7 @@ Builder.load_string('''
         theme: ('app', 'default')
         height: '45dp'
         on_active: root.disabled_switch.disabled = self.active
+        on_active: root.disabled_checkbox.disabled = self.active
         #on_active: root.switch_changed(self)
         switch_font_size: '8dp'
         scaling: 0.45
@@ -256,6 +259,7 @@ Builder.load_string('''
         min: -2
         max: 20
         theme: ('app', 'default')
+        #disabled: True
 
     BoxLayout:
         size_hint_y: None
