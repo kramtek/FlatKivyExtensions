@@ -139,13 +139,13 @@ class ThumbwheelScreen(CustomScreen):
 
         bl = BoxLayout(size_hint_y=None, height=dp(300))
 
-        extended_thumbwheel = ExtendedThumbWheel( size_hint=(None, None), size=(dp(150), dp(300)),)
+        extended_thumbwheel = ExtendedThumbWheel( size_hint=(None, None), size=(dp(150), dp(300)),
+                                    while_spinning_callback=self._while_spinning_callback)
         extended_thumbwheel.label_text = 'MyValue'
         extended_thumbwheel.label_format = '%2.1f'
         extended_thumbwheel.units = 'Space Credits'
         extended_thumbwheel.value_max = 19
         extended_thumbwheel.value_min = 3
-        extended_thumbwheel.bind(value=self.thumbwheel_updated_value)
         extended_thumbwheel.spinner_width = dp(40)
         #self.add_widget(extended_thumbwheel)
         bl.add_widget(Widget())
@@ -153,6 +153,9 @@ class ThumbwheelScreen(CustomScreen):
 
         extended_thumbwheel.value = 4.4
         extended_thumbwheel.rotation_scale = 4.0
+
+        extended_thumbwheel.disabled = True
+        self.et = extended_thumbwheel
 
         extended_thumbwheel = ExtendedThumbWheel( size_hint=(None, None), size=(dp(150), dp(300)),)
         extended_thumbwheel.label_text = 'MyValue2'
@@ -172,30 +175,9 @@ class ThumbwheelScreen(CustomScreen):
 
         App.get_running_app().register_stop_callback(self.app_stopping)
 
-    def thumbwheel_updated_value(self, instance, value):
-        # If it is not already running then start a thread in the background
-        # to write the update values when it can and assign a trigger to
-        # stop the thread after 0.5 seconds. If the value is updated
-        # within the timeout period the timeout event is rescheduled
-        if not self._isRunning:
-            AppAwareThread(target=self._threaded_process, args=(instance, value,)).start()
-        if self.event is not None:
-            self.event.cancel()
-        self.event = Clock.create_trigger(self._stop_process, 0.5)
-        self.event()
-
-    def _stop_process(self, *largs):
-        self._isRunning = False
-        self.event = None
-
-    def _threaded_process(self, instance, value):
-        self._isRunning = True
-        App.get_running_app().indicate_busy(True)
-        while self._isRunning:
-            time.sleep(0.2)
-            print '  will write to somewhere, current value: %2.2f' % instance.value
-        self._stop_process()
-        App.get_running_app().indicate_busy(False)
+    def _while_spinning_callback(self, value):
+        print '  will write to somewhere, current value: %2.2f' % value
+        time.sleep(0.1)
 
     def on_touch_down(self, touch):
         if touch.is_double_tap:
@@ -206,7 +188,11 @@ class ThumbwheelScreen(CustomScreen):
 
     def app_stopping(self):
         print('Application stopping - stop back ground process(es)')
-        self._stop_process()
 
+    def _un_disable(self, *largs):
+        self.et.disabled = False
 
+    def on_enter(self):
+        _event = Clock.create_trigger(self._un_disable, 5.0)
+        _event()
 
