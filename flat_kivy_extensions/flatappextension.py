@@ -440,7 +440,6 @@ class ExtendedFlatApp(FlatApp):
             if self._busy_indicator not in self._header_button_layout.children:
                 self._header_button_layout.add_widget(self._busy_indicator)
                 self._busy_indicator.start_spinning()
-                #Clock.unschedule(self._busy_indicator._update)
         else:
             if self._busy_indicator in self._header_button_layout.children:
                 self._header_button_layout.remove_widget(self._busy_indicator)
