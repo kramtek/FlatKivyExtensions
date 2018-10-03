@@ -1,6 +1,6 @@
 __version__ = '0.0.1'
 
-import logging, datetime, threading, platform, sys
+import logging, datetime, threading, platform, sys, traceback
 from kivy.app import App
 
 log = logging.getLogger()
@@ -56,9 +56,10 @@ class AppAwareThread(threading.Thread):
             if self._show_busy:
                 App.get_running_app().indicate_busy(False)
         except Exception as e:
+            tb = traceback.format_exc()
             targetString = str(self._target).strip().split(' ')[2]
             App.get_running_app().raise_error('Exception:', 'Exception in %s\n\n%s' % (targetString, str(e)),
-                                          auto_dismiss=False)
+                                          auto_dismiss=False, traceback=tb)
             if self._show_busy:
                 App.get_running_app().indicate_busy(False)
 
