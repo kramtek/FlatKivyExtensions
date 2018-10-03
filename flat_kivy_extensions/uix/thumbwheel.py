@@ -16,11 +16,14 @@ from kivy.properties import NumericProperty, ListProperty, StringProperty, Boole
 from flat_kivy.uix.flatlabel import FlatLabel
 
 from flat_kivy_extensions import AppAwareThread
+from flat_kivy_extensions import PackageLogger
+log = PackageLogger(__name__, moduleDebug=True)
 
 Builder.load_string('''
 
 <-ExtendedThumbWheel>:
     cols: 1
+    padding: [dp(1), dp(1), dp(1), dp(5)]
     canvas.before:
         Color:
             rgba: (0.4, 0.5, 0.4, 0.0)
@@ -74,7 +77,6 @@ class ExtendedThumbWheel(GridLayout):
     label_text = StringProperty('Label')
     label_format = StringProperty('%2.3f')
     units = StringProperty('')
-    scaling = NumericProperty(1.0)
 
     value = NumericProperty(None, allownone=True)
     value_max = NumericProperty(1.0)
@@ -91,7 +93,7 @@ class ExtendedThumbWheel(GridLayout):
     disabled = BooleanProperty(False)
 
     def __init__(self, while_spinning_callback=None, **kwargs):
-        self._isSpinning = False
+        self._is_spinning = False
         self._event = None
         self._while_spinning_callback = while_spinning_callback
 
@@ -103,10 +105,10 @@ class ExtendedThumbWheel(GridLayout):
         self.label.style = 'NavigationLabelSubHeading'
 
         thumbwheel_container = BoxLayout( size_hint=(None, None),
-                                       size=(self.width, self.height-self.label.height), )
+                                       size=(self.width, self.height-self.label.height - self.padding[3]), )
 
         self.thumbwheel = ThumbWheel( size_hint=(None, None),
-                                      size=(self.width-dp(50), self.height-self.label.height - self.spacing[1]), )
+                                      size=(self.width-dp(50), self.height-self.label.height - self.spacing[1] - self.padding[3]), )
 
         self.thumbwheel.value = self.thumbwheel.value_min
 
@@ -128,6 +130,9 @@ class ExtendedThumbWheel(GridLayout):
         self.add_widget(self.label)
         self.add_widget(thumbwheel_container)
 
+        self._being_set_externally = False
+        self._last_value = None
+
         self.thumbwheel.bind(value=self.update_value)
 
     def on_disabled(self, instance, value):
@@ -140,18 +145,35 @@ class ExtendedThumbWheel(GridLayout):
             self.thumbwheel.color_max = self.color_max
             self.thumbwheel.color_min = self.color_min
 
-
+    def set_value(self, value):
+        if self._is_spinning:
+            return
+        self._being_set_externally = True
+        self.value = value
 
     def update_value(self, instance, value):
-        scaledValue = value * self.scaling
-        a = self.label_format % scaledValue
+        a = self.label_format % value
         self.label.text = self.label_text + ':\n' + a + ' ' + self.units
-        self.value = value * self.scaling
+        self.value = value
+
+        if self._last_value is None:
+            self._last_value = float(value)
+        diff = abs(value - self._last_value)
+        comp = (self.value_max - self.value_min)/float(self.value_max)
+        if diff < (comp*.00001):
+            return
+        self._last_value = float(value)
+        if self._being_set_externally:
+            self._being_set_externally = False
+            if self._while_spinning_callback is not None:
+                self._while_spinning_callback(value)
+            return
 
         if self._while_spinning_callback is None:
             return
-        if not self._isSpinning:
-            self._isSpinning = True
+
+        if not self._is_spinning:
+            self._is_spinning = True
             AppAwareThread(target=self._threaded_process, args=(instance, value,), show_busy=True).start()
         if self._event is not None:
             self._event.cancel()
@@ -160,18 +182,18 @@ class ExtendedThumbWheel(GridLayout):
 
     def _threaded_process(self, instance, value):
         if self._while_spinning_callback is None:
-            self._isSpinning = False
+            self._is_spinning = False
             return
-        while self._isSpinning:
-            self._while_spinning_callback(instance.value)
+        while self._is_spinning:
+            self._while_spinning_callback(value)
         self._stop_process()
 
     def _stop_process(self, *largs):
-        self._isSpinning = False
+        self._is_spinning = False
         self._event = None
 
     def on_value(self, instance, value):
-        self.thumbwheel.value = value / self.scaling
+        self.thumbwheel.value = value
 
     def on_spinner_width(self, instance, value):
         self.thumbwheel.thumbwheel_widget.width = value
@@ -259,6 +281,7 @@ class ThumbWheel(RelativeLayout):
 
     def on_value(self, instance, value):
         self.scrollview.scroll_y = 1 - (value - self.value_min) / (self.value_max - self.value_min)
+        #print('set scroll y to: %s' % str(self.scrollview.scroll_y))
 
     def on_color_max(self, instance, value):
         self.on_scroll_y(None, self.scrollview.scroll_y)
