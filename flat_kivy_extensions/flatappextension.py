@@ -571,7 +571,7 @@ class ExtendedFlatApp(FlatApp):
         instance.popup.pos = (instance.popup.pos[0],  y_pos)
 
 
-    def raise_error(self, error_title, error_text, auto_dismiss=False, timeout=None, auto_open=True):
+    def raise_error(self, error_title, error_text, auto_dismiss=False, timeout=None, auto_open=True, traceback=None):
         log.error(error_text)
         error_content = CustomErrorContent()
         error_content.error_text = error_text
@@ -599,9 +599,8 @@ class ExtendedFlatApp(FlatApp):
         cancel_button.bind(on_release=self.error_popup.dismiss)
         error_content.theme=('app', 'shit')
 
-        #print(traceback.format_exc())
-        #print(sys.exc_info())
-        #print( traceback.print_stack()  )
+        if traceback is not None:
+            print(str(traceback))
         if auto_open:
             self.error_popup.open()
         if timeout is not None:
