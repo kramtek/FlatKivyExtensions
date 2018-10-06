@@ -1,4 +1,3 @@
-
 import time
 import numpy as np
 
@@ -19,32 +18,32 @@ Builder.load_string('''
     theme: ('app', 'screen')
 ''')
 
-class PizzaDemoScreen(CustomScreen):
 
+class PizzaDemoScreen(CustomScreen):
     def __init__(self, *largs, **kwargs):
         super(PizzaDemoScreen, self).__init__(*largs, **kwargs)
 
         self.running = False
 
         self.labels = ["SpQ", "SpN", "InCar", "RevSp", "Noise", 'Music']
-        self.values = np.ones(6, dtype=np.float32) * (100.0/6)
+        self.values = np.ones(6, dtype=np.float32) * (100.0 / 6)
         self.colors = ['a9a9a9', '808080', '696969', '778899', '708090', '608090']
 
         self.pizza = Pizza(serie=zip(self.labels, self.values, self.colors),
-                chart_size=dp(200),
-                legend_color='000000',
-                legend_value_rayon=dp(70),
-                legend_title_rayon=dp(125),
-                chart_border=2)
+                           chart_size=dp(200),
+                           legend_color='000000',
+                           legend_value_rayon=dp(70),
+                           legend_title_rayon=dp(125),
+                           chart_border=2)
 
-        self.pizza.size_hint = (None,None)
+        self.pizza.size_hint = (None, None)
         self.pizza.size = (dp(220), dp(220))
 
         pizza_padding = 50
         pizza_box = BoxLayout(size_hint=(None, None),
-                            orientation='vertical')
-        pizza_box.height=self.pizza.height+pizza_padding
-        pizza_box.width=self.pizza.width
+                              orientation='vertical')
+        pizza_box.height = self.pizza.height + pizza_padding
+        pizza_box.width = self.pizza.width
         pizza_box.add_widget(self.pizza)
         pizza_box.add_widget(Widget(size_hint=(None, None),
                                     size=(pizza_box.width, pizza_padding)))
@@ -69,15 +68,10 @@ class PizzaDemoScreen(CustomScreen):
         alpha = 0.95
         while self.running:
             deltas = np.random.random(6) * 30
-            deltas = np.round(deltas*100)
-            deltas = deltas/np.sum(deltas) * 100.0
-            self.values = self.values*alpha + (1-alpha) * deltas
-            self.values = np.round(self.values*100) / 100
+            deltas = np.round(deltas * 100)
+            deltas = deltas / np.sum(deltas) * 100.0
+            self.values = self.values * alpha + (1 - alpha) * deltas
+            self.values = np.round(self.values * 100) / 100
 
             self.pizza.serie = zip(self.labels, self.values, self.colors)
             time.sleep(0.1)
-
-
-
-
-
