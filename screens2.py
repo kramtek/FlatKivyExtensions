@@ -371,6 +371,7 @@ class CustomCheckBoxDemoScreen(CustomScreen):
     def switch_changed(self, instance):
         print('screen:  switch with text "%s" has value: %s' % (instance.text, str(instance.active)))
 
+
 class CustomSliderDemoScreen(CustomScreen):
 
     def on_value(self, instance, value):
