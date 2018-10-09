@@ -21,7 +21,7 @@ class PackageLogger(object):
         self.moduleDebug = moduleDebug
 
     def _formattedNow(self):
-        return datetime.datetime.now().strftime('%H:%M:%S.%f')[:-4]
+        return datetime.datetime.now().strftime('%H:%M:%S.%f')[:-3]
 
     def debug(self, message):
         if self.moduleDebug:
