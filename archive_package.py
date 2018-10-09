@@ -12,6 +12,7 @@ packageLabels = ['FlatKivyExtensions']
 #        print 'packageLabel: "%s"' % packageLabel
 #        packageLabels = [packageLabel]
 
+os.chdir('../')
 
 tmpLocation = '/tmp/'
 if platform.system() == 'Windows':
@@ -130,7 +131,7 @@ def archivePackage(tmpLocation, sitePackagePath, label, onlyToSitePackages=False
     os.chdir(current)
 
 
-onlyToSitePackages = (len(sys.argv) > 2)
+onlyToSitePackages = (len(sys.argv) >= 2)
 
 for packageLabel in packageLabels:
     archivePackage(tmpLocation, sitePackagePath, packageLabel, onlyToSitePackages)
