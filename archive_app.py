@@ -1,5 +1,5 @@
 
-import os, string, shutil, subprocess, glob, fnmatch, zipfile, platform
+import os, string, shutil, subprocess, glob, fnmatch, zipfile, platform, datetime
 
 from subprocess import call
 
@@ -34,15 +34,14 @@ def clean():
         except Exception as e:
             print 'Exception removing %s: %s' % (directory, str(e))
 
-##def zipDir(path, ziph):
-#def zipDir(path, dst):
-#    print 'zipping contents of: %s --> %s' % (path, dst)
-#    zipf = zipfile.ZipFile(outFile, 'w', zipfile.ZIP_DEFLATED)
-#    for root, dirs, files in os.walk(path):
-#        for filename in files:
-#            # print '  adding: %s to zip' % filename
-#            zipf.write(os.path.join(root, filename))
-#    zipf.close()
+def zipDir(path, dst):
+    print 'Zipping contents of: %s --> %s' % (path, dst)
+    zipf = zipfile.ZipFile(dst, 'w', zipfile.ZIP_DEFLATED)
+    for root, dirs, files in os.walk(path):
+        for filename in files:
+            # print '  adding: %s to zip' % filename
+            zipf.write(os.path.join(root, filename))
+    zipf.close()
 
 
 tmpLocation = '/tmp/'
@@ -75,6 +74,25 @@ os.chdir(tmpLocation)
 # inDir = '%s' % projectName
 # zipDir(inDir, outFile)
 #
+
+today = datetime.datetime.now().strftime('%Y.%m.%d')
+variant = 'flat_kivy_extensions_demo'
+tag = ''
+dirName = '%s_archived_app_%s%s' % (variant, today, tag)
+os.mkdir(dirName)
+
+# Copy the app and launcher_config
+shutil.copytree(archiveRoot, '%s/%s' % (dirName, projectName))
+shutil.copyfile('%s/launcher_config.txt' % archiveRoot, '%s/launcher_config.txt' % dirName)
+
+# Copy kivy garden files
+os.mkdir('%s/%s/.kivy/' % (dirName, projectName))
+shutil.copytree('/Users/kramer/.kivy/garden', '%s/%s/.kivy/garden' % (dirName, projectName))
+
+# Copy external site packages
+shutil.copytree('external-site-packages', '%s/external-site-packages' % dirName)
+
+zipDir(dirName, '%s.zip' % dirName)
 
 os.chdir(current)
 
