@@ -572,8 +572,10 @@
     cancel_button: cancel_button.__self__
     label: label.__self__
     message_alignment: 'center'
+    icon: icon.__self__
 
     FlatIcon:
+        id: icon
         size_hint: (1, None)
         height: dp(15)
         font_size: dp(25)
@@ -624,19 +626,26 @@
 #        color_tuple: root.label_color_tuple
 #        font_size: dp(12)
 
-    CustomButton:
-        id: cancel_button
-        # theme: root.theme
-        text: root.cancel_text
-        size_hint: (0.6, None)
-        height: dp(30)
-        style: 'NavigationLabelMainHeading'
-        color_tuple: root.cancel_btn_color_tuple
-        radius: root.radius
-        font_size: dp(12)
-        font_color_tuple: ('Gray', '0000') 
-        radius: dp(3)
+    BoxLayout:
+        size_hint_y: None
+        height: dp(32)
 
+        Widget: 
+
+        CustomButton:
+            id: cancel_button
+            # theme: root.theme
+            text: root.cancel_text
+            size_hint: (0.6, None)
+            height: dp(30)
+            style: 'NavigationLabelMainHeading'
+            color_tuple: root.cancel_btn_color_tuple
+            radius: root.radius
+            font_size: dp(12)
+            font_color_tuple: ('Gray', '0000') 
+            radius: dp(3)
+
+        Widget: 
 
 <CustomBusyContent>:
     orientation: 'tb-lr'
