@@ -99,6 +99,8 @@ class LineGraph(_CustomGraph):
             rgb('dc7062'),
             rgb('7dac9f'),
             rgb('e5b060'),
+            rgb('16a8d4'),
+            rgb('1c7062'),
             ]
 
         self.shape = data.shape
@@ -158,11 +160,8 @@ class BarGraph(_CustomGraph):
                 rgb('dc7062'),
                 rgb('e5b060'),
                 rgb('7dac9f'),
-
-                rgb('66a8d4'),
-                rgb('dc7062'),
-                rgb('e5b060'),
-                rgb('7dac9f'),
+                rgb('16a8d4'),
+                rgb('1c7062'),
                 ]
 
         print('  setting up num points...')
