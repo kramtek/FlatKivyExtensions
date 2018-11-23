@@ -54,6 +54,8 @@ Builder.load_string('''
     #         pos: self.pos
 
 <_ContentLayout>:
+    height: self.minimum_height
+    cols: 1
     # canvas.before:
     #     Color:
     #         rgba: (0.4, 0.2, 0.1, 0.5)
@@ -75,7 +77,7 @@ class _MainLayout(BoxLayout):
     pass
 
 
-class _ContentLayout(StackLayout):
+class _ContentLayout(GridLayout):
     pass
 
 
@@ -167,13 +169,13 @@ class GroupedLayout(StyledLayout):
             if isinstance(instance.parent, _WidgetContainerLayout):
                 instance.center_x = instance.parent.center_x
 
-    def _calc_height(self):
-        ht = self._content_layout.padding[0]*2
-        for child in self._content_layout.children:
-            ht += child.height
-        if len(self._content_layout.children) > 1:
-            ht += (len(self._content_layout.children)-1)*self._content_layout.spacing[0]
-        return ht
+#    def _calc_height(self):
+#        ht = self._content_layout.padding[0]*2
+#        for child in self._content_layout.children:
+#            ht += child.height
+#        if len(self._content_layout.children) > 1:
+#            ht += (len(self._content_layout.children)-1)*self._content_layout.spacing[0]
+#        return ht
 
     def add_widget(self, widget, *kwargs):
         ''' Overriden method to have widget added to content container layout
@@ -189,8 +191,8 @@ class GroupedLayout(StyledLayout):
         widget.bind(pos=self._center)
         container.add_widget(widget, *kwargs)
         self._content_layout.add_widget(container)
-        ht = self._calc_height();
-        self._content_layout.height = ht
+#        ht = self._calc_height();
+#        self._content_layout.height = ht
 
     def remove_widget(self, widget):
         ''' Overriden method to have widget removed from content container layout
@@ -199,6 +201,6 @@ class GroupedLayout(StyledLayout):
         container = widget.container
         widget.container.remove_widget(widget)
         self._content_layout.remove_widget(widget.container)
-        ht = self._calc_height();
-        self._content_layout.height = ht
+#        ht = self._calc_height();
+#        self._content_layout.height = ht
 
