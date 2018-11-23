@@ -1,4 +1,9 @@
-import os
+
+
+import os, platform
+
+from kivy.garden import garden_system_dir
+print('Garden system dir: %s\n\n\n' % str(garden_system_dir))
 
 from flat_kivy_extensions.uix.coverflowpopup import CoverFlowPopup
 
@@ -36,6 +41,9 @@ else:
 from . import PackageLogger
 log = PackageLogger(__name__, moduleDebug=True)
 
+log.info('\n\n\n')
+log.info('Platform system: %s     machine: %s' % (str(platform.system()), str(platform.machine())))
+log.info('Garden system dir: %s\n\n\n' % str(garden_system_dir))
 
 Builder.load_string('''
 ## #:import NavigationDrawer kivy.garden.navigationdrawer.NavigationDrawer
