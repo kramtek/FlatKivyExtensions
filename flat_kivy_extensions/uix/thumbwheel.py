@@ -18,7 +18,7 @@ from flat_kivy.uix.flatlabel import FlatLabel
 from flat_kivy_extensions import AppAwareThread
 
 from flat_kivy_extensions import PackageLogger
-log = PackageLogger(__name__, moduleDebug=True)
+log = PackageLogger(__name__, moduleDebug=False)
 
 _debug_layout = False
 
@@ -242,11 +242,12 @@ class ExtendedThumbWheel(GridLayout):
 
     @mainthread
     def set_value(self, value):
-        log.debug('Step 1: setting value for thumbwheel widget...')
+        log.debug('Step 1: setting value for thumbwheel widget...: %s' % str(self.label_text))
         if self._is_spinning:
             log.debug('  but we cannot set the value if the wheel is spinning...')
             return
         self.thumbwheel.set_value(value)
+        self.update_value(self, value)
 
     def on_spinner_width(self, instance, value):
         self.thumbwheel.thumbwheel_widget.width = value
@@ -342,8 +343,8 @@ class ThumbWheel(RelativeLayout):
             label.height = self.height*value / float(self.numLabels)
 
     def set_value(self, value):
-        log.debug('  updating scroll y from external')
-        self.scrollview.scroll_y = 1 - (value - self.value_min) / (self.value_max - self.value_min)
+        log.debug('  updating scroll y from external with value: %s' % str(value))
+        self.scrollview.scroll_y = 1 - float(value - self.value_min) / float(self.value_max - self.value_min)
 
     def on_scroll_y(self, instance, scroll_position):
         if self._last_position is not None:
