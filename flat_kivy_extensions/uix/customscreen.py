@@ -64,6 +64,7 @@ Builder.load_string('''
             width: dp(self.border_line_width)
 
 <_OuterLayout>:
+    orientation: 'vertical'
     canvas.before:
         Color:
             rgba: (0.95, 0.95, 0.95, 1.0)

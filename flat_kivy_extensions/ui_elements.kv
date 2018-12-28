@@ -52,12 +52,15 @@
     _icon: icon.__self__
     _label: label.__self__
     _layout: label_space.__self__
+    radius: 0
     canvas.before:
         Color:
             rgb: root.color_down if root.state == 'down' or root.disabled else root.color
-        Rectangle:
+        RoundedRectangle:
             size: self.size
             pos: self.pos
+            radius: [(self.radius, self.radius), (self.radius, self.radius), (self.radius, self.radius), (self.radius, self.radius)]
+
     StackLayout:
         id: label_space
         orientation: root.orientation
