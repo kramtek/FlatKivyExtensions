@@ -45,6 +45,8 @@ log.info('\n\n\n')
 log.info('Platform system: %s     machine: %s' % (str(platform.system()), str(platform.machine())))
 log.info('Garden system dir: %s\n\n\n' % str(garden_system_dir))
 
+use_docked = True
+
 Builder.load_string('''
 ## #:import NavigationDrawer kivy.garden.navigationdrawer.NavigationDrawer
 #:import NoTransition kivy.uix.screenmanager.NoTransition
@@ -79,8 +81,10 @@ Builder.load_string('''
             id: navigationdrawer
             height: root.height
             width: root.width
-            side_panel_width: min(dp(250), 0.6*self.width)
-            anim_type:  'slide_above_simple'
+            #side_panel_width: min(dp(250), 0.6*self.width)
+            side_panel_width: 0.99*self.width
+            #anim_type:  'slide_above_simple'
+            anim_type:  'fade_in'
 
             ScrollView:
                 id: side_panel_container
@@ -94,10 +98,10 @@ Builder.load_string('''
                 #StackLayout:
                 #    orientation: 'tb-lr'
                 GridLayout:
+                    id: side_panel
                     cols: 1
                     size_hint_y: None
                     height: self.minimum_height
-                    id: side_panel
                     #orientation: 'vertical'
                     padding: '2dp'
                     spacing: '2dp'
@@ -390,15 +394,30 @@ class ExtendedFlatApp(FlatApp):
 
         self._menu_button.bind(on_press=lambda j: self._navigationdrawer.toggle_state())
 
-        for entry in self.app_config_entries:
+        if use_docked:
+            self._side_panel.cols = 4
+
+        index_offset = 0
+        for index, entry in enumerate(self.app_config_entries):
             if type(entry) not in [type(str()), type(dict())] and not isinstance(entry, ScreenNavigationEntry):
                 raise Exception('Each item in the application config entries list must either be a string, dict, or instance of ScreenNavigationEntry')
             if type(entry) == type(str()):
                 entry = {'text' : entry, 'theme' : ('app', 'navigationdrawer')}
             if type(entry) == type(dict()):
-                self._create_navigation_label(entry)
+                print('Adding label: %s  at index: %s' % (entry.get('text', '??'), str(index)))
+                index_offset += self._create_navigation_label(entry, index_offset, self._side_panel.cols)
             if isinstance(entry, ScreenNavigationEntry):
                 self._create_navigation_button(entry)
+                index_offset += 1
+
+            print('index_offset: %s' % str(index_offset))
+
+        # Use for docked navigation
+        if use_docked:
+            self._navigationdrawer.side_panel_width = self._header.width
+            #self._navigationdrawer.side_panel_darkness = 0.1
+            self.root.side_panel_color = self.root.header_color # (0.1, 0.1, 0.1, 0.2)
+            #self.root.side_panel_color = (0.1, 0.4, 0.1, 0.5)
 
         return self.root
 
@@ -621,7 +640,7 @@ class ExtendedFlatApp(FlatApp):
     #def _update_error_popup_height(self, instance, value):
     #    instance.popup.height = value + dp(33)
 #
-    def _create_navigation_label(self, entry):
+    def _create_navigation_label(self, entry, index, cols):
         label = FlatLabel(text=entry.get('text', 'None'))
         if 'theme' in entry.keys():
             setattr(label, 'theme', entry['theme'])
@@ -630,13 +649,67 @@ class ExtendedFlatApp(FlatApp):
             setattr(label, 'theme', ('app', 'navigationdrawer'))
         for (key,value) in entry.items():
             setattr(label, key, value)
-        if entry != self.app_config_entries[0]:
-            self._side_panel.add_widget(Widget(size_hint_y=None, height=dp(15)))
+        # Use for docked
+        if use_docked:
+            label.color_tuple = ('Gray', '0000')
+            #label.size_hint_x = 2.0
+            label.text_size = (dp(200), dp(35))
+            label.halign = 'left'
+            label.valign = 'center'
+        else:
+            # Disable for docked navigation
+            if entry != self.app_config_entries[0]:
+                self._side_panel.add_widget(Widget(size_hint_y=None, height=dp(15)))
+
+        added = 0
+        # Use for docked
+        if use_docked:
+            # ... we need to add blank widgets to fill up previous row
+            print('adding for %s' % str(entry.get('text', 'None')))
+            rng = (index%cols)
+            if rng > 0:
+                for colindex in xrange(cols-rng+1):
+                    print('  adding widget: %s' % str(colindex))
+                    self._side_panel.add_widget(Widget())
+                    added += 1
+            else:
+                self._side_panel.add_widget(Widget())
+                added += 1
+
         self._side_panel.add_widget(label)
-        return label
+        added += 1
+
+        if use_docked:
+            # ... we need to add blank widgets to fill up current row
+            for colindex in xrange(cols-2):
+                self._side_panel.add_widget(Widget())
+                added += 1
+
+        print(' -- added: %s' % str(added))
+        return added
 
     def _create_navigation_button(self, entry):
+        print('create navigation button with: %s' % entry.button_title)
         btn = entry.create_button(self._screenmanager)
+        print('   btn text: %s' % entry.button_title)
+
+        # Use for docked manager
+        if use_docked:
+            btn.theme = ('app', 'tabbarbutton')
+            btn.height = dp(80)
+            btn.font_size = dp(10)
+            btn.icon_font_size = dp(25)
+            btn.content_padding = ['1dp', '1dp', '1dp', '1dp']
+
+        #btn._label.size_hint = (1.0, None )
+        btn._icon.height = dp(30)
+        btn._label.height = dp(40)
+        self._side_panel.spacing = dp(5)
+        self._side_panel.padding = dp(5)
+
+        if use_docked:
+            btn.radius = dp(10)
+
         self._side_panel.add_widget(btn)
         btn.bind(on_release=self._switch_to_screen)
         if len(self._screenmanager.children) == 0:
