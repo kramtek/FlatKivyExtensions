@@ -45,8 +45,6 @@ log.info('\n\n\n')
 log.info('Platform system: %s     machine: %s' % (str(platform.system()), str(platform.machine())))
 log.info('Garden system dir: %s\n\n\n' % str(garden_system_dir))
 
-use_docked = True
-
 Builder.load_string('''
 ## #:import NavigationDrawer kivy.garden.navigationdrawer.NavigationDrawer
 #:import NoTransition kivy.uix.screenmanager.NoTransition
@@ -372,6 +370,8 @@ class ExtendedFlatApp(FlatApp):
         self._use_coverflow_navigation = use_coverflow_navigation
         self._first_screen = None
         self._first_navigation_label = None
+        self._use_docked = True
+
         self.root = RootWidget()
 
         self._busy_counter = 0
@@ -394,30 +394,31 @@ class ExtendedFlatApp(FlatApp):
 
         self._menu_button.bind(on_press=lambda j: self._navigationdrawer.toggle_state())
 
-        if use_docked:
-            self._side_panel.cols = 4
+        if self._use_docked:
+            self._side_panel.cols = 5
 
         index_offset = 0
+        self.nav_buttons = list()
         for index, entry in enumerate(self.app_config_entries):
             if type(entry) not in [type(str()), type(dict())] and not isinstance(entry, ScreenNavigationEntry):
                 raise Exception('Each item in the application config entries list must either be a string, dict, or instance of ScreenNavigationEntry')
             if type(entry) == type(str()):
                 entry = {'text' : entry, 'theme' : ('app', 'navigationdrawer')}
             if type(entry) == type(dict()):
-                print('Adding label: %s  at index: %s' % (entry.get('text', '??'), str(index)))
                 index_offset += self._create_navigation_label(entry, index_offset, self._side_panel.cols)
             if isinstance(entry, ScreenNavigationEntry):
-                self._create_navigation_button(entry)
+                btn = self._create_navigation_button(entry)
+                self.nav_buttons.append(btn)
                 index_offset += 1
 
-            print('index_offset: %s' % str(index_offset))
-
         # Use for docked navigation
-        if use_docked:
+        if self._use_docked:
             self._navigationdrawer.side_panel_width = self._header.width
             #self._navigationdrawer.side_panel_darkness = 0.1
             self.root.side_panel_color = self.root.header_color # (0.1, 0.1, 0.1, 0.2)
             #self.root.side_panel_color = (0.1, 0.4, 0.1, 0.5)
+
+        self._switch_to_screen(self.nav_buttons[0], toggle_state=False)
 
         return self.root
 
@@ -650,10 +651,10 @@ class ExtendedFlatApp(FlatApp):
         for (key,value) in entry.items():
             setattr(label, key, value)
         # Use for docked
-        if use_docked:
+        if self._use_docked:
             label.color_tuple = ('Gray', '0000')
             #label.size_hint_x = 2.0
-            label.text_size = (dp(200), dp(35))
+            label.text_size = (dp(150), dp(35))
             label.halign = 'left'
             label.valign = 'center'
         else:
@@ -663,13 +664,11 @@ class ExtendedFlatApp(FlatApp):
 
         added = 0
         # Use for docked
-        if use_docked:
+        if self._use_docked:
             # ... we need to add blank widgets to fill up previous row
-            print('adding for %s' % str(entry.get('text', 'None')))
             rng = (index%cols)
             if rng > 0:
                 for colindex in xrange(cols-rng+1):
-                    print('  adding widget: %s' % str(colindex))
                     self._side_panel.add_widget(Widget())
                     added += 1
             else:
@@ -679,36 +678,36 @@ class ExtendedFlatApp(FlatApp):
         self._side_panel.add_widget(label)
         added += 1
 
-        if use_docked:
+        if self._use_docked:
             # ... we need to add blank widgets to fill up current row
             for colindex in xrange(cols-2):
                 self._side_panel.add_widget(Widget())
                 added += 1
 
-        print(' -- added: %s' % str(added))
         return added
 
+    def _configure_docked_nav_button(self, btn):
+        btn.height = dp(80)
+        btn.style = 'LabelNormalBold'
+        btn.font_size = dp(8)
+        btn.icon_font_size = dp(25)
+        btn.content_padding = ['1dp', '0dp', '0dp', '0dp']
+        btn.height_offset = dp(30)
+        btn.font_color_tuple = ('Gray', '0000')
+        btn._icon.height = dp(50)
+        btn._label.height = dp(30)
+        btn.radius = dp(15)
+
     def _create_navigation_button(self, entry):
-        print('create navigation button with: %s' % entry.button_title)
         btn = entry.create_button(self._screenmanager)
-        print('   btn text: %s' % entry.button_title)
 
         # Use for docked manager
-        if use_docked:
+        if self._use_docked:
             btn.theme = ('app', 'tabbarbutton')
-            btn.height = dp(80)
-            btn.font_size = dp(10)
-            btn.icon_font_size = dp(25)
-            btn.content_padding = ['1dp', '1dp', '1dp', '1dp']
+            self._configure_docked_nav_button(btn)
 
-        #btn._label.size_hint = (1.0, None )
-        btn._icon.height = dp(30)
-        btn._label.height = dp(40)
         self._side_panel.spacing = dp(5)
         self._side_panel.padding = dp(5)
-
-        if use_docked:
-            btn.radius = dp(10)
 
         self._side_panel.add_widget(btn)
         btn.bind(on_release=self._switch_to_screen)
@@ -717,13 +716,26 @@ class ExtendedFlatApp(FlatApp):
         else:
             if not self.lazy_loading:
                 self._screenmanager.add_widget(btn.config.screen)
+        return btn
 
-    def _switch_to_screen(self, instance):
+    def _switch_to_screen(self, instance, toggle_state=True):
         screen = instance.config.screen
         if screen not in self._screenmanager.screens:
             self._screenmanager.add_widget(screen)
         self._screenmanager.current = screen.name
-        self._navigationdrawer.toggle_state()
+        if toggle_state:
+            self._navigationdrawer.toggle_state()
+
+        if self._use_docked:
+            for btn in self.nav_buttons:
+                #btn.color_tuple = ('Gray', '300')
+                btn.theme = ('app', 'tabbarbutton')
+                self._configure_docked_nav_button(btn)
+            instance.theme = ('app', 'tabbarbutton_highlighted')
+            self._configure_docked_nav_button(instance)
+            instance.color_tuple = (instance.color_tuple[0], '200')
+            instance.icon_color_tuple = (instance.icon_color_tuple[0], '800')
+
 
     def on_pause(self):
         log.info("Pausing application.")
