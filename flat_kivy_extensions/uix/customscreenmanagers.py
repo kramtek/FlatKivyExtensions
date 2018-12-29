@@ -4,6 +4,7 @@ from kivy.metrics import dp
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.widget import Widget
 
 from flat_kivy_extensions.flatappextension import CustomScreenManager, ScreenNavigationEntry
 
@@ -49,7 +50,9 @@ class CustomTabScreen(Screen):
         if entry.button_icon is not None:
             btn.icon = entry.button_icon
         btn.bind(on_release=self._switch_to_screen)
-        self._screenmanager.add_widget(btn.config.screen)
+        screen = btn.config.screen
+        screen.outer_container.add_widget(Widget(size_hint_y=None, height=dp(56)))
+        self._screenmanager.add_widget(screen)
         self.btns.append(btn)
 
     def _switch_to_screen(self, instance):
