@@ -141,8 +141,6 @@ class CustomScreen(Screen):
         padding = 2
         height_offset = 0
         header_height = 40
-        self.container_height = Window.height - dp(header_height) - dp(2*padding) - dp(height_offset) - self._title_label.height - 2*dp(padding) - 2*self._main_layout.padding[0]
-        #self._scroll_layout.height = self.container_height
 
         super(CustomScreen, self).__init__(*largs, **kwargs)
 
