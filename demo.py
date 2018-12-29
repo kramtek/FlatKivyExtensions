@@ -61,7 +61,7 @@ app_config_entries = ['Demo Screens',
                       'Custom Screens',
                       ScreenNavigationEntry(KivyWidgetScreen, 'Kivy Widget Demo'),
                       ScreenNavigationEntry(CustomButtonDemoScreen, 'Custom Buttons'),
-                      ScreenNavigationEntry(CustomLayoutsScreen, 'CustomLayouts'),
+                      ScreenNavigationEntry(CustomLayoutsScreen, 'Custom Layouts'),
                       ScreenNavigationEntry(DropShadowScreen, 'DropShadow Examples',
                                             screen_kwargs={'use_scrollview': True}),
 
