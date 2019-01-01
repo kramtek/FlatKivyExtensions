@@ -13,11 +13,13 @@ from kivy.clock import mainthread, Clock
 from kivy.uix.widget import Widget
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.screenmanager import FadeTransition, NoTransition, ScreenManager
 from kivy.uix.modalview import ModalView
 from kivy.uix.progressbar import ProgressBar
 from kivy.uix.screenmanager import Screen
+from kivy.properties import BooleanProperty
 
 from flat_kivy.flatapp import FlatApp
 from flat_kivy.uix.flatlabel import FlatLabel
@@ -83,6 +85,7 @@ Builder.load_string('''
             side_panel_width: 0.99*self.width
             #anim_type:  'slide_above_simple'
             anim_type:  'fade_in'
+            main_layout: main_layout.__self__
 
             ScrollView:
                 id: side_panel_container
@@ -95,7 +98,9 @@ Builder.load_string('''
 
                 #StackLayout:
                 #    orientation: 'tb-lr'
+
                 GridLayout:
+                #BlockingGridLayout:
                     id: side_panel
                     cols: 1
                     size_hint_y: None
@@ -113,7 +118,8 @@ Builder.load_string('''
 
                 # this will be populated dynamically when the root application is built
 
-            BoxLayout:
+            BlockingBoxLayout:
+                id: main_layout
                 orientation: 'vertical'
 
                 canvas.before:
@@ -227,6 +233,26 @@ class RootWidget(Widget):
 class BlankThumbNail(FlatLabel):
     pass
 
+#class BlockingGridLayout(GridLayout):
+class BlockingBoxLayout(BoxLayout):
+
+    block_ui = BooleanProperty(False)
+
+    def on_touch_down(self, touch):
+        if self.block_ui:
+            return True
+        return super(BlockingBoxLayout, self).on_touch_down(touch)
+
+    def on_touch_up(self, touch):
+        if self.block_ui:
+            return True
+        return super(BlockingBoxLayout, self).on_touch_up(touch)
+
+    def on_touch_move(self, touch):
+        if self.block_ui:
+            return True
+        return super(BlockingBoxLayout, self).on_touch_move(touch)
+
 class CustomScreenManager(ScreenManager):
 
     def __init__(self, **kwargs):
@@ -331,6 +357,20 @@ class ScreenConfig(object):
     screen = property(_getScreen)
 
 
+class BlockingIconButton(CustomIconButton):
+
+    pass
+
+#    def on_touch_down(self, touch):
+#        return True
+#
+#    def on_touch_up(self, touch):
+#        return True
+#
+#    def on_touch_move(self, touch):
+#        return True
+
+
 class ScreenNavigationEntry(ScreenConfig):
 
     def __init__(self, screen_class, button_title=None, button_icon='', screen_args=[], screen_kwargs={}):
@@ -341,7 +381,8 @@ class ScreenNavigationEntry(ScreenConfig):
         super(ScreenNavigationEntry, self).__init__(screen_class, screen_args=screen_args, screen_kwargs=screen_kwargs, screen_name=button_title)
 
     def create_button(self, screenmanager):
-        btn = CustomIconButton(text=self.button_title)
+        #btn = CustomIconButton(text=self.button_title)
+        btn = BlockingIconButton(text=self.button_title)
         btn.theme = ('app', 'navigationdrawer')
         btn.config = self
         btn.manager = screenmanager
@@ -420,7 +461,12 @@ class ExtendedFlatApp(FlatApp):
 
         self._switch_to_screen(self.nav_buttons[0], toggle_state=False)
 
+        self._navigationdrawer.bind(state=self._navdrawer_changed_state)
         return self.root
+
+    def _navdrawer_changed_state(self, instance, value):
+        layout = self._navigationdrawer.main_layout
+        layout.block_ui = value.strip().startswith('open')
 
     def setup_themes(self):
 
