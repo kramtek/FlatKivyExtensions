@@ -81,8 +81,8 @@ Builder.load_string('''
             id: navigationdrawer
             height: root.height
             width: root.width
-            #side_panel_width: min(dp(250), 0.6*self.width)
-            side_panel_width: 0.99*self.width
+            side_panel_width: min(dp(250), 0.6*self.width)
+            #side_panel_width: 0.90*self.width
             #anim_type:  'slide_above_simple'
             anim_type:  'fade_in'
             main_layout: main_layout.__self__
@@ -109,12 +109,12 @@ Builder.load_string('''
                     padding: '2dp'
                     spacing: '2dp'
 
-                    canvas.before:
-                        Color:
-                            rgba: root.side_panel_color
-                        Rectangle:
-                            pos: self.pos
-                            size: self.size
+                    #canvas.before:
+                    #    Color:
+                    #        rgba: root.side_panel_color
+                    #    Rectangle:
+                    #        pos: self.pos
+                    #        size: self.size
 
                 # this will be populated dynamically when the root application is built
 
@@ -411,7 +411,7 @@ class ExtendedFlatApp(FlatApp):
         self._use_coverflow_navigation = use_coverflow_navigation
         self._first_screen = None
         self._first_navigation_label = None
-        self._use_docked = True
+        self._use_dashboard = True
 
         self.root = RootWidget()
 
@@ -435,8 +435,9 @@ class ExtendedFlatApp(FlatApp):
 
         self._menu_button.bind(on_press=lambda j: self._navigationdrawer.toggle_state())
 
-        if self._use_docked:
+        if self._use_dashboard:
             self._side_panel.cols = 5
+            self._navigationdrawer.side_panel_width = 0.98*self._navigationdrawer.width
 
         index_offset = 0
         self.nav_buttons = list()
@@ -453,11 +454,12 @@ class ExtendedFlatApp(FlatApp):
                 index_offset += 1
 
         # Use for docked navigation
-        if self._use_docked:
+        if self._use_dashboard:
             self._navigationdrawer.side_panel_width = self._header.width
-            #self._navigationdrawer.side_panel_darkness = 0.1
+            #self._navigationdrawer.side_panel_darkness = 0.5
+            #self._navigationdrawer.side_panel_opacity = 0.1
             self.root.side_panel_color = self.root.header_color # (0.1, 0.1, 0.1, 0.2)
-            #self.root.side_panel_color = (0.1, 0.4, 0.1, 0.5)
+            #self.root.side_panel_color = (0.1, 0.4, 0.1, 0.2)
 
         self._switch_to_screen(self.nav_buttons[0], toggle_state=False)
 
@@ -697,7 +699,7 @@ class ExtendedFlatApp(FlatApp):
         for (key,value) in entry.items():
             setattr(label, key, value)
         # Use for docked
-        if self._use_docked:
+        if self._use_dashboard:
             label.color_tuple = ('Gray', '0000')
             #label.size_hint_x = 2.0
             label.text_size = (dp(150), dp(35))
@@ -710,7 +712,7 @@ class ExtendedFlatApp(FlatApp):
 
         added = 0
         # Use for docked
-        if self._use_docked:
+        if self._use_dashboard:
             # ... we need to add blank widgets to fill up previous row
             rng = (index%cols)
             if rng > 0:
@@ -724,7 +726,7 @@ class ExtendedFlatApp(FlatApp):
         self._side_panel.add_widget(label)
         added += 1
 
-        if self._use_docked:
+        if self._use_dashboard:
             # ... we need to add blank widgets to fill up current row
             for colindex in xrange(cols-2):
                 self._side_panel.add_widget(Widget())
@@ -748,7 +750,7 @@ class ExtendedFlatApp(FlatApp):
         btn = entry.create_button(self._screenmanager)
 
         # Use for docked manager
-        if self._use_docked:
+        if self._use_dashboard:
             btn.theme = ('app', 'tabbarbutton')
             self._configure_docked_nav_button(btn)
 
@@ -772,7 +774,7 @@ class ExtendedFlatApp(FlatApp):
         if toggle_state:
             self._navigationdrawer.toggle_state()
 
-        if self._use_docked:
+        if self._use_dashboard:
             for btn in self.nav_buttons:
                 #btn.color_tuple = ('Gray', '300')
                 btn.theme = ('app', 'tabbarbutton')
