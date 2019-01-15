@@ -81,8 +81,9 @@ Builder.load_string('''
             id: navigationdrawer
             height: root.height
             width: root.width
-            side_panel_width: min(dp(250), 0.6*self.width)
-            #side_panel_width: 0.90*self.width
+            menu_width: min(dp(250), 0.6*self.width)
+            dashboard_width: 0.95*self.width
+            side_panel_width: self.menu_width if not root.use_dashboard_navigation else self.dashboard_width
             #anim_type:  'slide_above_simple'
             anim_type:  'fade_in'
             main_layout: main_layout.__self__
@@ -228,7 +229,11 @@ class HeaderLayout(BoxLayout):
     pass
 
 class RootWidget(Widget):
-    pass
+    use_dashboard_navigation = BooleanProperty(False)
+
+    def __init__(self, *largs, **kwargs):
+        super(RootWidget, self).__init__(*largs, **kwargs)
+
 
 class BlankThumbNail(FlatLabel):
     pass
@@ -398,6 +403,7 @@ class ExtendedFlatApp(FlatApp):
     def __init__(self, app_config_entries, title, about,
                  use_coverflow_navigation=True,
                  lazy_loading=False,
+                 use_dashboard_navigation=False,
                  themes={}, types_to_theme={}, font_styles={},
                  **kwargs):
         self._themes = themes
@@ -411,9 +417,9 @@ class ExtendedFlatApp(FlatApp):
         self._use_coverflow_navigation = use_coverflow_navigation
         self._first_screen = None
         self._first_navigation_label = None
-        self._use_dashboard = True
+        self.use_dashboard_navigation = use_dashboard_navigation
 
-        self.root = RootWidget()
+        self.root = RootWidget(use_dashboard_navigation=use_dashboard_navigation)
 
         self._busy_counter = 0
 
@@ -435,9 +441,8 @@ class ExtendedFlatApp(FlatApp):
 
         self._menu_button.bind(on_press=lambda j: self._navigationdrawer.toggle_state())
 
-        if self._use_dashboard:
+        if self.use_dashboard_navigation:
             self._side_panel.cols = 5
-            self._navigationdrawer.side_panel_width = 0.98*self._navigationdrawer.width
 
         index_offset = 0
         self.nav_buttons = list()
@@ -454,8 +459,7 @@ class ExtendedFlatApp(FlatApp):
                 index_offset += 1
 
         # Use for docked navigation
-        if self._use_dashboard:
-            self._navigationdrawer.side_panel_width = self._header.width
+        if self.use_dashboard_navigation:
             #self._navigationdrawer.side_panel_darkness = 0.5
             #self._navigationdrawer.side_panel_opacity = 0.1
             self.root.side_panel_color = self.root.header_color # (0.1, 0.1, 0.1, 0.2)
@@ -463,6 +467,8 @@ class ExtendedFlatApp(FlatApp):
 
         self._switch_to_screen(self.nav_buttons[0], toggle_state=False)
 
+        if self.use_dashboard_navigation:
+            self._side_panel.width = 0.95*self._side_panel.width
         self._navigationdrawer.bind(state=self._navdrawer_changed_state)
         return self.root
 
@@ -531,164 +537,147 @@ class ExtendedFlatApp(FlatApp):
                 self._busy_counter += -1
         self.show_busy_in_header(self._busy_counter>0)
 
-    def raise_busy(self, busy_title, busy_text, auto_dismiss=False, timeout=None, cancel_callback=None, timeout_callback=None, auto_open=True):
-        busy_content = CustomBusyContent()
-        busy_content.theme=('app', 'shit')
-        self.busy_popup = CustomPopup(
-            content=busy_content, size_hint=(None, None), width=dp(200),
+    def _getCustomPopup(self, content, auto_dismiss):
+        popup = CustomPopup(
+            content=content, size_hint=(None, None), width=dp(200),
             auto_dismiss=auto_dismiss,
             separator_color=(0,0,0,1),
             background_color=(0,0,0,.25),
             separator_height=dp(1),)
 
-        busy_content.popup = self.busy_popup
-        busy_content.bind(height=self._update_popup_height)
-        busy_content.label_color_tuple = ('BlueGray', '800')
-        busy_content.cancel_btn_color_tuple = ('BlueGray', '700')
+        popup.title_color_tuple = ('BlueGray', '700')
+        popup.title_size = dp(13)
+        popup.popup_color=(.95, .95, .95, 1.0)
 
-        self.busy_popup.title_color_tuple = ('BlueGray', '700')
-        self.busy_popup.title_size = dp(13)
-        self.busy_popup.popup_color=(.95, .95, .95, 1.0)
+        content.label_color_tuple = ('BlueGray', '800')
+        content.btn_color_tuple = ('BlueGray', '700')
+        content.bind(size=self._update_popup_size)
+        content.popup = popup
 
-        #Clock.unschedule(busy_content.spinner._update)
-        #Clock.schedule_interval(busy_content.spinner._update, .5)
-        busy_content.spinner.start_spinning()
+        return popup
 
-        busy_content.busy_text = busy_text
-        self.busy_popup.title = busy_title
-        cancel_button = busy_content.cancel_button
+    def raise_busy(self, title, message, auto_dismiss=False, timeout=None, cancel_callback=None, timeout_callback=None, auto_open=True):
+        content = CustomPopupContent()
+        content.message = message
+        content.cancel_text = 'Dismiss'
+        content.remove_icon()
+        content.remove_ok_btn()
+
+        popup = self._getCustomPopup(content, auto_dismiss=auto_dismiss)
+        popup.title = title
+
+        cancel_button = content.cancel_button
+
         event = None
         def dismiss_popup(*largs):
-            busy_content.spinner.stop_spinning()
+            content.spinner.stop_spinning()
             if event is not None:
                 event.cancel()
-            self.busy_popup.dismiss()
+            popup.dismiss()
             if cancel_callback is not None:
                 cancel_callback()
-        #dismiss_button.bind(on_release=self.busy_popup.dismiss)
         cancel_button.bind(on_release=dismiss_popup)
-        if auto_open:
-            self.busy_popup.open()
 
         if timeout is not None:
             def close_popup(dt):
-                busy_content.spinner.stop_spinning()
-                self.busy_popup.dismiss()
+                content.spinner.stop_spinning()
+                popup.dismiss()
                 if timeout_callback is not None:
                     timeout_callback()
             event = Clock.schedule_once(close_popup, timeout)
             def clear_timeout(self):
                 event.cancel()
-            self.busy_popup.bind(on_dismiss=clear_timeout)
-        return self.busy_popup
+            popup.bind(on_dismiss=clear_timeout)
 
-    #def _update_busy_popup_height(self, instance, value):
-    #    instance.popup.height = value + dp(33)
+        self._busy_popup = popup
+        if auto_open:
+            popup.open()
+        return popup
+
 
     def raise_dialog(self, title, text, auto_dismiss=False, okay_callback=None, cancel_callback=None, timeout=None, auto_open=True):
         content = CustomPopupContent()
-        content.text = text
-        content.label_color_tuple = ('BlueGray', '800')
+        content.message = text
         content.cancel_text = 'Dismiss'
         content.ok_text = 'Sure'
 
+        content.remove_spinner()
+        content.remove_icon()
+
         if okay_callback is None and cancel_callback is None:
-            content.btn_layout.remove_widget(content.cancel_button)
+            content.remove_cancel_btn()
             content.ok_text = 'Okay'
 
-        self.popup = CustomPopup(
-            content=content, size_hint=(None, None), width=dp(200),
-            auto_dismiss=auto_dismiss,
-            separator_color=(0,0,0,1),
-            background_color=(0,0,0,0.25),
-            separator_height=dp(1),)
+        popup = self._getCustomPopup(content, auto_dismiss=auto_dismiss)
+        popup.title = title
 
-        content.cancel_btn_color_tuple = ('BlueGray', '700')
-        content.ok_btn_color_tuple = ('BlueGray', '700')
-
-        content.popup = self.popup
-        content.bind(height=self._update_popup_height)
-
-        self.popup.title_color_tuple = ('BlueGray', '700')
-        self.popup.popup_color=(.95, .95, .95, 1.0)
-        self.popup.title = title
-        self.popup.title_size = dp(13)
-        self.popup.height = content.minimum_height - dp(10)
+        popup.height = content.minimum_height - dp(10)
 
         cancel_button = content.cancel_button
-        cancel_button.bind(on_release=self.popup.dismiss)
+
+        event = None
+        def dismiss_popup(*largs):
+            content.stop_spinning(None)
+            if event is not None:
+                event.cancel()
+            popup.dismiss()
+            if cancel_callback is not None:
+                cancel_callback()
+        cancel_button.bind(on_release=dismiss_popup)
 
         def receivedOkay(*largs):
-            self.popup.dismiss()
+            popup.dismiss()
             if okay_callback is not None:
                 okay_callback()
 
         def receivedCancel(*largs):
-            self.popup.dismiss()
+            popup.dismiss()
             if cancel_callback is not None:
                 cancel_callback()
 
-        ok_button = content.ok_button
-        ok_button.bind(on_release=receivedOkay)
+        content.ok_button.bind(on_release=receivedOkay)
+        content.cancel_button.bind(on_release=receivedCancel)
 
-        cancel_button = content.cancel_button
-        cancel_button.bind(on_release=receivedCancel)
+        popup.bind(on_dismiss=content.stop_spinning)
 
+        self._popup = popup
         if auto_open:
-            self.popup.open()
-
-        return self.popup
-
-    def _update_popup_height(self, instance, value):
-        instance.popup.height = value + dp(33)
-#        print(' window center y: %s' % str(Window.height))
-#        print(' popup pos : %s' % str(instance.popup.pos))
-        y_pos = Window.height/2 - instance.popup.height/2
-        instance.popup.pos = (instance.popup.pos[0],  y_pos)
-
+            popup.open()
+        #content.stop_spinning()
+        return popup
 
     def raise_error(self, error_title, error_text, auto_dismiss=False, timeout=None, auto_open=True, traceback=None):
         log.error(error_text)
-        error_content = CustomErrorContent()
-        error_content.error_text = error_text
-        error_content.label_color_tuple = ('BlueGray', '800')
-
-        self.error_popup = CustomPopup(
-            content=error_content, size_hint=(None, None), width=dp(200),
-            auto_dismiss=auto_dismiss,
-            separator_color=(0,0,0,1),
-            background_color=(0,0,0,0.25),
-            separator_height=dp(1),
-            cols=1,)
-        error_content.popup = self.error_popup
-        error_content.cancel_btn_color_tuple = ('BlueGray', '700')
-
-        self.error_popup.title_color_tuple = ('BlueGray', '700')
-        self.error_popup.popup_color=(.95, .95, .95, 1.0)
-        self.error_popup.title = error_title
-        self.error_popup.title_size = dp(13)
-        self.error_popup.height = error_content.minimum_height + dp(50)
-
-        error_content.bind(height=self._update_popup_height)
-        cancel_button = error_content.cancel_button
-        cancel_button.text = 'Ok'
-        cancel_button.bind(on_release=self.error_popup.dismiss)
-        error_content.theme=('app', 'shit')
-
         if traceback is not None:
             print(str(traceback))
-        if auto_open:
-            self.error_popup.open()
+        content = CustomErrorContent()
+        content.message = error_text
+        content.label_color_tuple = ('BlueGray', '800')
+
+        popup = self._getCustomPopup(content, auto_dismiss=auto_dismiss)
+        popup.title = error_title
+
+        popup.height = content.minimum_height + dp(50)
+
+        cancel_button = content.cancel_button
+        cancel_button.text = 'Ok'
+        cancel_button.bind(on_release=popup.dismiss)
+
         if timeout is not None:
             def close_popup(dt):
-                self.error_popup.dismiss()
+                popup.dismiss()
             Clock.schedule_once(close_popup, timeout)
 
+        self.error_popup = popup
+        if auto_open:
+            popup.open()
         return self.error_popup
 
-    #def _update_error_popup_height(self, instance, value):
-    #    instance.popup.height = value + dp(33)
-#
+    def _update_popup_size(self, instance, value):
+        instance.popup.height = value[1] + dp(33)
+        y_pos = Window.height/2 - instance.popup.height/2
+        instance.popup.pos = (instance.popup.pos[0],  y_pos)
+
     def _create_navigation_label(self, entry, index, cols):
         label = FlatLabel(text=entry.get('text', 'None'))
         if 'theme' in entry.keys():
@@ -699,7 +688,7 @@ class ExtendedFlatApp(FlatApp):
         for (key,value) in entry.items():
             setattr(label, key, value)
         # Use for docked
-        if self._use_dashboard:
+        if self.use_dashboard_navigation:
             label.color_tuple = ('Gray', '0000')
             #label.size_hint_x = 2.0
             label.text_size = (dp(150), dp(35))
@@ -712,7 +701,7 @@ class ExtendedFlatApp(FlatApp):
 
         added = 0
         # Use for docked
-        if self._use_dashboard:
+        if self.use_dashboard_navigation:
             # ... we need to add blank widgets to fill up previous row
             rng = (index%cols)
             if rng > 0:
@@ -726,7 +715,7 @@ class ExtendedFlatApp(FlatApp):
         self._side_panel.add_widget(label)
         added += 1
 
-        if self._use_dashboard:
+        if self.use_dashboard_navigation:
             # ... we need to add blank widgets to fill up current row
             for colindex in xrange(cols-2):
                 self._side_panel.add_widget(Widget())
@@ -750,7 +739,7 @@ class ExtendedFlatApp(FlatApp):
         btn = entry.create_button(self._screenmanager)
 
         # Use for docked manager
-        if self._use_dashboard:
+        if self.use_dashboard_navigation:
             btn.theme = ('app', 'tabbarbutton')
             self._configure_docked_nav_button(btn)
 
@@ -774,7 +763,7 @@ class ExtendedFlatApp(FlatApp):
         if toggle_state:
             self._navigationdrawer.toggle_state()
 
-        if self._use_dashboard:
+        if self.use_dashboard_navigation:
             for btn in self.nav_buttons:
                 #btn.color_tuple = ('Gray', '300')
                 btn.theme = ('app', 'tabbarbutton')

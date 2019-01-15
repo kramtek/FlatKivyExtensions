@@ -82,6 +82,8 @@ class DialogDemoScreen(CustomScreen):
                                           cancel_callback=self.canceled,)
 
         #self.busy_popup.content.spinner_color=[.2, .2, .3, .9]
+        #self.busy_popup.content.spinner.speed = 10.0
+
         AppAwareThread(target=self._threaded_process).start()
 
     def _threaded_process(self):
@@ -96,7 +98,7 @@ class DialogDemoScreen(CustomScreen):
 
     @mainthread
     def update_busy_text(self):
-        self.busy_popup.content.busy_text = self.busy_text
+        self.busy_popup.content.message = self.busy_text
 
     def show_error_dialog(self, *largs):
         App.get_running_app().raise_error('Some Error', 'Some error detail...',)

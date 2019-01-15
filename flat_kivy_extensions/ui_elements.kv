@@ -467,33 +467,61 @@
         #root.setter('touch_down_active')
         no_interact: True # root.disabled or root.no_interact
 
+<PopupButton@CustomButton>:
+    style: 'NavigationLabelMainHeading'
+    font_size: dp(12)
+    radius: dp(5)
+
 <CustomPopupContent>:
     orientation: 'tb-lr'
     size_hint: (1.0, None)
-    cancel_button: cancel_button.__self__
-    ok_button: ok_button.__self__
-    label: label.__self__
-    label_layout: label_layout.__self__
     cols: 1
     padding: dp(5)
     spacing: dp(5)
     height: self.minimum_height
+
     message_alignment: 'center'
     cancel_text: 'Cancel'
-    cancel_btn_color_tuple: ('Brown', '700')
-    cancel_btn_font_color_tuple: ('Gray', '0000') 
     ok_text: 'Ok'
-    ok_btn_color_tuple: ('Brown', '700')
-    ok_btn_font_color_tuple: ('Gray', '0000') 
+
+    btn_color_tuple: ('Brown', '700')
+    btn_font_color_tuple: ('Gray', '0000') 
+
+    content_layout: content_layout.__self__
     btn_layout: btn_layout.__self__
+    cancel_button: cancel_button.__self__
+    ok_button: ok_button.__self__
+    label: label.__self__
+    ok_btn_layout: ok_btn_layout.__self__
+    cancel_btn_layout: cancel_btn_layout.__self__
+
+    popup_icon: popup_icon.__self__
+    spinner: spinner.__self__
+
+    FlatIcon:
+        id: popup_icon
+        size_hint: (1, None)
+        height: dp(15)
+        font_size: dp(30)
+        icon: root.icon
+        color_tuple: ('Red', '500')
+
+    CustomSpinner:
+        id: spinner
+        size_hint: (1, None)
+        height: dp(50)
+        color: root.spinner_color
+        stroke_width: dp(8.25)*1.0
+        stroke_length: 10
+        speed: 4.0 
 
     ScrollView:
         size_hint_y: None
-        label_layout: label_layout.__self__
-        height: min(dp(200), label_layout.minimum_height)
+        content_layout: content_layout.__self__
+        height: min(dp(200), content_layout.minimum_height)
 
         GridLayout:
-            id: label_layout
+            id: content_layout
             cols: 1
             size_hint_y: None
             height: self.minimum_height
@@ -508,7 +536,7 @@
                 style: 'NavigationLabelMainHeading'
                 valign: 'top'
                 halign: root.message_alignment
-                text: root.text
+                text: root.message
                 color_tuple: root.label_color_tuple
                 font_size: dp(12)
 
@@ -516,31 +544,26 @@
         id: btn_layout
         orientation: 'horizontal'
         size_hint_y: None
-        height: dp(32)
-        spacing: dp(2)
+        height: dp(35)
+        spacing: dp(5)
 
-        CustomButton:
-            id: ok_button
-            # theme: root.theme
-            color_tuple: root.ok_btn_color_tuple
-            text: root.ok_text
-            size_hint: (0.6, None)
-            height: dp(30)
-            style: 'NavigationLabelMainHeading'
-            font_size: dp(12)
-            font_color_tuple: root.ok_btn_font_color_tuple
+        AnchorLayout:
+            id: ok_btn_layout
+            
+            PopupButton:
+                id: ok_button
+                text: root.ok_text
+                color_tuple: root.btn_color_tuple
+                font_color_tuple: root.btn_font_color_tuple
 
-        CustomButton:
-            id: cancel_button
-            # theme: root.theme
-            color_tuple: root.cancel_btn_color_tuple
-            text: root.cancel_text
-            size_hint: (0.6, None)
-            height: dp(30)
-            style: 'NavigationLabelMainHeading'
-            font_size: dp(12)
-            font_color_tuple: root.cancel_btn_font_color_tuple
-            radius: dp(3)
+        AnchorLayout:
+            id: cancel_btn_layout
+
+            PopupButton:
+                id: cancel_button
+                text: root.cancel_text
+                color_tuple: root.btn_color_tuple
+                font_color_tuple: root.btn_font_color_tuple
 
 <-CustomSpinner>:
 	_size: min(self.height, self.width)
@@ -574,8 +597,10 @@
     radius: '2dp'
     height: self.minimum_height
     cancel_text: 'Cancel'
-    cancel_btn_color_tuple: ('Brown', '700')
-    cancel_btn_font_color_tuple: ('Gray', '0000') 
+    #cancel_btn_color_tuple: ('Brown', '700')
+    #cancel_btn_font_color_tuple: ('Gray', '0000') 
+    btn_color_tuple: ('Brown', '700')
+    btn_font_color_tuple: ('Gray', '0000') 
     cancel_button: cancel_button.__self__
     label: label.__self__
     message_alignment: 'center'
@@ -610,7 +635,7 @@
                 style: 'NavigationLabelMainHeading'
                 valign: 'top'
                 halign: root.message_alignment
-                text: root.error_text
+                text: root.message
                 color_tuple: root.label_color_tuple
 
 
@@ -646,7 +671,8 @@
             size_hint: (0.6, None)
             height: dp(30)
             style: 'NavigationLabelMainHeading'
-            color_tuple: root.cancel_btn_color_tuple
+            #color_tuple: root.cancel_btn_color_tuple
+            color_tuple: root.btn_color_tuple
             radius: root.radius
             font_size: dp(12)
             font_color_tuple: ('Gray', '0000') 
@@ -664,8 +690,10 @@
     height: self.minimum_height
     spinner_color: 0.2, 0.4, .2, 1.0
     cancel_text: 'Cancel'
-    cancel_btn_color_tuple: ('Brown', '700')
-    cancel_btn_font_color_tuple: ('Gray', '0000') 
+    #cancel_btn_color_tuple: ('Brown', '700')
+    #cancel_btn_font_color_tuple: ('Gray', '0000') 
+    btn_color_tuple: ('Brown', '700')
+    btn_font_color_tuple: ('Gray', '0000') 
     spinner: _spinner.__self__
     cancel_button: cancel_button.__self__
     label: label.__self__
@@ -695,7 +723,7 @@
         style: 'NavigationLabelMainHeading'
         valign: 'top'
         halign: 'center'
-        text: root.busy_text
+        text: root.message
         color_tuple: root.label_color_tuple
         font_size: dp(12)
 
@@ -706,10 +734,10 @@
         size_hint: (0.6, None)
         height: dp(30)
         style: 'NavigationLabelMainHeading'
-        color_tuple: root.cancel_btn_color_tuple
+        color_tuple: root.btn_color_tuple
         radius: root.radius
         font_size: dp(12)
-        font_color_tuple: ('Gray', '0000') 
+        font_color_tuple: root.btn_font_color_tuple
         radius: dp(3)
 
 
@@ -747,10 +775,10 @@
             color: app.get_color(root.title_color_tuple)
             size_hint_y: None
             height: self.texture_size[1] + dp(5)
-            text_size: self.width - 16, None
+            text_size: self.width, None
             font_size: root.title_size
             style: 'NavigationLabelMainHeading'
-            halign: 'left'
+            halign: root.title_alignment
 
         Widget:
             size_hint_y: None

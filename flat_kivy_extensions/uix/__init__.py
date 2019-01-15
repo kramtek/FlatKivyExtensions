@@ -11,12 +11,44 @@ from flat_kivy_extensions import PackageLogger
 log = PackageLogger(__name__, moduleDebug=False)
 
 class CustomPopupContent(GridLayout, ThemeBehavior):
-    text = StringProperty('Default Error Text')
+    message = StringProperty('Default Popup Text')
     label_color_tuple = ListProperty( ['Blue', '800'] )
     messge_alignment = StringProperty('center')
 
+    icon = StringProperty('fa-check', allownone=True)
+    spinner_color = ListProperty( [0.0, 0.6, 0.2, 0.8] )
+
+    def __init__(self, *largs, **kwargs):
+        super(CustomPopupContent, self).__init__(*largs, **kwargs)
+        self._show_spinner = True
+
+    def remove_ok_btn(self):
+        self.btn_layout.remove_widget(self.ok_btn_layout)
+
+    def remove_cancel_btn(self):
+        self.btn_layout.remove_widget(self.cancel_btn_layout)
+
+    def on_parent(self, instance, value):
+        if self._show_spinner:
+            self.spinner.start_spinning()
+
+    def stop_spinning(self, instance):
+        self.spinner.stop_spinning()
+
+    def remove_spinner(self):
+        self.spinner.stop_spinning()
+        self.remove_widget(self.spinner)
+        self._show_spinner = False
+
+    def remove_icon(self):
+        self.remove_widget(self.popup_icon)
+
+    def setup_btn_layout(self, ok_text, cancel_text):
+        pass
+
+
 class CustomBusyContent(GridLayout, ThemeBehavior):
-    busy_text = StringProperty('Default Busy Text')
+    message = StringProperty('Default Busy Text')
     label_color_tuple = ListProperty( ['Blue', '800'] )
 
     def __init__(self, cancel_callback=None, **kwargs):
@@ -24,7 +56,7 @@ class CustomBusyContent(GridLayout, ThemeBehavior):
         self.cols = 1
 
 class CustomErrorContent(GridLayout, ThemeBehavior):
-    error_text = StringProperty('Default error Text')
+    message = StringProperty('Default error Text')
     label_color_tuple = ListProperty( ['Blue', '800'] )
 
     def __init__(self, cancel_callback=None, **kwargs):
