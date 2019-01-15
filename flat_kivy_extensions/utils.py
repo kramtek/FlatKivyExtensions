@@ -35,16 +35,21 @@ def is_app_config_available():
         return False
     return True
 
-def get_app_config_entry(configTag):
-    forceReload = True
-    if forceReload:
+localTree = None
+def get_app_config_entry(configTag, forceReload=True):
+    global localTree
+    if forceReload or localTree is None:
         filename = 'local_app_config.xml'
         try:
+            print('loading tree fresh from %s'  % filename)
             tree = ET.ElementTree(file=filename)
-            current_root = tree.getroot()
+            localTree = tree
         except Exception as e:
             log.error('Exception: %s  (returning None)' % str(e))
             return None
+    else:
+        print('using pre-loaded tree...')
+    current_root = localTree.getroot()
     return current_root.find(configTag)
 
 
@@ -55,8 +60,12 @@ def prettify(elem):
 
 def set_app_config_entry(configTags, tags, attributes):
     filename = 'local_app_config.xml'
+    global localTree
     try:
-        tree = ET.ElementTree(file=filename)
+        if localTree is None:
+            tree = ET.ElementTree(file=filename)
+        else:
+            tree = localTree
         current_root = tree.getroot()
     except Exception as e:
         log.error('Exception: %s  (returning None)' % str(e))
