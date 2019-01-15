@@ -7,7 +7,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.widget import Widget
 
 from flat_kivy_extensions.flatappextension import CustomScreenManager, ScreenNavigationEntry
-
+from flat_kivy_extensions.uix.customscreen import CustomScreen
 Builder.load_string('''
 <-TabButtonLayout>:
     canvas.before:
@@ -51,7 +51,8 @@ class CustomTabScreen(Screen):
             btn.icon = entry.button_icon
         btn.bind(on_release=self._switch_to_screen)
         screen = btn.config.screen
-        screen.outer_container.add_widget(Widget(size_hint_y=None, height=dp(56)))
+        if isinstance(screen, CustomScreen):
+            screen.outer_container.add_widget(Widget(size_hint_y=None, height=dp(56)))
         self._screenmanager.add_widget(screen)
         self.btns.append(btn)
 
