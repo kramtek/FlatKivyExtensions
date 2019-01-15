@@ -29,7 +29,7 @@ Builder.load_string('''
     BoxLayout:
         id: filechooser_layout
         size_hint_y: None
-        height: root.container_height
+        height: root._scroll_layout.height - dp(15)
         canvas.before:
             Color:
                 rgba: (0.1, 0.2, 0.1, 1.0)
@@ -41,10 +41,6 @@ Builder.load_string('''
             id: filechooser
             rootpath: root.root_path
             filters: ['*.py', '*.txt']
-            #size_hint_y: None
-            #height: root.container_height
-
-            #FileChooserListLayout:
 
     GridLayout:
         id: codeinput_layout
@@ -70,7 +66,7 @@ Builder.load_string('''
             id: codeinput
             padding: '4dp'
             size_hint_y: None
-            height: root.container_height - dp(20+50)
+            height: root._scroll_layout.height - dp(20+50+15)
             multiline: True
             text: 'class Hello(object):'
             # focus: True if root.parent else False
@@ -134,12 +130,6 @@ class FileEditScreen(CustomScreen):
         self.codeinput.bind(on_text_validate=self.validate_text)
         self.remove_widget(self.codeinput_layout)
 
-        #self.filechooser_layout.size_hint_y = None
-        #self.filechooser_layout.height = self.container_height
-
-        #self.filechooser.size_hint_y = None
-        #self.filechooser.height = self.filechooser_layout.height
-
 
         self._built = True
         self._keyboard_open = False
@@ -175,10 +165,10 @@ class FileEditScreen(CustomScreen):
     def show_keyboard(self, *largs):
         if self._keyboard_open:
             self.codeinput.hide_keyboard()
-            self.codeinput.height = self.container_height - dp(20+50)
+            self.codeinput.height = self._scroll_layout.height - dp(20+50+15)
         else:
             self.codeinput.show_keyboard()
-            self.codeinput.height = self.container_height / 2.0
+            self.codeinput.height = self._scroll_layout.height / 2.0
             #self._keyboard = Window.request_keyboard(
             #    self._keyboard_closed, self)
             #self._keyboard.bind(on_key_down=self._on_keyboard_down)
