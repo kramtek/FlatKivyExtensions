@@ -6,10 +6,15 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.metrics import dp
 
-from kivy.properties import StringProperty, ListProperty, NumericProperty
+from kivy.properties import StringProperty, ListProperty, NumericProperty, ObjectProperty, BooleanProperty
 from kivy.uix.gridlayout import GridLayout
 
 from flat_kivy.uix.flatlabel import FlatLabel
+
+from flat_kivy_extensions.uix.customcheckbox import CustomCheckBoxListItem
+
+from flat_kivy_extensions import PackageLogger
+log = PackageLogger(__name__, moduleDebug=False)
 
 Builder.load_string('''
 
@@ -63,6 +68,11 @@ Builder.load_string('''
     #         size: self.size
     #         pos: self.pos
 
+<-ChoiceLayout>:
+    orientation: 'vertical'
+    size_hint: None, None
+    size: (dp(200), dp(0))
+
 ''')
 
 class _WidgetContainerLayout(BoxLayout):
@@ -79,6 +89,60 @@ class _MainLayout(BoxLayout):
 
 class _ContentLayout(GridLayout):
     pass
+
+
+class ChoiceLayout(BoxLayout):
+
+    theme = ObjectProperty(('', ''))
+    selected = ObjectProperty(None, allownone=True)
+    exclusive = BooleanProperty(False)
+    disabled = BooleanProperty(False)
+
+    def __init__(self, *largs, **kwargs):
+        if 'exclusive' in kwargs.keys():
+            self.exclusive = kwargs['exclusive']
+            del(kwargs['exclusive'])
+        super(ChoiceLayout, self).__init__(*largs, **kwargs)
+        self._currentChoice = None
+
+    def on_disabled(self, instance, value):
+        for child in self.children:
+            child.disabled = value
+
+    def selectChoice(self, instance, value):
+        if value:
+            self._currentChoice = instance.text
+            self.selected = instance.text
+
+    def setup(self, labels, detail_text=None):
+        for index, label in enumerate(labels):
+            #item = ChoiceListItem(text=label)
+            item = CustomCheckBoxListItem(text=label)
+            item.theme = self.theme
+            if detail_text is not None:
+                item.detail_text = detail_text[index]
+                item.detail_font_size = dp(10)
+            if self.exclusive:
+                item.group = str(id(self))
+            item.exclusive = True
+            item.height = dp(45)
+            item.bind(active=self.selectChoice)
+            self.bind(theme=item.setter('theme'))
+            self.add_widget(item)
+
+            if self.exclusive:
+                item.icon = 'fa-circle'
+                item.radius = item.height * 0.25
+                item.check_scale = 0.45 * item.size_scaling
+            else:
+                item.size_scaling = 0.5
+                item.check_scale = .35
+
+        self.height = dp(45)*len(labels)
+
+
+
+
 
 
 class StyledLayout(StackLayout):
