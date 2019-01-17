@@ -46,6 +46,10 @@ class CustomPopupContent(GridLayout, ThemeBehavior):
     def setup_btn_layout(self, ok_text, cancel_text):
         pass
 
+    def replace_label(self, widget):
+        self.content_layout.remove_widget(self.popup.content.label)
+        self.content_layout.add_widget(widget)
+
 
 class CustomBusyContent(GridLayout, ThemeBehavior):
     message = StringProperty('Default Busy Text')
