@@ -28,6 +28,7 @@ from flat_kivy.font_definitions import style_manager
 from flat_kivy_extensions.uix import CustomPopupContent, CustomBusyContent, CustomErrorContent
 from flat_kivy_extensions.uix.custompopup import CustomPopup
 from flat_kivy_extensions.uix.customscreen import CustomScreen
+from flat_kivy_extensions.uix.customlayouts import ChoiceLayout
 
 from flat_kivy_extensions.uix.customiconbutton import CustomIconButton
 from flat_kivy_extensions.uix.custombutton import CustomButton
@@ -537,7 +538,7 @@ class ExtendedFlatApp(FlatApp):
                 self._busy_counter += -1
         self.show_busy_in_header(self._busy_counter>0)
 
-    def _getCustomPopup(self, content, auto_dismiss):
+    def _getCustomPopup(self, content, auto_dismiss=False):
         popup = CustomPopup(
             content=content, size_hint=(None, None), width=dp(200),
             auto_dismiss=auto_dismiss,
@@ -556,10 +557,14 @@ class ExtendedFlatApp(FlatApp):
 
         return popup
 
-    def raise_busy(self, title, message, auto_dismiss=False, timeout=None, cancel_callback=None, timeout_callback=None, auto_open=True):
+    def raise_busy(self, title, message,
+                    auto_open=True, auto_dismiss=False,
+                    cancel_text='Dismiss', cancel_callback=None,
+                    timeout=None, timeout_callback=None,
+                    ):
         content = CustomPopupContent()
         content.message = message
-        content.cancel_text = 'Dismiss'
+        content.cancel_text = cancel_text
         content.remove_icon()
         content.remove_ok_btn()
 
@@ -595,11 +600,16 @@ class ExtendedFlatApp(FlatApp):
         return popup
 
 
-    def raise_dialog(self, title, text, auto_dismiss=False, okay_callback=None, cancel_callback=None, timeout=None, auto_open=True):
+    def raise_dialog(self, title, text,
+            auto_open=True, auto_dismiss=False,
+            ok_text='Sure', okay_callback=None,
+            cancel_text='Dismiss', cancel_callback=None,
+            timeout=None,
+            ):
         content = CustomPopupContent()
         content.message = text
-        content.cancel_text = 'Dismiss'
-        content.ok_text = 'Sure'
+        content.cancel_text = cancel_text
+        content.ok_text = ok_text
 
         content.remove_spinner()
         content.remove_icon()
@@ -629,30 +639,86 @@ class ExtendedFlatApp(FlatApp):
             popup.dismiss()
             if okay_callback is not None:
                 okay_callback()
-
-        def receivedCancel(*largs):
-            popup.dismiss()
-            if cancel_callback is not None:
-                cancel_callback()
-
         content.ok_button.bind(on_release=receivedOkay)
-        content.cancel_button.bind(on_release=receivedCancel)
 
         popup.bind(on_dismiss=content.stop_spinning)
 
-        self._popup = popup
         if auto_open:
             popup.open()
         #content.stop_spinning()
         return popup
 
-    def raise_error(self, error_title, error_text, auto_dismiss=False, timeout=None, auto_open=True, traceback=None):
+    def raise_choice(self, title, option_list,
+                    option_detail_list=None,
+                    auto_open=True, auto_dismiss=False,
+                    ok_text='Sure', okay_callback=None,
+                    cancel_text='Dismiss', cancel_callback=None,
+                    timeout=None,
+                    choice_selected_callback=None, choice_confirmed_callback=None,
+                    exclusive=False):
+
+        popup = self.raise_dialog( title, '',
+                                auto_open=auto_open, auto_dismiss=auto_dismiss,
+                                cancel_text=cancel_text,
+                                ok_text=ok_text, okay_callback=okay_callback,
+                                cancel_callback=cancel_callback,
+                                timeout=timeout,
+                                )
+
+        # Customize default dialog popup
+        popup.title_alignment = 'center'
+        popup.label.font_size = dp(16)
+
+        popup.choice_layout = ChoiceLayout(exclusive=exclusive) # , theme=('app', 'default'))
+        popup.choice_layout.theme = ('app', 'default')
+        popup.content.replace_label(popup.choice_layout)
+        popup.choice_layout.size_hint_x = 1.0
+
+        def _item_selected(instance, value):
+            log.debug('Popup received selected: %s' % str(value))
+            self.selected = value
+            if choice_selected_callback is not None:
+                choice_selected_callback(value)
+
+        def _ok_callback(instance):
+            selected = popup.choice_layout._currentChoice
+            log.debug('Popup got user confirmed: %s' % str(selected))
+            if choice_confirmed_callback is not None:
+                choice_confirmed_callback(selected)
+
+        popup.choice_layout.bind(selected=_item_selected)
+        popup.content.ok_button.bind(on_release=_ok_callback)
+
+        labels = option_list
+        popup.choice_layout.setup(labels, detail_text=option_detail_list)
+
+        if ok_text is not None:
+            popup.content.ok_button.text = ok_text
+        else:
+            content = self.popup.content
+            content.remove_ok_btn()
+            content.cancel_button.size_hint_x = None
+            content.cancel_button.width = dp(80)
+            content.btn_layout.add_widget(Widget())
+            content.cancel_button.text='Done'
+
+        if auto_open:
+            popup.open()
+        self.choice_popup = popup
+        return popup
+
+    def raise_error(self, error_title, error_text,
+            auto_open=True, auto_dismiss=False,
+            timeout=None,
+            traceback=None):
         log.error(error_text)
         if traceback is not None:
             print(str(traceback))
         content = CustomErrorContent()
         content.message = error_text
         content.label_color_tuple = ('BlueGray', '800')
+        content.message_alignment = 'left'
+        content.label.font_size = dp(10)
 
         popup = self._getCustomPopup(content, auto_dismiss=auto_dismiss)
         popup.title = error_title
