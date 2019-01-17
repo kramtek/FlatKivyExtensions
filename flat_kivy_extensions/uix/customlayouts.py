@@ -117,18 +117,16 @@ class ChoiceLayout(BoxLayout):
     def setup(self, labels, detail_text=None):
         for index, label in enumerate(labels):
             #item = ChoiceListItem(text=label)
-            item = CustomCheckBoxListItem(text=label)
+            item = CustomCheckBoxListItem(text=label, theme=self.theme)
             item.theme = self.theme
+            #item.style = 'NavigationLabelMainHeading'
             if detail_text is not None:
                 item.detail_text = detail_text[index]
-                item.detail_font_size = dp(10)
+                item.detail_font_size = dp(8)
             if self.exclusive:
                 item.group = str(id(self))
-            item.exclusive = True
+                item.exclusive = True
             item.height = dp(45)
-            item.bind(active=self.selectChoice)
-            self.bind(theme=item.setter('theme'))
-            self.add_widget(item)
 
             if self.exclusive:
                 item.icon = 'fa-circle'
@@ -138,7 +136,25 @@ class ChoiceLayout(BoxLayout):
                 item.size_scaling = 0.5
                 item.check_scale = .35
 
+            item.bind(active=self.selectChoice)
+            self.bind(theme=item.setter('theme'))
+            self.add_widget(item)
+
         self.height = dp(45)*len(labels)
+
+    def on_theme(self, instance, value):
+        print('%s got new theme: %s' % (str(self), str(value)))
+        for item in self.children:
+            print('   processing child: %s' % str(item))
+            item.theme = value
+            if self.exclusive:
+                item.icon = 'fa-circle'
+                item.radius = item.height * 0.25
+                item.check_scale = 0.45 * item.size_scaling
+            else:
+                item.size_scaling = 0.5
+                item.check_scale = .35
+
 
 
 
