@@ -143,9 +143,7 @@ class ChoiceLayout(BoxLayout):
         self.height = dp(45)*len(labels)
 
     def on_theme(self, instance, value):
-        print('%s got new theme: %s' % (str(self), str(value)))
         for item in self.children:
-            print('   processing child: %s' % str(item))
             item.theme = value
             if self.exclusive:
                 item.icon = 'fa-circle'
