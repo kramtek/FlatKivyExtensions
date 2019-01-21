@@ -43,6 +43,9 @@ class AppAwareThread(threading.Thread):
         self._show_busy = kwargs.get('show_busy', False)
         if 'show_busy' in kwargs.keys():
             del kwargs['show_busy']
+        self._dialog_customizer = kwargs.get('dialog_customizer', None)
+        if 'dialog_customizer' in kwargs.keys():
+            del kwargs['dialog_customizer']
         super(AppAwareThread, self).__init__(**kwargs)
         self.app = App.get_running_app()
         self.daemon = True
@@ -56,10 +59,14 @@ class AppAwareThread(threading.Thread):
             if self._show_busy:
                 App.get_running_app().indicate_busy(False)
         except Exception as e:
+            log.error(str(e))
             tb = traceback.format_exc()
             targetString = str(self._target).strip().split(' ')[2]
-            App.get_running_app().raise_error('Exception:', 'Exception in %s\n\n%s' % (targetString, str(e)),
-                                          auto_dismiss=False, traceback=tb)
+            popup = App.get_running_app().raise_error('Exception:', 'Exception in %s\n\n%s' % (targetString, str(e)),
+                                          auto_open=False, auto_dismiss=False, traceback=tb)
+            if self._dialog_customizer is not None:
+                self._dialog_customizer(popup)
+            popup.open()
             if self._show_busy:
                 App.get_running_app().indicate_busy(False)
 
