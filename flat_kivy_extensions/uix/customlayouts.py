@@ -110,9 +110,15 @@ class ChoiceLayout(BoxLayout):
             child.disabled = value
 
     def selectChoice(self, instance, value):
-        if value:
+        log.debug('Selected choice: %s (state: %s)' % (str(instance.text), str(value)))
+        self.last_state = value
+        if self.exclusive:
+            if value:
+                self._currentChoice = instance.text
+                self.selected = (instance.text, value)
+        else:
             self._currentChoice = instance.text
-            self.selected = instance.text
+            self.selected = (instance.text, value)
 
     def setup(self, labels, detail_text=None):
         for index, label in enumerate(labels):

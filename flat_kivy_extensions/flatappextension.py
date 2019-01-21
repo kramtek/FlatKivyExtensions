@@ -674,11 +674,10 @@ class ExtendedFlatApp(FlatApp):
         popup.content.replace_label(popup.choice_layout)
         popup.choice_layout.size_hint_x = 1.0
 
-        def _item_selected(instance, value):
-            log.debug('Popup received selected: %s' % str(value))
-            self.selected = value
+        def _item_selected(instance, selected):
+            log.debug('Popup received different selected: %s' % (str(selected)))
             if choice_selected_callback is not None:
-                choice_selected_callback(value)
+                choice_selected_callback(*selected)
 
         def _ok_callback(instance):
             selected = popup.choice_layout._currentChoice
