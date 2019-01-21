@@ -82,7 +82,7 @@ Builder.load_string('''
             height: root.height
             width: root.width
             menu_width: min(dp(250), 0.6*self.width)
-            dashboard_width: 0.95*self.width
+            dashboard_width: 0.99*self.width
             side_panel_width: self.menu_width if not root.use_dashboard_navigation else self.dashboard_width
             #anim_type:  'slide_above_simple'
             anim_type:  'fade_in'
