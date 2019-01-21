@@ -1,5 +1,4 @@
 
-
 import os, platform
 
 from kivy.garden import garden_system_dir
@@ -25,7 +24,7 @@ from flat_kivy.flatapp import FlatApp
 from flat_kivy.uix.flatlabel import FlatLabel
 from flat_kivy.font_definitions import style_manager
 
-from flat_kivy_extensions.uix import CustomPopupContent, CustomBusyContent, CustomErrorContent
+from flat_kivy_extensions.uix import CustomPopupContent # , CustomBusyContent, CustomErrorContent
 from flat_kivy_extensions.uix.custompopup import CustomPopup
 from flat_kivy_extensions.uix.customscreen import CustomScreen
 from flat_kivy_extensions.uix.customlayouts import ChoiceLayout
@@ -552,8 +551,8 @@ class ExtendedFlatApp(FlatApp):
 
         content.label_color_tuple = ('BlueGray', '800')
         content.btn_color_tuple = ('BlueGray', '700')
-        content.bind(size=self._update_popup_size)
         content.popup = popup
+        content.bind(size=self._update_popup_size)
 
         return popup
 
@@ -564,7 +563,10 @@ class ExtendedFlatApp(FlatApp):
                     ):
         content = CustomPopupContent()
         content.message = message
-        content.cancel_text = cancel_text
+        if cancel_text is not None:
+            content.cancel_text = cancel_text
+        else:
+            content.remove_cancel_btn()
         content.remove_icon()
         content.remove_ok_btn()
 
@@ -594,7 +596,7 @@ class ExtendedFlatApp(FlatApp):
                 event.cancel()
             popup.bind(on_dismiss=clear_timeout)
 
-        self._busy_popup = popup
+        #self._busy_popup = popup
         if auto_open:
             popup.open()
         return popup
@@ -608,7 +610,11 @@ class ExtendedFlatApp(FlatApp):
             ):
         content = CustomPopupContent()
         content.message = text
-        content.cancel_text = cancel_text
+
+        if cancel_text is not None:
+            content.cancel_text = cancel_text
+        else:
+            content.remove_cancel_btn()
         content.ok_text = ok_text
 
         content.remove_spinner()
@@ -659,9 +665,8 @@ class ExtendedFlatApp(FlatApp):
 
         popup = self.raise_dialog( title, '',
                                 auto_open=auto_open, auto_dismiss=auto_dismiss,
-                                cancel_text=cancel_text,
                                 ok_text=ok_text, okay_callback=okay_callback,
-                                cancel_callback=cancel_callback,
+                                cancel_text=cancel_text, cancel_callback=cancel_callback,
                                 timeout=timeout,
                                 )
 
@@ -703,22 +708,27 @@ class ExtendedFlatApp(FlatApp):
 
         if auto_open:
             popup.open()
-        self.choice_popup = popup
+        #self.choice_popup = popup
         return popup
 
     def raise_error(self, error_title, error_text,
             auto_open=True, auto_dismiss=False,
-            timeout=None,
-            traceback=None):
+            timeout=None, traceback=None):
+
         log.error(error_text)
         if traceback is not None:
             print(str(traceback))
-        content = CustomErrorContent()
+
+        #content = CustomErrorContent()
+        content = CustomPopupContent()
         content.message = error_text
-        content.label_color_tuple = ('BlueGray', '800')
+        #content.label_color_tuple = ('BlueGray', '800')
         content.message_alignment = 'left'
         content.label.font_size = dp(10)
+        content.remove_spinner()
+        content.remove_ok_btn()
 
+        content.icon = 'fa-exclamation'
         popup = self._getCustomPopup(content, auto_dismiss=auto_dismiss)
         popup.title = error_title
 
@@ -726,6 +736,8 @@ class ExtendedFlatApp(FlatApp):
 
         cancel_button = content.cancel_button
         cancel_button.text = 'Ok'
+        cancel_button.size_hint_x = None
+        cancel_button.width = dp(80)
         cancel_button.bind(on_release=popup.dismiss)
 
         if timeout is not None:
@@ -733,10 +745,10 @@ class ExtendedFlatApp(FlatApp):
                 popup.dismiss()
             Clock.schedule_once(close_popup, timeout)
 
-        self.error_popup = popup
+#        self.error_popup = popup
         if auto_open:
             popup.open()
-        return self.error_popup
+        return popup
 
     def _update_popup_size(self, instance, value):
         instance.popup.height = value[1] + dp(33)
