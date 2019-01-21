@@ -1,22 +1,43 @@
 
+
 from kivy.lang import Builder
+from kivy.metrics import dp
+from kivy.properties import StringProperty, ListProperty, NumericProperty, ObjectProperty, BooleanProperty
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.stacklayout import StackLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
-from kivy.metrics import dp
-
-from kivy.properties import StringProperty, ListProperty, NumericProperty, ObjectProperty, BooleanProperty
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.scrollview import ScrollView
 
 from flat_kivy.uix.flatlabel import FlatLabel
 
 from flat_kivy_extensions.uix.customcheckbox import CustomCheckBoxListItem
 
 from flat_kivy_extensions import PackageLogger
-log = PackageLogger(__name__, moduleDebug=False)
+log = PackageLogger(__name__, moduleDebug=True)
 
 Builder.load_string('''
+
+<_CustomGridLayout>:
+
+<-CustomScrolledLayout>:
+    content_layout: content_layout.__self__
+
+    orientation: 'vertical'
+    size_hint_y: None
+
+    ScrollView:
+        do_scroll_y: True
+        scroll_timeout: 100
+
+        #_CustomGridLayout:
+        GridLayout:
+            id: content_layout
+            cols: 1
+            size_hint_y: None
+            height: self.minimum_height
+            spacing: dp(5)
 
 <-StyledLayout>:
     orientation: 'tb-lr'
@@ -90,6 +111,27 @@ class _MainLayout(BoxLayout):
 class _ContentLayout(GridLayout):
     pass
 
+
+class _CustomGridLayout(GridLayout):
+    pass
+
+
+class CustomScrolledLayout(BoxLayout):
+
+    def add_widget(self, widget, *largs):
+        if isinstance(widget, ScrollView):
+            super(CustomScrolledLayout, self).add_widget(widget)
+            return
+        self.content_layout.add_widget(widget, *largs)
+
+    def remove_widget(self, widget):
+        if widget == self.content_layout:
+            log.error('You cannot remove the content layout from a CustomScrolledLayout')
+            return
+        self.content_layout.remove_widget(widget)
+
+    def clear_widgets(self):
+        self.content_layout.clear_widgets()
 
 class ChoiceLayout(BoxLayout):
 
