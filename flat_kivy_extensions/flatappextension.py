@@ -338,16 +338,16 @@ class CustomScreenManager(ScreenManager):
 
 class ScreenConfig(object):
 
-    def __init__(self, screen_class, screen_args=[], screen_kwargs={}, screen_name=None):
+    def __init__(self, screen_class, screen_largs=[], screen_kwargs={}, screen_name=None):
         self.screen_class = screen_class
-        self.screen_args = screen_args
+        self.screen_largs = screen_largs
         self.screen_kwargs = screen_kwargs
         self.screen_name = screen_name
         self._screen = None
 
     def add_to_screen_manager(self, screenmanager):
         if self._screen is None:
-            self._screen = self.screen_class(*self.screen_args, **self.screen_kwargs)
+            self._screen = self.screen_class(*self.screen_largs, **self.screen_kwargs)
         if self._screen not in self._screenmanager.screens:
             screenmanager.add_widget(self._screen)
         return self._screen
@@ -355,7 +355,7 @@ class ScreenConfig(object):
     def _getScreen(self):
         if self._screen is None:
             log.info('Instantiating screen from class: %s' % (str(self.screen_class.__name__)))
-            self._screen = self.screen_class(*self.screen_args, **self.screen_kwargs)
+            self._screen = self.screen_class(*self.screen_largs, **self.screen_kwargs)
             self._screen.name = self.screen_name
         return self._screen
 
@@ -378,12 +378,12 @@ class BlockingIconButton(CustomIconButton):
 
 class ScreenNavigationEntry(ScreenConfig):
 
-    def __init__(self, screen_class, button_title=None, button_icon='', screen_args=[], screen_kwargs={}):
+    def __init__(self, screen_class, button_title=None, button_icon='', screen_largs=[], screen_kwargs={}):
         if button_title is None:
             button_title = screen_class.__name__
         self.button_title = button_title
         self.button_icon = button_icon
-        super(ScreenNavigationEntry, self).__init__(screen_class, screen_args=screen_args, screen_kwargs=screen_kwargs, screen_name=button_title)
+        super(ScreenNavigationEntry, self).__init__(screen_class, screen_largs=screen_largs, screen_kwargs=screen_kwargs, screen_name=button_title)
 
     def create_button(self, screenmanager):
         #btn = CustomIconButton(text=self.button_title)
