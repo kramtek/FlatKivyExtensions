@@ -130,6 +130,22 @@ default = {
         'radius' : '4dp',
         'icon' : 'fa-check',
     },
+    'CustomRLCheckBoxListItem': {
+        'font_color_tuple': ('Blue', '800'),
+        'check_color_tuple': ('Green', '600'),
+        'check_color_hue_down': '200',
+        'outline_color_tuple': ('Gray', '500'),
+        'style': 'Button',
+        'valign' : 'middle',
+
+        'size_scaling' : 0.5,
+        'outline_size': '1.5dp',
+        'style': 'CustomButton1',
+
+        'check_scale': .5,
+        'radius' : '4dp',
+        'icon' : 'fa-check',
+    },
     'CustomSwitchListItem': {
         'style': 'LabelNormalBold',
         'valign' : 'bottom',
@@ -193,7 +209,7 @@ themes = {
 from flat_kivy_extensions.uix.custombutton import CustomButton
 from flat_kivy_extensions.uix.customiconbutton import CustomIconButton
 from flat_kivy_extensions.uix.customslider import CustomSlider, CustomSliderTouchRippleBehavior, ExtendedSlider, ExtendedSliderVertical, ExtendedSliderHorizontal
-from flat_kivy_extensions.uix.customcheckbox import CustomCheckBoxListItem
+from flat_kivy_extensions.uix.customcheckbox import CustomCheckBoxListItem, CustomRLCheckBoxListItem
 from flat_kivy_extensions.uix.customswitch import CustomSwitchListItem
 from flat_kivy_extensions.uix import CustomBusyContent
 
@@ -206,6 +222,7 @@ types_to_theme = {
     'CustomButton' : CustomButton,
     'CustomIconButton' : CustomIconButton,
     'CustomCheckBoxListItem' : CustomCheckBoxListItem,
+    'CustomRLCheckBoxListItem' : CustomRLCheckBoxListItem,
     'CustomSwitchListItem' : CustomSwitchListItem,
     'CustomBusyContent' : CustomBusyContent,
     # 'FlatIconButtonLeft' : FlatIconButtonLeft,

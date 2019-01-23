@@ -207,3 +207,7 @@ class CustomCheckBoxListItem(FlatCheckBoxListItem):
         if self.active is not state:
             self.toggle_checkbox()
 
+
+class CustomRLCheckBoxListItem(CustomCheckBoxListItem):
+    pass
+
