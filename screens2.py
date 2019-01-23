@@ -128,6 +128,13 @@ Builder.load_string('''
         size_hint_x: None
         width: '200dp'
 
+    CustomRLCheckBoxListItem:
+        text: 'Check box'
+        theme: ('app', 'default')
+        height: '45dp'
+        size_hint_x: None
+        width: '200dp'
+
     CustomCheckBoxListItem:
         text: 'Radio Button 1'
         group: 'this-radio'

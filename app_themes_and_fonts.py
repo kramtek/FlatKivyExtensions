@@ -126,6 +126,24 @@ default = {
         #'detail_font_size' : '12dp',
 
     },
+    'CustomRLCheckBoxListItem': {
+        'font_color_tuple': ('Blue', '800'),
+        'check_color_tuple': ('Green', '600'),
+        #'check_color_hue_down': '200',
+        'outline_color_tuple': ('Gray', '500'),
+        'style': 'LabelNormalBold',
+        'valign' : 'middle',
+
+        'size_scaling' : 0.5,
+        'outline_size': '1.5dp',
+
+        'check_scale': .5,
+        'radius' : '4dp',
+        'icon' : 'fa-check',
+
+        #'detail_font_size' : '12dp',
+
+    },
     'CustomSwitchListItem': {
         'style': 'LabelNormalBold',
         'valign' : 'middle',

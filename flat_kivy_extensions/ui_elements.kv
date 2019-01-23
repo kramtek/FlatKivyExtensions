@@ -467,6 +467,73 @@
         #root.setter('touch_down_active')
         no_interact: True # root.disabled or root.no_interact
 
+<-CustomRLCheckBoxListItem>:
+    orientation: 'horizontal'
+    active: checkbox.active
+    ripple_color: app.get_color(self.ripple_color_tuple)
+    spacing: '5dp'
+    icon: 'fa-check'
+    radius: 5
+    exclusive: False 
+    style: None
+    detail_font_size: 0
+    checkbox: checkbox.__self__
+
+    CustomCheckBox:
+        group: root.group
+        id: checkbox
+        no_interact: False 
+        size_hint: (None, 1.0)
+        width: self.height
+        alpha: root.alpha
+        outline_color_tuple: root.outline_color_tuple
+        outline_size: root.outline_size
+        check_color_tuple: root.check_color_tuple
+        color_tuple: root.checkbox_color_tuple
+        check_scale: root.check_scale
+        icon: root.icon
+        size_scaling: root.size_scaling
+        radius: root.radius
+        exclusive: root.exclusive
+        #on_active: root.on_checkbox_active(self, self.active)
+        #root.setter('touch_down_active')
+        no_interact: True # root.disabled or root.no_interact
+
+    RelativeLayout:
+        orientation: 'vertical'
+        size_hint: (0.8, None)
+        height: root.height
+
+        FlatLabel:
+            id: label
+            text: root.text
+            size_hint: (None, None)
+            size: self.parent.size
+            color: app.get_color(root.font_color_tuple)
+            style: root.style
+            halign: root.halign
+            font_ramp_tuple: root.font_ramp_tuple
+            valign: root.valign
+            text_size: self.size
+            disabled_color: (.5, .5, .5, .5)
+            
+        FlatLabel:
+            id: detail_label
+            text: '    ' + root.detail_text
+            #theme: root.theme
+            #font_ramp_tuple: root.font_ramp_tuple
+            size_hint: (None, None)
+            height: root.height * 0.3
+            width: self.parent.width
+            color: app.get_color(root.font_color_tuple)
+            style: root.style
+            halign: root.halign
+            valign: 'top'
+            font_size: root.detail_font_size
+            text_size: self.size
+            disabled_color: (.5, .5, .5, .5)
+
+
 <PopupButton@CustomButton>:
     style: 'NavigationLabelMainHeading'
     font_size: dp(12)
@@ -487,8 +554,10 @@
     btn_color_tuple: ('Brown', '700')
     btn_font_color_tuple: ('Gray', '0000') 
 
+    spacer_widget: spacer_widget.__self__ 
     content_layout: content_layout.__self__
     btn_layout: btn_layout.__self__
+
     cancel_button: cancel_button.__self__
     ok_button: ok_button.__self__
     label: label.__self__
@@ -539,6 +608,11 @@
                 text: root.message
                 color_tuple: root.label_color_tuple
                 font_size: dp(12)
+
+    Widget:
+        id: spacer_widget
+        size_hint_y: None
+        height: dp(5)
 
     BoxLayout:
         id: btn_layout
