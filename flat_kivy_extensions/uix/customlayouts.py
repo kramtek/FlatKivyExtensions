@@ -12,7 +12,7 @@ from kivy.uix.scrollview import ScrollView
 
 from flat_kivy.uix.flatlabel import FlatLabel
 
-from flat_kivy_extensions.uix.customcheckbox import CustomCheckBoxListItem
+from flat_kivy_extensions.uix.customcheckbox import CustomCheckBoxListItem, CustomRLCheckBoxListItem
 
 from flat_kivy_extensions import PackageLogger
 log = PackageLogger(__name__, moduleDebug=True)
@@ -165,7 +165,7 @@ class ChoiceLayout(BoxLayout):
     def setup(self, labels, detail_text=None):
         for index, label in enumerate(labels):
             #item = ChoiceListItem(text=label)
-            item = CustomCheckBoxListItem(text=label, theme=self.theme)
+            item = CustomRLCheckBoxListItem(text=label, theme=self.theme)
             item.theme = self.theme
             #item.style = 'NavigationLabelMainHeading'
             if detail_text is not None:
