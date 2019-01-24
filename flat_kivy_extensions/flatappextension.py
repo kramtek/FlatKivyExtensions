@@ -84,8 +84,8 @@ Builder.load_string('''
             menu_width: min(dp(250), 0.6*self.width)
             dashboard_width: 0.99*self.width
             side_panel_width: self.menu_width if not root.use_dashboard_navigation else self.dashboard_width
-            #anim_type:  'slide_above_simple'
-            anim_type:  'fade_in'
+            anim_type:  'slide_above_simple'
+            #anim_type:  'fade_in'
             main_layout: main_layout.__self__
 
             ScrollView:
@@ -110,12 +110,12 @@ Builder.load_string('''
                     padding: '2dp'
                     spacing: '2dp'
 
-                    #canvas.before:
-                    #    Color:
-                    #        rgba: root.side_panel_color
-                    #    Rectangle:
-                    #        pos: self.pos
-                    #        size: self.size
+                    canvas.before:
+                        Color:
+                            rgba: root.side_panel_color
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
 
                 # this will be populated dynamically when the root application is built
 

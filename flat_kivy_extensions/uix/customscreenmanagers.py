@@ -2,7 +2,7 @@
 
 from kivy.metrics import dp
 from kivy.lang import Builder
-from kivy.uix.screenmanager import Screen
+from kivy.uix.screenmanager import Screen, FadeTransition
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.widget import Widget
 
@@ -30,6 +30,7 @@ class CustomTabScreen(Screen):
         if self._isSetup:
             return
         self._screenmanager = CustomScreenManager()
+        self._screenmanager.transition = FadeTransition(duration=0.0)
         self.add_widget(self._screenmanager)
         self.title = ''
 
