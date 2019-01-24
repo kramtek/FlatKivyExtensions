@@ -556,7 +556,7 @@ class ExtendedFlatApp(FlatApp):
 
         return popup
 
-    def raise_busy(self, title, message,
+    def raise_busy(self, title, message='',
                     auto_open=True, auto_dismiss=False,
                     cancel_text='Dismiss', cancel_callback=None,
                     timeout=None, timeout_callback=None,
