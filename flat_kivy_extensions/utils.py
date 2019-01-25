@@ -41,14 +41,14 @@ def get_app_config_entry(configTag, forceReload=True):
     if forceReload or localTree is None:
         filename = 'local_app_config.xml'
         try:
-            print('loading tree fresh from %s'  % filename)
+            log.debug('loading tree fresh from %s'  % filename)
             tree = ET.ElementTree(file=filename)
             localTree = tree
         except Exception as e:
             log.error('Exception: %s  (returning None)' % str(e))
             return None
     else:
-        print('using pre-loaded tree...')
+        log.debug('using pre-loaded tree...')
     current_root = localTree.getroot()
     return current_root.find(configTag)
 
