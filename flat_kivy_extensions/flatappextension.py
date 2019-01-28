@@ -721,6 +721,9 @@ class ExtendedFlatApp(FlatApp):
 
         #content = CustomErrorContent()
         content = CustomPopupContent()
+        content.padding = dp(15)
+        content.spacing = dp(15)
+        content.label.valign = 'middle'
         content.message = error_text
         #content.label_color_tuple = ('BlueGray', '800')
         content.message_alignment = 'left'
