@@ -140,13 +140,9 @@ class BarGraph(_CustomGraph):
         self.shape = None
 
     def create(self, data, colors=None):
-        print('Creating bar graph...')
         self._plot_datas = list()
         for plot in self._plots:
-            print('  removing plot...')
             self.remove_plot(plot)
-            print('  done removing plot...')
-        print('creating new plots..')
         self._plots = list()
         if colors is None:
             #colors = itertools.cycle([
@@ -164,7 +160,6 @@ class BarGraph(_CustomGraph):
                 rgb('1c7062'),
                 ]
 
-        print('  setting up num points...')
         self.shape = data.shape
         if len(self.shape) == 1:
             numPoints = self.shape[0] * (1 + 1)
@@ -191,7 +186,6 @@ class BarGraph(_CustomGraph):
                 spacing = 0.7
 
         for ind1 in xrange(self.shape[1]):
-            print('  Creating plot for....')
             plot = BarPlot(color=colors[ind1], bar_spacing=spacing)
             self.add_plot(plot)
             plot.bind_to_graph(self)
