@@ -620,9 +620,9 @@ class ExtendedFlatApp(FlatApp):
         content.remove_spinner()
         content.remove_icon()
 
-        if okay_callback is None and cancel_callback is None:
-            content.remove_cancel_btn()
-            content.ok_text = 'Okay'
+        #if okay_callback is None and cancel_callback is None:
+        #    content.remove_cancel_btn()
+        #    content.ok_text = 'Okay'
 
         popup = self._getCustomPopup(content, auto_dismiss=auto_dismiss)
         popup.title = title
